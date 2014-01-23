@@ -7,3 +7,6 @@
 !*.apv
 !up_vcsettings.ini
 !CA_Roots.pem
+/map/
+/obj/
+/source/
