@@ -10,7 +10,7 @@ FROM ABC Window
 CATEGORY 'Browse'
 [DATA]
 [SCREENCONTROLS]
-! PROMPT('CurrentTab:'),USE(?CurrentTab:Prompt)
+! PROMPT('BeterPromptName:'),USE(?CurrentTab:Prompt)
 ! ENTRY(@s80),USE(CurrentTab)
 [REPORTCONTROLS]
 ! STRING(@s80),USE(CurrentTab)
