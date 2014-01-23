@@ -1,0 +1,1253 @@
+[MODULE]
+NAME 'UpdateDetail_invoice.clw'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME UpdateDetail
+[COMMON]
+DESCRIPTION 'Update the Detail File'
+FROM ABC Window
+CATEGORY 'Form'
+[DATA]
+[SCREENCONTROLS]
+! PROMPT('CurrentTab:'),USE(?CurrentTab:Prompt)
+! ENTRY(@s80),USE(CurrentTab)
+[REPORTCONTROLS]
+! STRING(@s80),USE(CurrentTab)
+CurrentTab               STRING(80)
+!!> GUID('2641b10f-9744-4642-aee6-560441375a24'),PROMPT('CurrentTab:'),HEADER('CurrentTab'),PICTURE(@s80)
+[SCREENCONTROLS]
+! CHECK('Check Flag'),USE(CheckFlag)
+[REPORTCONTROLS]
+! CHECK('Check Flag'),USE(CheckFlag)
+CheckFlag                BYTE
+!!> GUID('a9a52983-73ab-40bd-b46f-8f11a9ef8da5'),VALID(BOOLEAN),PROMPT('Check Flag:'),HEADER('Check Flag'),PICTURE(@S1)
+[SCREENCONTROLS]
+! PROMPT('LocalRequest:'),USE(?LocalRequest:Prompt)
+! ENTRY(@n-14),USE(LocalRequest)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(LocalRequest)
+LocalRequest             LONG
+!!> GUID('c26667e1-7374-4c14-9773-24d6a5acacb4'),PROMPT('LocalRequest:'),HEADER('LocalRequest'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('FilesOpened:'),USE(?FilesOpened:Prompt)
+! ENTRY(@n3),USE(FilesOpened)
+[REPORTCONTROLS]
+! STRING(@n3),USE(FilesOpened)
+FilesOpened              BYTE
+!!> GUID('34a49025-d009-4581-8ab4-393fa54e4e55'),PROMPT('FilesOpened:'),HEADER('FilesOpened'),PICTURE(@n3)
+ActionMessage            CSTRING(40)
+!!> GUID('8150efd8-a43a-4c47-bef9-bcdda61fc3f7')
+[SCREENCONTROLS]
+! PROMPT('RecordChanged:'),USE(?RecordChanged:Prompt)
+! ENTRY(@n3),USE(RecordChanged)
+[REPORTCONTROLS]
+! STRING(@n3),USE(RecordChanged)
+RecordChanged            BYTE,AUTO
+!!> GUID('536b2523-ae68-4aaa-8666-cfe5a104c4ff'),PROMPT('RecordChanged:'),HEADER('RecordChanged'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('LOC : Reg Total Price:'),USE(?LOC:RegTotalPrice:Prompt)
+! ENTRY(@n$13.2),USE(LOC:RegTotalPrice)
+[REPORTCONTROLS]
+! STRING(@n$13.2),USE(LOC:RegTotalPrice)
+LOC:RegTotalPrice        DECIMAL(9,2)
+!!> GUID('47d282d0-acb8-4f0e-811b-53b888c4da86'),PROMPT('LOC : Reg Total Price:'),HEADER('LOC : Reg Total Price'),PICTURE(@n$13.2)
+[SCREENCONTROLS]
+! PROMPT('LOC : Disc Total Price:'),USE(?LOC:DiscTotalPrice:Prompt)
+! ENTRY(@n$13.2),USE(LOC:DiscTotalPrice)
+[REPORTCONTROLS]
+! STRING(@n$13.2),USE(LOC:DiscTotalPrice)
+LOC:DiscTotalPrice       DECIMAL(9,2)
+!!> GUID('f1c8561d-b8ee-454b-b14d-ccfa4561b772'),PROMPT('LOC : Disc Total Price:'),HEADER('LOC : Disc Total Price'),PICTURE(@n$13.2)
+[SCREENCONTROLS]
+! PROMPT('LOC : Quantity Available:'),USE(?LOC:QuantityAvailable:Prompt)
+! ENTRY(@n9.2),USE(LOC:QuantityAvailable),MSG('Quantity available for sale')
+[REPORTCONTROLS]
+! STRING(@n9.2),USE(LOC:QuantityAvailable)
+LOC:QuantityAvailable    DECIMAL(7,2) !Quantity available for sale
+!!> GUID('baf56174-f9a7-49af-8d99-dac9f28fa857'),PROMPT('LOC : Quantity Available:'),HEADER('LOC : Quantity Available'),MESSAGE('Quantity available for sale'),PICTURE(@n9.2)
+[SCREENCONTROLS]
+! PROMPT('SAV : Quantity:'),USE(?SAV:Quantity:Prompt)
+! ENTRY(@n9.2),USE(SAV:Quantity)
+[REPORTCONTROLS]
+! STRING(@n9.2),USE(SAV:Quantity)
+SAV:Quantity             DECIMAL(7,2)
+!!> GUID('3d43e95a-4639-4e57-89ec-12e85cc294fa'),PROMPT('SAV : Quantity:'),HEADER('SAV : Quantity'),PICTURE(@n9.2)
+[SCREENCONTROLS]
+! PROMPT('NEW : Quantity:'),USE(?NEW:Quantity:Prompt)
+! ENTRY(@n9.2),USE(NEW:Quantity)
+[REPORTCONTROLS]
+! STRING(@n9.2),USE(NEW:Quantity)
+NEW:Quantity             DECIMAL(7,2)
+!!> GUID('bf81e4d7-73dc-4929-a926-1dac5dfc0b09'),PROMPT('NEW : Quantity:'),HEADER('NEW : Quantity'),PICTURE(@n9.2)
+[SCREENCONTROLS]
+! CHECK('SAV : Back Order'),USE(SAV:BackOrder)
+[REPORTCONTROLS]
+! CHECK('SAV : Back Order'),USE(SAV:BackOrder)
+SAV:BackOrder            BYTE
+!!> GUID('4b8f9d65-01ae-4779-b8e8-b363f67504f8'),VALID(BOOLEAN),PROMPT('SAV : Back Order:'),HEADER('SAV : Back Order'),PICTURE(@s1)
+[SCREENCONTROLS]
+! PROMPT('Description:'),USE(?ProductDescription:Prompt)
+! STRING(@s35),USE(ProductDescription)
+[REPORTCONTROLS]
+! STRING(@s35),USE(ProductDescription)
+ProductDescription       STRING(35)
+!!> GUID('63a0d6a5-e42c-47ca-8327-bee5f9191399'),PROMPT('Description:'),HEADER('Description'),PICTURE(@s35)
+[FILES]
+[PRIMARY]
+Detail
+[INSTANCE]
+2
+[OTHERS]
+Products
+InvHist
+[PROMPTS]
+%ButtonAction DEPEND %Control DEFAULT TIMES 13
+WHEN  ('') ('No Special Action')
+WHEN  ('?CallLookup') ('No Special Action')
+WHEN  ('?Cancel') ('No Special Action')
+WHEN  ('?CurrentTab') ('No Special Action')
+WHEN  ('?DTL:BackOrdered') ('No Special Action')
+WHEN  ('?DTL:DiscountRate') ('No Special Action')
+WHEN  ('?DTL:Price') ('No Special Action')
+WHEN  ('?DTL:ProductNumber') ('No Special Action')
+WHEN  ('?DTL:QuantityOrdered') ('No Special Action')
+WHEN  ('?DTL:TaxRate') ('No Special Action')
+WHEN  ('?Help') ('No Special Action')
+WHEN  ('?OK') ('No Special Action')
+WHEN  ('?ProductDescription') ('No Special Action')
+
+%ButtonThreadStack DEPEND %Control DEFAULT TIMES 13
+WHEN  ('') ('25000')
+WHEN  ('?CallLookup') ('25000')
+WHEN  ('?Cancel') ('25000')
+WHEN  ('?CurrentTab') ('25000')
+WHEN  ('?DTL:BackOrdered') ('25000')
+WHEN  ('?DTL:DiscountRate') ('25000')
+WHEN  ('?DTL:Price') ('25000')
+WHEN  ('?DTL:ProductNumber') ('25000')
+WHEN  ('?DTL:QuantityOrdered') ('25000')
+WHEN  ('?DTL:TaxRate') ('25000')
+WHEN  ('?Help') ('25000')
+WHEN  ('?OK') ('25000')
+WHEN  ('?ProductDescription') ('25000')
+
+%ButtonRequest DEPEND %Control DEFAULT TIMES 13
+WHEN  ('') ('None')
+WHEN  ('?CallLookup') ('None')
+WHEN  ('?Cancel') ('None')
+WHEN  ('?CurrentTab') ('None')
+WHEN  ('?DTL:BackOrdered') ('None')
+WHEN  ('?DTL:DiscountRate') ('None')
+WHEN  ('?DTL:Price') ('None')
+WHEN  ('?DTL:ProductNumber') ('None')
+WHEN  ('?DTL:QuantityOrdered') ('None')
+WHEN  ('?DTL:TaxRate') ('None')
+WHEN  ('?Help') ('None')
+WHEN  ('?OK') ('None')
+WHEN  ('?ProductDescription') ('None')
+
+%PreLookupKey DEPEND %Control KEY TIMES 11
+WHEN  ('?CallLookup') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?DTL:BackOrdered') ()
+WHEN  ('?DTL:DiscountRate') ()
+WHEN  ('?DTL:Price') ()
+WHEN  ('?DTL:ProductNumber') (PRO:KeyProductNumber)
+WHEN  ('?DTL:QuantityOrdered') ()
+WHEN  ('?DTL:TaxRate') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ProductDescription') ()
+
+%PreLookupField DEPEND %Control COMPONENT TIMES 11
+WHEN  ('?CallLookup') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?DTL:BackOrdered') ()
+WHEN  ('?DTL:DiscountRate') ()
+WHEN  ('?DTL:Price') ()
+WHEN  ('?DTL:ProductNumber') (PRO:ProductNumber)
+WHEN  ('?DTL:QuantityOrdered') ()
+WHEN  ('?DTL:TaxRate') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ProductDescription') ()
+
+%PreLookupProcedure DEPEND %Control PROCEDURE TIMES 11
+WHEN  ('?CallLookup') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?DTL:BackOrdered') ()
+WHEN  ('?DTL:DiscountRate') ()
+WHEN  ('?DTL:Price') ()
+WHEN  ('?DTL:ProductNumber') (SelectProducts)
+WHEN  ('?DTL:QuantityOrdered') ()
+WHEN  ('?DTL:TaxRate') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ProductDescription') ()
+
+%ForceWindowRefresh DEPEND %Control LONG TIMES 10
+WHEN  ('?CallLookup') (0)
+WHEN  ('?Cancel') (0)
+WHEN  ('?DTL:BackOrdered') (0)
+WHEN  ('?DTL:DiscountRate') (0)
+WHEN  ('?DTL:Price') (0)
+WHEN  ('?DTL:QuantityOrdered') (0)
+WHEN  ('?DTL:TaxRate') (0)
+WHEN  ('?Help') (0)
+WHEN  ('?OK') (0)
+WHEN  ('?ProductDescription') (0)
+
+%WindowOperationMode DEFAULT  ('Use WINDOW setting')
+%INISaveWindow LONG  (1)
+%PostLookupDuringValidate DEPEND %Control LONG TIMES 13
+WHEN  ('') (1)
+WHEN  ('?CallLookup') (1)
+WHEN  ('?Cancel') (1)
+WHEN  ('?CurrentTab') (1)
+WHEN  ('?DTL:BackOrdered') (1)
+WHEN  ('?DTL:DiscountRate') (0)
+WHEN  ('?DTL:Price') (1)
+WHEN  ('?DTL:ProductNumber') (1)
+WHEN  ('?DTL:QuantityOrdered') (1)
+WHEN  ('?DTL:TaxRate') (0)
+WHEN  ('?Help') (1)
+WHEN  ('?OK') (1)
+WHEN  ('?ProductDescription') (1)
+
+%ReturnValue FIELD  ()
+%ButtonRunName DEPEND %Control DEFAULT TIMES 7
+WHEN  ('?CallLookup') ('')
+WHEN  ('?Cancel') ('')
+WHEN  ('?DTL:BackOrdered') ('')
+WHEN  ('?DTL:Price') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+WHEN  ('?ProductDescription') ('')
+
+%ButtonRunParameters DEPEND %Control DEFAULT TIMES 7
+WHEN  ('?CallLookup') ('')
+WHEN  ('?Cancel') ('')
+WHEN  ('?DTL:BackOrdered') ('')
+WHEN  ('?DTL:Price') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+WHEN  ('?ProductDescription') ('')
+
+%ButtonProcedure DEPEND %Control PROCEDURE TIMES 7
+WHEN  ('?CallLookup') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?DTL:BackOrdered') ()
+WHEN  ('?DTL:Price') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ProductDescription') ()
+
+%ButtonThread DEPEND %Control LONG TIMES 7
+WHEN  ('?CallLookup') (0)
+WHEN  ('?Cancel') (0)
+WHEN  ('?DTL:BackOrdered') (0)
+WHEN  ('?DTL:Price') (0)
+WHEN  ('?Help') (0)
+WHEN  ('?OK') (0)
+WHEN  ('?ProductDescription') (0)
+
+%ButtonParameters DEPEND %Control DEFAULT TIMES 7
+WHEN  ('?CallLookup') ('')
+WHEN  ('?Cancel') ('')
+WHEN  ('?DTL:BackOrdered') ('')
+WHEN  ('?DTL:Price') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+WHEN  ('?ProductDescription') ('')
+
+%PostLookupKey DEPEND %Control KEY TIMES 9
+WHEN  ('?CallLookup') ()
+WHEN  ('?DTL:BackOrdered') ()
+WHEN  ('?DTL:DiscountRate') ()
+WHEN  ('?DTL:Price') ()
+WHEN  ('?DTL:ProductNumber') ()
+WHEN  ('?DTL:TaxRate') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ProductDescription') ()
+
+%PostLookupField DEPEND %Control COMPONENT TIMES 9
+WHEN  ('?CallLookup') ()
+WHEN  ('?DTL:BackOrdered') ()
+WHEN  ('?DTL:DiscountRate') ()
+WHEN  ('?DTL:Price') ()
+WHEN  ('?DTL:ProductNumber') ()
+WHEN  ('?DTL:TaxRate') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ProductDescription') ()
+
+%PostLookupProcedure DEPEND %Control PROCEDURE TIMES 9
+WHEN  ('?CallLookup') ()
+WHEN  ('?DTL:BackOrdered') ()
+WHEN  ('?DTL:DiscountRate') ()
+WHEN  ('?DTL:Price') ()
+WHEN  ('?DTL:ProductNumber') ()
+WHEN  ('?DTL:TaxRate') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ProductDescription') ()
+
+%CheckedAssigns DEPEND %Control MULTI LONG TIMES 1
+WHEN  ('?DTL:BackOrdered') ()
+
+%CheckedAssignVariable DEPEND %CheckedAssigns FIELD TIMES 6
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?DTL:BackOrdered')TIMES 0
+WHEN  ('?DTL:Price')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%CheckedAssignValue DEPEND %CheckedAssigns DEFAULT TIMES 6
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?DTL:BackOrdered')TIMES 0
+WHEN  ('?DTL:Price')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%CheckedHides DEPEND %Control MULTI LONG TIMES 1
+WHEN  ('?DTL:BackOrdered') ()
+
+%CheckedControl DEPEND %CheckedHides DEFAULT TIMES 6
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?DTL:BackOrdered')TIMES 0
+WHEN  ('?DTL:Price')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%CheckedControlAction DEPEND %CheckedHides DEFAULT TIMES 10
+WHEN  ('')TIMES 0
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?DTL:BackOrdered')TIMES 0
+WHEN  ('?DTL:Price')TIMES 0
+WHEN  ('?DTL:ProductNumber')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%UncheckedAssigns DEPEND %Control MULTI LONG TIMES 1
+WHEN  ('?DTL:BackOrdered') ()
+
+%UncheckedAssignVariable DEPEND %UncheckedAssigns FIELD TIMES 6
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?DTL:BackOrdered')TIMES 0
+WHEN  ('?DTL:Price')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%UncheckedAssignValue DEPEND %UncheckedAssigns DEFAULT TIMES 6
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?DTL:BackOrdered')TIMES 0
+WHEN  ('?DTL:Price')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%UnCheckedHides DEPEND %Control MULTI LONG TIMES 1
+WHEN  ('?DTL:BackOrdered') ()
+
+%UnCheckedControl DEPEND %UnCheckedHides DEFAULT TIMES 6
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?DTL:BackOrdered')TIMES 0
+WHEN  ('?DTL:Price')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%UnCheckedControlAction DEPEND %UnCheckedHides DEFAULT TIMES 10
+WHEN  ('')TIMES 0
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?DTL:BackOrdered')TIMES 0
+WHEN  ('?DTL:Price')TIMES 0
+WHEN  ('?DTL:ProductNumber')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%ClassItem UNIQUE DEFAULT  ('Default', 'WindowToolbar')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('WindowManager')
+WHEN  ('WindowToolbar') ('ToolbarClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Ask {20}PROCEDURE(),DERIVED', 'Init {19}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Kill {19}PROCEDURE(),BYTE,PROC,DERIVED', 'Run {20}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Run {20}PROCEDURE(USHORT Number,BYTE Request),BYTE,PROC,DERIVED', 'TakeAccepted {11}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'TakeCompleted {10}PROCEDURE(),BYTE,PROC,DERIVED', 'TakeSelected {11}PROCEDURE(),BYTE,PROC,DERIVED')
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('ThisWindow')
+WHEN  ('WindowToolbar') ('Toolbar')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (0)
+WHEN  ('WindowToolbar') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%CheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl1 DEPEND %CheckedEnables DEFAULT TIMES 0
+
+%CheckedControl1Action DEPEND %CheckedEnables DEFAULT TIMES 8
+WHEN  ('')TIMES 0
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?DTL:ProductNumber')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%UnCheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl1 DEPEND %UnCheckedEnables DEFAULT TIMES 0
+
+%UnCheckedControl1Action DEPEND %UnCheckedEnables DEFAULT TIMES 8
+WHEN  ('')TIMES 0
+WHEN  ('?CallLookup')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?DTL:ProductNumber')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ProductDescription')TIMES 0
+
+%LookupAssign DEPEND %Control MULTI LONG TIMES 0
+
+%MoreField DEPEND %LookupAssign DEFAULT TIMES 0
+
+%MoreTarget DEPEND %LookupAssign FIELD TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('NO')
+WHEN  ('WindowToolbar') ('NO')
+
+%ButtonReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ButtonReturnValueReferenceAssign DEPEND %Control LONG TIMES 0
+
+%ButtonThreadParameters DEPEND %Control DEFAULT TIMES 0
+
+%ButtonThreadReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ProcedureDisableEnhanceFocus LONG  (0)
+%ProcedureUseEnterInsteadTabOverride LONG  (0)
+%WindowUseEnterInsteadTab LONG  (1)
+%ProcedureUseEnterInsteadTabExcludeG LONG  (1)
+%WindowUseEnterInsteadTabExclude MULTI DEFAULT  ()
+%WindowStyles MULTI LONG  ()
+%WindowStyleFontName DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontSize DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontStyle DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontColor DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontCharSet DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStylePicture DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleOtherListboxes MULTI DEFAULT  ()
+%ProcedureAutoBindFields MULTI LONG  ()
+%ProcedureAutoBindField DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldTPL DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedures MULTI LONG  ()
+%ProcedureAutoBindProcedure DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedureTPL DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureUserBindFields MULTI LONG  ()
+%ProcedureUserBindField DEPEND %ProcedureUserBindFields FIELD TIMES 0
+
+%ProcedureAutoBindFieldIgnore DEPEND %ProcedureAutoBindFields LONG TIMES 0
+
+%ProcedureUserBindProcedures MULTI LONG  ()
+%ProcedureUserBindProcedure DEPEND %ProcedureUserBindProcedures PROCEDURE TIMES 0
+
+%ProcedureAutoBindProcedureIgnore DEPEND %ProcedureAutoBindProcedures LONG TIMES 0
+
+%ProcedureUserBindExpressions MULTI LONG  ()
+%ProcedureUserBindExpressionName DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%ProcedureUserBindExpression DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%PreLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%PostLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldsIgnored MULTI LONG  ()
+%ProcedureAutoBindFieldIgnored DEPEND %ProcedureAutoBindFieldsIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindProceduresIgnored MULTI LONG  ()
+%ProcedureAutoBindProcedureIgnored DEPEND %ProcedureAutoBindProceduresIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindValidToAddField LONG  (0)
+%ProcedureUseEnterInsteadTabExcludeListCombo LONG  (0)
+%ProcedureUseEnterInsteadTabEnableNextTabStop LONG  (0)
+%ExtUITabIcon DEPEND %Control DEFAULT TIMES 0
+
+%ExtUITabStyleOverrideGlobal DEPEND %Control LONG TIMES 0
+
+%ExtUITabStyle DEPEND %Control DEFAULT TIMES 2
+WHEN  ('') ('Default')
+WHEN  ('?CurrentTab') ('Default')
+
+%CheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedDisableControl DEPEND %CheckedDisables DEFAULT TIMES 0
+
+%CheckedDisableControlAction DEPEND %CheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%UnCheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedDisableControl DEPEND %UnCheckedDisables DEFAULT TIMES 0
+
+%UnCheckedDisableControlAction DEPEND %UnCheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%ProcedureOneInstance LONG  (0)
+%FieldGradientColorType DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('Off')
+
+%FieldGradientColorTypeVariable DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('')
+
+%FieldGradientColorTypeIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorFrom DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorFromVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorFromIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorTo DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorToVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorToIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+[EMBED]
+EMBED %ProcedureRoutines
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+!Calculate taxes, discounts, and total cost
+!----------------------------------------------------------------------
+CalcValues  ROUTINE
+  IF DTL:TaxRate = 0 THEN
+    IF DTL:DiscountRate = 0 THEN
+      DTL:TotalCost = DTL:Price * |
+                                             DTL:QuantityOrdered
+    ELSE
+      LOC:RegTotalPrice = DTL:Price * DTL:QuantityOrdered
+      DTL:Discount = LOC:RegTotalPrice * |
+                                             DTL:DiscountRate / 100
+      DTL:TotalCost = LOC:RegTotalPrice - DTL:Discount
+      DTL:Savings = LOC:RegTotalPrice - DTL:TotalCost
+    END
+  ELSE
+    IF DTL:DiscountRate = 0 THEN
+      LOC:RegTotalPrice = DTL:Price * DTL:QuantityOrdered
+      DTL:TaxPaid = LOC:RegTotalPrice * DTL:TaxRate / 100
+      DTL:TotalCost = LOC:RegTotalPrice + DTL:TaxPaid
+    ELSE
+      LOC:RegTotalPrice = DTL:Price * DTL:QuantityOrdered
+      DTL:Discount = LOC:RegTotalPrice * |
+                                             DTL:DiscountRate / 100
+      LOC:DiscTotalPrice = LOC:RegTotalPrice - DTL:Discount
+      DTL:TaxPaid = LOC:DiscTotalPrice * DTL:TaxRate / 100
+      DTL:TotalCost = LOC:DiscTotalPrice + DTL:TaxPaid
+      DTL:Savings = LOC:RegTotalPrice - DTL:TotalCost
+    END
+  END
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+!Update InvHist and Products files
+!-----------------------------------------------------------------------
+UpdateOtherFiles ROUTINE
+
+ PRO:ProductNumber = DTL:ProductNumber
+ Access:Products.TryFetch(PRO:KeyProductNumber)
+ CASE ThisWindow.Request
+ OF InsertRecord
+   IF DTL:BackOrdered = FALSE
+     PRO:QuantityInStock -= DTL:QuantityOrdered
+     IF Access:Products.Update() <> Level:Benign
+       STOP(ERROR())
+     END !end if
+     INV:Date = TODAY()
+     INV:ProductNumber = DTL:ProductNumber
+     INV:TransType = 'Sale'
+     INV:Quantity =- DTL:QuantityOrdered
+     INV:Cost = PRO:Cost
+     INV:Notes = 'New purchase'
+     IF Access:InvHist.Insert() <> Level:Benign
+       STOP(ERROR())
+     END !end if
+   END !end if
+ OF ChangeRecord
+   IF SAV:BackOrder = FALSE
+     PRO:QuantityInStock += SAV:Quantity
+     PRO:QuantityInStock -= NEW:Quantity
+     IF Access:Products.Update() <> Level:Benign
+       STOP(ERROR())
+     END
+     InvHist.Date = TODAY()
+     INV:ProductNumber = DTL:ProductNumber
+     INV:TransType = 'Adj.'
+     INV:Quantity = (SAV:Quantity - NEW:Quantity)
+     INV:Notes = 'Change in quantity purchased'
+     IF Access:InvHist.Insert() <> Level:Benign
+       STOP(ERROR())
+     END !end if
+   ELSIF SAV:BackOrder = TRUE AND DTL:BackOrdered = FALSE
+     PRO:QuantityInStock -= DTL:QuantityOrdered
+     IF Access:Products.Update() <> Level:Benign
+       STOP(ERROR())
+     END !end if
+     INV:Date = TODAY()
+     INV:ProductNumber = DTL:ProductNumber
+     INV:TransType = 'Sale'
+     INV:Quantity =- DTL:QuantityOrdered
+     INV:Cost = PRO:Cost
+     INV:Notes = 'New purchase'
+     IF Access:InvHist.Insert() <> Level:Benign
+       STOP(ERROR())
+     END !end if
+   END ! end if elsif
+ OF DeleteRecord
+   IF SAV:BackOrder = FALSE
+     PRO:QuantityInStock += DTL:QuantityOrdered
+     IF Access:Products.Update() <> Level:Benign
+       STOP(ERROR())
+     END
+     INV:Date = TODAY()
+     INV:ProductNumber = DTL:ProductNumber
+     INV:TransType = 'Adj.'
+     INV:Quantity =+ DTL:QuantityOrdered
+     INV:Notes = 'Cancelled Order'
+     IF Access:InvHist.Insert() <> Level:Benign
+       STOP(ERROR())
+     END  !End if
+   END !End if
+ END !End case
+[END]
+EMBED %WindowManagerMethodCodeSection
+[INSTANCES]
+WHEN 'Init'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6500
+PROPERTY:END
+!Initializing a variable
+SAV:Quantity = DTL:QuantityOrdered
+SAV:BackOrder = DTL:BackOrdered
+CheckFlag = False
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8030
+PROPERTY:END
+IF ThisWindow.Request = ChangeRecord OR ThisWindow.Request = DeleteRecord
+  PRO:ProductNumber = DTL:ProductNumber
+  Access:Products.TryFetch(PRO:KeyProductNumber)
+  ProductDescription = PRO:Description
+END
+[END]
+[END]
+WHEN 'TakeCompleted'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+ !Updating other files
+  DO UpdateOtherFiles
+[END]
+[END]
+WHEN 'Run'
+[INSTANCES]
+WHEN '(USHORT Number,BYTE Request),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8500
+PROPERTY:END
+! After lookup and out of stock message
+IF GlobalResponse = RequestCompleted
+  DTL:ProductNumber = PRO:ProductNumber
+  ProductDescription = PRO:Description
+  DTL:Price = PRO:Price
+  LOC:QuantityAvailable = PRO:QuantityInStock
+  DISPLAY
+  IF LOC:QuantityAvailable <= 0
+    CASE MESSAGE('Yes for BACKORDER or No for CANCEL',|
+                 'OUT OF STOCK: Select Order Options',ICON:Question,|
+                    BUTTON:Yes+BUTTON:No,BUTTON:Yes,1)
+    OF BUTTON:Yes
+      DTL:BackOrdered = TRUE
+      DISPLAY
+      SELECT(?DTL:QuantityOrdered)
+    OF BUTTON:No
+      IF ThisWindow.Request = InsertRecord
+        ThisWindow.Response = RequestCancelled
+        Access:Detail.CancelAutoInc
+        POST(EVENT:CloseWindow)
+      END !If
+    END !end case
+  END !end if
+  IF ThisWindow.Request = ChangeRecord
+    IF DTL:QuantityOrdered < LOC:QuantityAvailable
+      DTL:BackOrdered = FALSE
+      DISPLAY
+    ELSE
+      DTL:BackOrdered = TRUE
+      DISPLAY
+    END !end if
+  END !end if
+  IF ProductDescription = ''
+    CLEAR(DTL:Price)
+    SELECT(?CallLookup)
+  END
+  SELECT(?DTL:QuantityOrdered)
+END
+[END]
+[END]
+[END]
+EMBED %ControlEventHandling
+[INSTANCES]
+WHEN '?DTL:QuantityOrdered'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8800
+PROPERTY:END
+!Initializing a variable
+NEW:Quantity = DTL:QuantityOrdered
+ !Low stock message
+IF CheckFlag = FALSE
+  IF LOC:QuantityAvailable > 0
+    IF DTL:QuantityOrdered > LOC:QuantityAvailable
+      CASE MESSAGE('Yes for BACKORDER or No for CANCEL',|
+                     'LOW STOCK: Select Order Options',ICON:Question,|
+                       BUTTON:Yes+BUTTON:No,BUTTON:Yes,1)
+      OF BUTTON:Yes
+        DTL:BackOrdered = TRUE
+        DISPLAY
+      OF BUTTON:No
+        IF ThisWindow.Request = InsertRecord
+          ThisWindow.Response = RequestCancelled
+          Access:Detail.CancelAutoInc
+          POST(EVENT:CloseWindow)
+        END !
+      END !end case
+    ELSE
+      DTL:BackOrdered = FALSE
+      DISPLAY
+    END !end if Detail
+  END !End if LOC:
+  IF ThisWindow.Request = ChangeRecord
+    IF DTL:QuantityOrdered <= LOC:QuantityAvailable
+      DTL:BackOrdered = FALSE
+      DISPLAY
+    ELSE
+      DTL:BackOrdered = TRUE
+      DISPLAY
+    END !end if
+  END !end if
+  CheckFlag = TRUE
+END !end if
+[END]
+[END]
+WHEN '?OK'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+!Calculate all totals
+DO CalcValues
+[END]
+[END]
+[END]
+[END]
+[ADDITION]
+NAME ABC RecordValidation
+[INSTANCE]
+INSTANCE 1
+PROCPROP
+[PROMPTS]
+%ValidateOnAccept LONG  (1)
+%ValidateOnNonStopSelect LONG  (1)
+%ControlsExcluded MULTI LONG  ()
+%ControlToExclude DEPEND %ControlsExcluded DEFAULT TIMES 0
+
+%ValidateUsingColoration LONG  (0)
+%InvalidFieldColor LONG  (255)
+%InvalidPromptColor LONG  (255)
+%UseValidateMessage LONG  (0)
+%ValidationMessage DEFAULT  ('The values of Colored Fields are invalid, Please correct this information.')
+%MessageControl FIELD  ()
+[ADDITION]
+NAME ABC SaveButton
+[INSTANCE]
+INSTANCE 2
+PROCPROP
+[PROMPTS]
+%InsertAllowed LONG  (1)
+%InsertMessage DEFAULT  ('Adding a Detail Record')
+%ChangeAllowed LONG  (1)
+%ChangeMessage DEFAULT  ('Changing a Detail Record')
+%DeleteAllowed LONG  (1)
+%DeleteMessage DEFAULT  ('Deleting a Detail Record')
+%MessageHeader LONG  (0)
+%ActionOnDelete DEFAULT  ('Display Form')
+%PrimingFields MULTI LONG  ()
+%PrimedField DEPEND %PrimingFields FIELD TIMES 0
+
+%PrimedValue DEPEND %PrimingFields DEFAULT TIMES 0
+
+%ActionOnCancel DEFAULT  ('Confirm cancel')
+%MessageLocation DEFAULT  ('Title Bar')
+%MessageStatusSection DEFAULT  ('0')
+%AppendToTitle LONG  (0)
+%AppendToTitleID DEFAULT  ('')
+%AfterGoodInsert DEFAULT  ('Insert another record')
+%AskAfterAdd LONG  (1)
+%HistoryKey DEFAULT  ('734')
+%ViewMessage DEFAULT  ('View Record')
+[ADDITION]
+NAME ABC FormVCRControls
+[INSTANCE]
+INSTANCE 6
+PARENT 2
+[PROMPTS]
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarUpdateClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 0
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarForm')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[ADDITION]
+NAME ABC CancelButton
+[INSTANCE]
+INSTANCE 3
+[ADDITION]
+NAME ABC FieldLookupButton
+[INSTANCE]
+INSTANCE 4
+[PROMPTS]
+%ControlToLookup DEFAULT  ('?DTL:ProductNumber')
+[ADDITION]
+NAME ABC WindowResize
+[FIELDPROMPT]
+%ResizeAnchorTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorBottom DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowBottom DEPEND %Control LONG TIMES 0
+
+[INSTANCE]
+INSTANCE 5
+[PROMPTS]
+%AppStrategy DEFAULT  ('Spread')
+%RestrictMinSize LONG  (1)
+%WindowMinWidth DEFAULT  ('191')
+%WindowMinHeight DEFAULT  ('112')
+%RestrictMaxSize LONG  (0)
+%WindowMaxWidth DEFAULT  ('')
+%WindowMaxHeight DEFAULT  ('')
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('WindowResizeClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Init {19}PROCEDURE(BYTE AppStrategy=AppStrategy:Resize,BYTE SetWindowMinSize=False,BYTE SetWindowMaxSize=False)')
+
+%OverrideControls MULTI LONG  ()
+%OverrideControl DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%AutoFindParents DEFAULT  ('Default')
+%DeferMoves DEFAULT  ('Default')
+%AutoTransparent DEFAULT  ('Default')
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('Resizer')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%DisableResize DEPEND %OverrideControls LONG TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[WINDOW]
+QuickWindow WINDOW('Update Detail'),AT(,,193,119),FONT('MS Sans Serif',8,COLOR:Black),RESIZE, |
+          CENTER,ICON('NOTE14.ICO'),GRAY,IMM,MDI,HLP('~UpdateDetail'),SYSTEM
+          SHEET,AT(3,2,187,116),USE(?CurrentTab),WIZARD,#ORIG(CurrentTab),#ORDINAL(1)
+            TAB('Tab 1'),USE(?Tab1),#ORIG(?Tab1),#ORDINAL(2)
+              PROMPT('Product Number:'),AT(7,21),USE(?DTL:ProductNumber:Prompt),#LINK(?DTL:ProductNumber), |
+                #ORIG(?DTL:ProductNumber:Prompt),#ORDINAL(3)
+              ENTRY(@n07),AT(66,21,33,10),USE(DTL:ProductNumber),MSG('Product Identific' & |
+                'ation Number'),#LINK(?DTL:ProductNumber:Prompt),#ORIG(DTL:ProductNumber), |
+                #ORDINAL(4)
+              PROMPT('Description:'),AT(7,35),USE(?ProductDescription:Prompt),#LINK(?ProductDescription), |
+                #ORIG(?ProductDescription:Prompt),#ORDINAL(5)
+              STRING(@s35),AT(66,35,119,10),USE(ProductDescription),#LINK(?ProductDescription:Prompt), |
+                #ORIG(ProductDescription),#ORDINAL(6)
+            END
+          END
+          PROMPT('Line Number:'),AT(7,7),USE(?DTL:LineNumber:Prompt),#LINK(?DTL:LineNumber), |
+            #ORIG(?DTL:LineNumber:Prompt),#ORDINAL(7)
+          STRING(@n04),AT(66,7,29,10),USE(DTL:LineNumber),#LINK(?DTL:LineNumber:Prompt),#ORIG(DTL:LineNumber), |
+            #ORDINAL(8)
+          BUTTON('Select Product'),AT(112,17,68,14),USE(?CallLookup),FONT('MS Serif',8,COLOR:Navy, |
+            FONT:bold),IMM,#ORIG(?CallLookup),#SEQ(4),#ORDINAL(9)
+          PROMPT('Quantity Ordered:'),AT(7,48),USE(?DTL:QuantityOrdered:Prompt),#LINK(?DTL:QuantityOrdered), |
+            #ORIG(?DTL:QuantityOrdered:Prompt),#ORDINAL(10)
+          SPIN(@n9.2B),AT(65,48,33,10),USE(DTL:QuantityOrdered),MSG('Quantity of product ordered'), |
+            RANGE(1,99999),#LINK(?DTL:QuantityOrdered:Prompt),#ORIG(DTL:QuantityOrdered),#ORDINAL(11)
+          PROMPT('Price:'),AT(117,48,19,10),USE(?DTL:Price:Prompt),#LINK(?DTL:Price),#ORIG(?DTL:Price:Prompt), |
+            #ORDINAL(12)
+          STRING(@n$10.2B),AT(136,48,41,10),USE(DTL:Price),#LINK(?DTL:Price:Prompt),#ORIG(DTL:Price), |
+            #ORDINAL(13)
+          PROMPT('Tax Rate:'),AT(7,62),USE(?DTL:TaxRate:Prompt),#LINK(?DTL:TaxRate),#ORIG(?DTL:TaxRate:Prompt), |
+            #ORDINAL(14)
+          ENTRY(@n7.4B),AT(65,62,33,10),USE(DTL:TaxRate),MSG('Enter Consumer''s Tax rate'), |
+            #LINK(?DTL:TaxRate:Prompt),#ORIG(DTL:TaxRate),#ORDINAL(15)
+          STRING('%'),AT(99,61,13,10),USE(?String3),FONT('MS Sans Serif',11,,FONT:bold),#ORIG(?String3), |
+            #ORDINAL(16)
+          PROMPT('Discount Rate:'),AT(7,77),USE(?DTL:DiscountRate:Prompt),#LINK(?DTL:DiscountRate), |
+            #ORIG(?DTL:DiscountRate:Prompt),#ORDINAL(17)
+          ENTRY(@n7.4B),AT(65,77,33,10),USE(DTL:DiscountRate),MSG('Enter discount rate'),#LINK(?DTL:DiscountRate:Prompt), |
+            #ORIG(DTL:DiscountRate),#ORDINAL(18)
+          STRING('%'),AT(99,77,13,10),USE(?String4),FONT('MS Sans Serif',11,,FONT:bold),#ORIG(?String4), |
+            #ORDINAL(19)
+          CHECK('Back Ordered'),AT(117,62),USE(DTL:BackOrdered),COLOR(COLOR:Silver),DISABLE, |
+            MSG('Product is on back order'),#ORIG(DTL:BackOrdered),#ORDINAL(20)
+          BUTTON,AT(53,95,22,20),USE(?OK),ICON('DISK12.ICO'),DEFAULT,FLAT,TIP('Save recor' & |
+            'd and Exit'),#ORIG(?OK),#SEQ(2),#ORDINAL(21)
+          BUTTON,AT(86,100,13,12),USE(?Help),ICON(ICON:Help),FLAT,HIDE,STD(STD:Help),TIP('Get Help'), |
+            #ORIG(?Button4),#ORDINAL(22)
+          BUTTON,AT(110,95,22,20),USE(?Cancel),ICON(ICON:Cross),FLAT,MSG('Cancel change' & |
+            's and Exit'),TIP('Cancel changes and Exit'),#ORIG(?Cancel),#SEQ(3),#ORDINAL(23)
+        END
+
+[END]

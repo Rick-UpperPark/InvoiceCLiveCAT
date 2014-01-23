@@ -1,0 +1,904 @@
+[MODULE]
+NAME 'UpdateCustomers_invoice.clw'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME UpdateCustomers
+[COMMON]
+DESCRIPTION 'Update the Customers File'
+FROM ABC Window
+CATEGORY 'Form'
+[DATA]
+[SCREENCONTROLS]
+! PROMPT('CurrentTab:'),USE(?CurrentTab:Prompt)
+! ENTRY(@s80),USE(CurrentTab)
+[REPORTCONTROLS]
+! STRING(@s80),USE(CurrentTab)
+CurrentTab               STRING(80)
+!!> GUID('0c9ab231-1b4f-4c38-90c3-14cceca7505c'),PROMPT('CurrentTab:'),HEADER('CurrentTab'),PICTURE(@s80)
+[SCREENCONTROLS]
+! PROMPT('LocalRequest:'),USE(?LocalRequest:Prompt)
+! ENTRY(@n-14),USE(LocalRequest)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(LocalRequest)
+LocalRequest             LONG
+!!> GUID('5ae1a782-4031-4218-ab03-d7b33e44ee18'),PROMPT('LocalRequest:'),HEADER('LocalRequest'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('FilesOpened:'),USE(?FilesOpened:Prompt)
+! ENTRY(@n3),USE(FilesOpened)
+[REPORTCONTROLS]
+! STRING(@n3),USE(FilesOpened)
+FilesOpened              BYTE
+!!> GUID('ed217b41-efe5-4cff-9b70-b29421b2a864'),PROMPT('FilesOpened:'),HEADER('FilesOpened'),PICTURE(@n3)
+ActionMessage            CSTRING(40)
+!!> GUID('1368abc7-d33b-4ac5-8991-8e645a023cf9')
+[SCREENCONTROLS]
+! PROMPT('RecordChanged:'),USE(?RecordChanged:Prompt)
+! ENTRY(@n3),USE(RecordChanged)
+[REPORTCONTROLS]
+! STRING(@n3),USE(RecordChanged)
+RecordChanged            BYTE,AUTO
+!!> GUID('e7367973-2bf3-44e5-b592-89ea6a94d07e'),PROMPT('RecordChanged:'),HEADER('RecordChanged'),PICTURE(@n3)
+[FILES]
+[PRIMARY]
+Customers
+[INSTANCE]
+4
+[OTHERS]
+States
+[PROMPTS]
+%ButtonAction DEPEND %Control DEFAULT TIMES 7
+WHEN  ('') ('No Special Action')
+WHEN  ('?CUS:PhoneType') ('No Special Action')
+WHEN  ('?CUS:State') ('No Special Action')
+WHEN  ('?Cancel') ('No Special Action')
+WHEN  ('?CurrentTab') ('No Special Action')
+WHEN  ('?Help') ('No Special Action')
+WHEN  ('?OK') ('No Special Action')
+
+%ButtonThreadStack DEPEND %Control DEFAULT TIMES 7
+WHEN  ('') ('25000')
+WHEN  ('?CUS:PhoneType') ('25000')
+WHEN  ('?CUS:State') ('25000')
+WHEN  ('?Cancel') ('25000')
+WHEN  ('?CurrentTab') ('25000')
+WHEN  ('?Help') ('25000')
+WHEN  ('?OK') ('25000')
+
+%ButtonRequest DEPEND %Control DEFAULT TIMES 7
+WHEN  ('') ('None')
+WHEN  ('?CUS:PhoneType') ('None')
+WHEN  ('?CUS:State') ('None')
+WHEN  ('?Cancel') ('None')
+WHEN  ('?CurrentTab') ('None')
+WHEN  ('?Help') ('None')
+WHEN  ('?OK') ('None')
+
+%PostLookupKey DEPEND %Control KEY TIMES 15
+WHEN  ('?CUS:Address1') ()
+WHEN  ('?CUS:Address2') ()
+WHEN  ('?CUS:City') ()
+WHEN  ('?CUS:Company') ()
+WHEN  ('?CUS:Extension') ()
+WHEN  ('?CUS:FirstName') ()
+WHEN  ('?CUS:LastName') ()
+WHEN  ('?CUS:MI') ()
+WHEN  ('?CUS:PhoneNumber') ()
+WHEN  ('?CUS:PhoneType') ()
+WHEN  ('?CUS:State') (STA:StateCodeKey)
+WHEN  ('?CUS:ZipCode') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%PostLookupField DEPEND %Control COMPONENT TIMES 15
+WHEN  ('?CUS:Address1') ()
+WHEN  ('?CUS:Address2') ()
+WHEN  ('?CUS:City') ()
+WHEN  ('?CUS:Company') ()
+WHEN  ('?CUS:Extension') ()
+WHEN  ('?CUS:FirstName') ()
+WHEN  ('?CUS:LastName') ()
+WHEN  ('?CUS:MI') ()
+WHEN  ('?CUS:PhoneNumber') ()
+WHEN  ('?CUS:PhoneType') ()
+WHEN  ('?CUS:State') (STA:StateCode)
+WHEN  ('?CUS:ZipCode') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%PostLookupProcedure DEPEND %Control PROCEDURE TIMES 15
+WHEN  ('?CUS:Address1') ()
+WHEN  ('?CUS:Address2') ()
+WHEN  ('?CUS:City') ()
+WHEN  ('?CUS:Company') ()
+WHEN  ('?CUS:Extension') ()
+WHEN  ('?CUS:FirstName') ()
+WHEN  ('?CUS:LastName') ()
+WHEN  ('?CUS:MI') ()
+WHEN  ('?CUS:PhoneNumber') ()
+WHEN  ('?CUS:PhoneType') ()
+WHEN  ('?CUS:State') (SelectStates)
+WHEN  ('?CUS:ZipCode') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%WindowOperationMode DEFAULT  ('Use WINDOW setting')
+%INISaveWindow LONG  (1)
+%PostLookupDuringValidate DEPEND %Control LONG TIMES 17
+WHEN  ('') (1)
+WHEN  ('?CUS:Address1') (1)
+WHEN  ('?CUS:Address2') (1)
+WHEN  ('?CUS:City') (1)
+WHEN  ('?CUS:Company') (1)
+WHEN  ('?CUS:Extension') (1)
+WHEN  ('?CUS:FirstName') (1)
+WHEN  ('?CUS:LastName') (1)
+WHEN  ('?CUS:MI') (1)
+WHEN  ('?CUS:PhoneNumber') (1)
+WHEN  ('?CUS:PhoneType') (0)
+WHEN  ('?CUS:State') (1)
+WHEN  ('?CUS:ZipCode') (1)
+WHEN  ('?Cancel') (1)
+WHEN  ('?CurrentTab') (1)
+WHEN  ('?Help') (1)
+WHEN  ('?OK') (1)
+
+%ReturnValue FIELD  ()
+%ButtonRunName DEPEND %Control DEFAULT TIMES 4
+WHEN  ('?CUS:PhoneType') ('')
+WHEN  ('?Cancel') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+
+%ButtonRunParameters DEPEND %Control DEFAULT TIMES 4
+WHEN  ('?CUS:PhoneType') ('')
+WHEN  ('?Cancel') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+
+%ButtonProcedure DEPEND %Control PROCEDURE TIMES 4
+WHEN  ('?CUS:PhoneType') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%ButtonThread DEPEND %Control LONG TIMES 4
+WHEN  ('?CUS:PhoneType') (0)
+WHEN  ('?Cancel') (0)
+WHEN  ('?Help') (0)
+WHEN  ('?OK') (0)
+
+%ButtonParameters DEPEND %Control DEFAULT TIMES 4
+WHEN  ('?CUS:PhoneType') ('')
+WHEN  ('?Cancel') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+
+%PreLookupKey DEPEND %Control KEY TIMES 13
+WHEN  ('?CUS:Address1') ()
+WHEN  ('?CUS:Address2') ()
+WHEN  ('?CUS:City') ()
+WHEN  ('?CUS:Company') ()
+WHEN  ('?CUS:Extension') ()
+WHEN  ('?CUS:FirstName') ()
+WHEN  ('?CUS:LastName') ()
+WHEN  ('?CUS:MI') ()
+WHEN  ('?CUS:PhoneNumber') ()
+WHEN  ('?CUS:PhoneType') ()
+WHEN  ('?CUS:State') ()
+WHEN  ('?CUS:ZipCode') ()
+WHEN  ('?Help') ()
+
+%PreLookupField DEPEND %Control COMPONENT TIMES 13
+WHEN  ('?CUS:Address1') ()
+WHEN  ('?CUS:Address2') ()
+WHEN  ('?CUS:City') ()
+WHEN  ('?CUS:Company') ()
+WHEN  ('?CUS:Extension') ()
+WHEN  ('?CUS:FirstName') ()
+WHEN  ('?CUS:LastName') ()
+WHEN  ('?CUS:MI') ()
+WHEN  ('?CUS:PhoneNumber') ()
+WHEN  ('?CUS:PhoneType') ()
+WHEN  ('?CUS:State') ()
+WHEN  ('?CUS:ZipCode') ()
+WHEN  ('?Help') ()
+
+%PreLookupProcedure DEPEND %Control PROCEDURE TIMES 13
+WHEN  ('?CUS:Address1') ()
+WHEN  ('?CUS:Address2') ()
+WHEN  ('?CUS:City') ()
+WHEN  ('?CUS:Company') ()
+WHEN  ('?CUS:Extension') ()
+WHEN  ('?CUS:FirstName') ()
+WHEN  ('?CUS:LastName') ()
+WHEN  ('?CUS:MI') ()
+WHEN  ('?CUS:PhoneNumber') ()
+WHEN  ('?CUS:PhoneType') ()
+WHEN  ('?CUS:State') ()
+WHEN  ('?CUS:ZipCode') ()
+WHEN  ('?Help') ()
+
+%ForceWindowRefresh DEPEND %Control LONG TIMES 13
+WHEN  ('?CUS:Address1') (0)
+WHEN  ('?CUS:Address2') (0)
+WHEN  ('?CUS:City') (0)
+WHEN  ('?CUS:Company') (0)
+WHEN  ('?CUS:Extension') (0)
+WHEN  ('?CUS:FirstName') (0)
+WHEN  ('?CUS:LastName') (0)
+WHEN  ('?CUS:MI') (0)
+WHEN  ('?CUS:PhoneNumber') (0)
+WHEN  ('?CUS:PhoneType') (0)
+WHEN  ('?CUS:State') (0)
+WHEN  ('?CUS:ZipCode') (0)
+WHEN  ('?Help') (0)
+
+%CheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedAssignVariable DEPEND %CheckedAssigns FIELD TIMES 2
+WHEN  ('?CUS:PhoneType')TIMES 0
+WHEN  ('?Help')TIMES 0
+
+%CheckedAssignValue DEPEND %CheckedAssigns DEFAULT TIMES 2
+WHEN  ('?CUS:PhoneType')TIMES 0
+WHEN  ('?Help')TIMES 0
+
+%CheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl DEPEND %CheckedHides DEFAULT TIMES 2
+WHEN  ('?CUS:PhoneType')TIMES 0
+WHEN  ('?Help')TIMES 0
+
+%CheckedControlAction DEPEND %CheckedHides DEFAULT TIMES 6
+WHEN  ('')TIMES 0
+WHEN  ('?CUS:PhoneType')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%UncheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%UncheckedAssignVariable DEPEND %UncheckedAssigns FIELD TIMES 2
+WHEN  ('?CUS:PhoneType')TIMES 0
+WHEN  ('?Help')TIMES 0
+
+%UncheckedAssignValue DEPEND %UncheckedAssigns DEFAULT TIMES 2
+WHEN  ('?CUS:PhoneType')TIMES 0
+WHEN  ('?Help')TIMES 0
+
+%UnCheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl DEPEND %UnCheckedHides DEFAULT TIMES 2
+WHEN  ('?CUS:PhoneType')TIMES 0
+WHEN  ('?Help')TIMES 0
+
+%UnCheckedControlAction DEPEND %UnCheckedHides DEFAULT TIMES 6
+WHEN  ('')TIMES 0
+WHEN  ('?CUS:PhoneType')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%ClassItem UNIQUE DEFAULT  ('Default', 'WindowToolbar')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('WindowManager')
+WHEN  ('WindowToolbar') ('ToolbarClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Ask {20}PROCEDURE(),DERIVED', 'Init {19}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Kill {19}PROCEDURE(),BYTE,PROC,DERIVED', 'Run {20}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Run {20}PROCEDURE(USHORT Number,BYTE Request),BYTE,PROC,DERIVED', 'TakeAccepted {11}PROCEDURE(),BYTE,PROC,DERIVED')
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('ThisWindow')
+WHEN  ('WindowToolbar') ('Toolbar')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (0)
+WHEN  ('WindowToolbar') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%CheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl1 DEPEND %CheckedEnables DEFAULT TIMES 0
+
+%CheckedControl1Action DEPEND %CheckedEnables DEFAULT TIMES 5
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%UnCheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl1 DEPEND %UnCheckedEnables DEFAULT TIMES 0
+
+%UnCheckedControl1Action DEPEND %UnCheckedEnables DEFAULT TIMES 5
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%LookupAssign DEPEND %Control MULTI LONG TIMES 0
+
+%MoreField DEPEND %LookupAssign DEFAULT TIMES 0
+
+%MoreTarget DEPEND %LookupAssign FIELD TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('NO')
+WHEN  ('WindowToolbar') ('NO')
+
+%ButtonReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ButtonReturnValueReferenceAssign DEPEND %Control LONG TIMES 0
+
+%ButtonThreadParameters DEPEND %Control DEFAULT TIMES 0
+
+%ButtonThreadReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ProcedureDisableEnhanceFocus LONG  (0)
+%ProcedureUseEnterInsteadTabOverride LONG  (0)
+%WindowUseEnterInsteadTab LONG  (1)
+%ProcedureUseEnterInsteadTabExcludeG LONG  (1)
+%WindowUseEnterInsteadTabExclude MULTI DEFAULT  ()
+%WindowStyles MULTI LONG  ()
+%WindowStyleFontName DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontSize DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontStyle DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontColor DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontCharSet DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStylePicture DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleOtherListboxes MULTI DEFAULT  ()
+%ProcedureAutoBindFields MULTI LONG  ()
+%ProcedureAutoBindField DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldTPL DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedures MULTI LONG  ()
+%ProcedureAutoBindProcedure DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedureTPL DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureUserBindFields MULTI LONG  ()
+%ProcedureUserBindField DEPEND %ProcedureUserBindFields FIELD TIMES 0
+
+%ProcedureAutoBindFieldIgnore DEPEND %ProcedureAutoBindFields LONG TIMES 0
+
+%ProcedureUserBindProcedures MULTI LONG  ()
+%ProcedureUserBindProcedure DEPEND %ProcedureUserBindProcedures PROCEDURE TIMES 0
+
+%ProcedureAutoBindProcedureIgnore DEPEND %ProcedureAutoBindProcedures LONG TIMES 0
+
+%ProcedureUserBindExpressions MULTI LONG  ()
+%ProcedureUserBindExpressionName DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%ProcedureUserBindExpression DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%PreLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%PostLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldsIgnored MULTI LONG  ()
+%ProcedureAutoBindFieldIgnored DEPEND %ProcedureAutoBindFieldsIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindProceduresIgnored MULTI LONG  ()
+%ProcedureAutoBindProcedureIgnored DEPEND %ProcedureAutoBindProceduresIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindValidToAddField LONG  (0)
+%ProcedureUseEnterInsteadTabExcludeListCombo LONG  (0)
+%ProcedureUseEnterInsteadTabEnableNextTabStop LONG  (0)
+%ExtUITabIcon DEPEND %Control DEFAULT TIMES 0
+
+%ExtUITabStyleOverrideGlobal DEPEND %Control LONG TIMES 0
+
+%ExtUITabStyle DEPEND %Control DEFAULT TIMES 2
+WHEN  ('') ('Default')
+WHEN  ('?CurrentTab') ('Default')
+
+%CheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedDisableControl DEPEND %CheckedDisables DEFAULT TIMES 0
+
+%CheckedDisableControlAction DEPEND %CheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%UnCheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedDisableControl DEPEND %UnCheckedDisables DEFAULT TIMES 0
+
+%UnCheckedDisableControlAction DEPEND %UnCheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%ProcedureOneInstance LONG  (0)
+%FieldGradientColorType DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('Off')
+
+%FieldGradientColorTypeVariable DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('')
+
+%FieldGradientColorTypeIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorFrom DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorFromVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorFromIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorTo DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorToVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorToIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+[ADDITION]
+NAME ABC RecordValidation
+[INSTANCE]
+INSTANCE 1
+PROCPROP
+[PROMPTS]
+%ValidateOnAccept LONG  (1)
+%ValidateOnNonStopSelect LONG  (1)
+%ControlsExcluded MULTI LONG  ()
+%ControlToExclude DEPEND %ControlsExcluded DEFAULT TIMES 0
+
+%ValidateUsingColoration LONG  (0)
+%InvalidFieldColor LONG  (255)
+%InvalidPromptColor LONG  (255)
+%UseValidateMessage LONG  (0)
+%ValidationMessage DEFAULT  ('The values of Colored Fields are invalid, Please correct this information.')
+%MessageControl FIELD  ()
+[ADDITION]
+NAME ABC SaveButton
+[INSTANCE]
+INSTANCE 4
+PROCPROP
+[PROMPTS]
+%InsertAllowed LONG  (1)
+%InsertMessage DEFAULT  ('Adding a Customers Record')
+%ChangeAllowed LONG  (1)
+%ChangeMessage DEFAULT  ('Changing a Customers Record')
+%DeleteAllowed LONG  (1)
+%DeleteMessage DEFAULT  ('Deleting a Customers Record')
+%MessageHeader LONG  (0)
+%ActionOnDelete DEFAULT  ('Standard Warning')
+%PrimingFields MULTI LONG  ()
+%PrimedField DEPEND %PrimingFields FIELD TIMES 0
+
+%PrimedValue DEPEND %PrimingFields DEFAULT TIMES 0
+
+%ActionOnCancel DEFAULT  ('Confirm Cancel')
+%MessageLocation DEFAULT  ('Title Bar')
+%MessageStatusSection DEFAULT  ('0')
+%AppendToTitle LONG  (0)
+%AppendToTitleID DEFAULT  ('')
+%AfterGoodInsert DEFAULT  ('Insert another record')
+%AskAfterAdd LONG  (1)
+%HistoryKey DEFAULT  ('734')
+%ViewMessage DEFAULT  ('View Record')
+[ADDITION]
+NAME ABC FormVCRControls
+[INSTANCE]
+INSTANCE 3
+PARENT 4
+[PROMPTS]
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarUpdateClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 0
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarForm')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[ADDITION]
+NAME ABC CancelButton
+[INSTANCE]
+INSTANCE 5
+[ADDITION]
+NAME ABC WindowResize
+[FIELDPROMPT]
+%ResizeAnchorTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorBottom DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowBottom DEPEND %Control LONG TIMES 0
+
+[INSTANCE]
+INSTANCE 2
+[PROMPTS]
+%AppStrategy DEFAULT  ('Spread')
+%RestrictMinSize LONG  (1)
+%WindowMinWidth DEFAULT  ('214')
+%WindowMinHeight DEFAULT  ('188')
+%RestrictMaxSize LONG  (0)
+%WindowMaxWidth DEFAULT  ('')
+%WindowMaxHeight DEFAULT  ('')
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('WindowResizeClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Init {19}PROCEDURE(BYTE AppStrategy=AppStrategy:Resize,BYTE SetWindowMinSize=False,BYTE SetWindowMaxSize=False)')
+
+%OverrideControls MULTI LONG  ()
+%OverrideControl DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%AutoFindParents DEFAULT  ('Default')
+%DeferMoves DEFAULT  ('Default')
+%AutoTransparent DEFAULT  ('Default')
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('Resizer')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%DisableResize DEPEND %OverrideControls LONG TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[WINDOW]
+QuickWindow WINDOW('Update Customers'),AT(,,214,191),FONT('MS Sans Serif',8,COLOR:Black),RESIZE, |
+          CENTER,ICON('CUSTOMER.ICO'),GRAY,IMM,MDI,HLP('~UpdateCustomers'),SYSTEM
+          SHEET,AT(2,2,211,188),USE(?CurrentTab),WIZARD,#ORIG(CurrentTab),#ORDINAL(1)
+            TAB('Tab 1'),USE(?Tab1),#ORIG(?Tab1),#ORDINAL(2)
+            END
+          END
+          PROMPT('&Company:'),AT(8,9),USE(?CUS:Company:Prompt),#LINK(?CUS:Company),#ORIG(?CUS:Company:Prompt), |
+            #ORDINAL(3)
+          ENTRY(@s20),AT(64,9,84,10),USE(CUS:Company),CAP,MSG('Enter the customer''s company'), |
+            #LINK(?CUS:Company:Prompt),#ORIG(CUS:Company),#ORDINAL(4)
+          PROMPT('&First Name:'),AT(8,23),USE(?CUS:FirstName:Prompt),#LINK(?CUS:FirstName), |
+            #ORIG(?CUS:FirstName:Prompt),#ORDINAL(5)
+          ENTRY(@s20),AT(64,23,84,10),USE(CUS:FirstName),CAP,MSG('Enter the first name ' & |
+            'of customer'),REQ,#LINK(?CUS:FirstName:Prompt),#ORIG(CUS:FirstName),#ORDINAL(6)
+          PROMPT('MI:'),AT(8,37,23,10),USE(?CUS:MI:Prompt),#LINK(?CUS:MI),#ORIG(?CUS:MI:Prompt), |
+            #ORDINAL(7)
+          ENTRY(@s1),AT(64,37,21,10),USE(CUS:MI),UPR,MSG('Enter the middle initial of customer'), |
+            #LINK(?CUS:MI:Prompt),#ORIG(CUS:MI),#ORDINAL(8)
+          PROMPT('&Last Name:'),AT(8,51),USE(?CUS:LastName:Prompt),#LINK(?CUS:LastName),#ORIG(?CUS:LastName:Prompt), |
+            #ORDINAL(9)
+          ENTRY(@s25),AT(64,51,104,10),USE(CUS:LastName),CAP,MSG('Enter the last name o' & |
+            'f customer'),REQ,#LINK(?CUS:LastName:Prompt),#ORIG(CUS:LastName),#ORDINAL(10)
+          PROMPT('&Address1:'),AT(8,65),USE(?CUS:Address1:Prompt),#LINK(?CUS:Address1),#ORIG(?CUS:Address1:Prompt), |
+            #ORDINAL(11)
+          ENTRY(@s35),AT(64,65,139,10),USE(CUS:Address1),CAP,MSG('Enter the first line ' & |
+            'address of customer'),#LINK(?CUS:Address1:Prompt),#ORIG(CUS:Address1),#ORDINAL(12)
+          PROMPT('Address2:'),AT(8,79),USE(?CUS:Address2:Prompt),#LINK(?CUS:Address2),#ORIG(?CUS:Address2:Prompt), |
+            #ORDINAL(13)
+          ENTRY(@s35),AT(64,79,139,10),USE(CUS:Address2),CAP,MSG('Enter the second line' & |
+            ' address of customer if any'),#LINK(?CUS:Address2:Prompt),#ORIG(CUS:Address2), |
+            #ORDINAL(14)
+          PROMPT('&City:'),AT(8,93),USE(?CUS:City:Prompt),#LINK(?CUS:City),#ORIG(?CUS:City:Prompt), |
+            #ORDINAL(15)
+          ENTRY(@s25),AT(64,93,104,10),USE(CUS:City),CAP,MSG('Enter  city of customer'),#LINK(?CUS:City:Prompt), |
+            #ORIG(CUS:City),#ORDINAL(16)
+          PROMPT('&State:'),AT(8,108),USE(?CUS:State:Prompt),#LINK(?CUS:State),#ORIG(?CUS:State:Prompt), |
+            #ORDINAL(17)
+          ENTRY(@s2),AT(64,108,22,10),USE(CUS:State),UPR,MSG('Enter state of customer'),#LINK(?CUS:State:Prompt), |
+            #ORIG(CUS:State),#ORDINAL(18)
+          PROMPT('&Zip Code:'),AT(8,122),USE(?CUS:ZipCode:Prompt),#LINK(?CUS:ZipCode),#ORIG(?CUS:ZipCode:Prompt), |
+            #ORDINAL(19)
+          ENTRY(@K#####|-####KB),AT(64,122,69,10),USE(CUS:ZipCode),MSG('Enter zipcode o' & |
+            'f customer'),TIP('Enter zipcode of customer'),#LINK(?CUS:ZipCode:Prompt),#ORIG(CUS:ZipCode), |
+            #ORDINAL(20)
+          PROMPT('Phone Number:'),AT(8,136),USE(?CUS:PhoneNumber:Prompt),#LINK(?CUS:PhoneNumber), |
+            #ORIG(?CUS:PhoneNumber:Prompt),#ORDINAL(21)
+          ENTRY(@P(###) ###-####PB),AT(64,136,68,10),USE(CUS:PhoneNumber),MSG('Customer''' & |
+            's phone number'),#LINK(?CUS:PhoneNumber:Prompt),#ORIG(CUS:PhoneNumber),#ORDINAL(22)
+          PROMPT('Extension:'),AT(8,150),USE(?CUS:Extension:Prompt),#LINK(?CUS:Extension), |
+            #ORIG(?CUS:Extension:Prompt),#ORDINAL(23)
+          ENTRY(@P<<<#PB),AT(64,150,24,10),USE(CUS:Extension),MSG('Enter customer''s ph' & |
+            'one extension'),#LINK(?CUS:Extension:Prompt),#ORIG(CUS:Extension),#ORDINAL(24)
+          PROMPT('Phone Type:'),AT(109,150,43,10),USE(?CUS:PhoneType:Prompt),#LINK(?CUS:PhoneType), |
+            #ORIG(?CUS:PhoneType:Prompt),#ORDINAL(25)
+          LIST,AT(158,150,44,10),USE(CUS:PhoneType),DROP(5),FROM('Home|Work|Cellular|Pa' & |
+            'ger|Fax|Other'),MSG('Enter customer''s phone type'),#LINK(?CUS:PhoneType:Prompt), |
+            #ORIG(CUS:PhoneType),#ORDINAL(26)
+          BUTTON,AT(70,167,21,20),USE(?OK),ICON('DISK12.ICO'),DEFAULT,FLAT,MSG('Save recod and Exit'), |
+            TIP('Save recod and Exit'),#ORIG(?OK),#SEQ(4),#ORDINAL(27)
+          BUTTON,AT(103,171,13,12),USE(?Help),ICON(ICON:Help),FLAT,HIDE,STD(STD:Help),TIP('Get Help'), |
+            #ORIG(?Button3),#ORDINAL(28)
+          BUTTON,AT(125,167,21,20),USE(?Cancel),ICON(ICON:Cross),FLAT,MSG('Cancels chan' & |
+            'ge and Exit'),TIP('Cancels change and Exit'),#ORIG(?Cancel),#SEQ(5),#ORDINAL(29)
+        END
+
+[END]

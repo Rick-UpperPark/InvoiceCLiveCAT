@@ -1,0 +1,1114 @@
+[MODULE]
+NAME 'UpdateOrders_invoice.clw'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME UpdateOrders
+[COMMON]
+DESCRIPTION 'Update the Orders File'
+FROM ABC Window
+CATEGORY 'Form'
+[DATA]
+[SCREENCONTROLS]
+! PROMPT('CurrentTab:'),USE(?CurrentTab:Prompt)
+! ENTRY(@s80),USE(CurrentTab)
+[REPORTCONTROLS]
+! STRING(@s80),USE(CurrentTab)
+CurrentTab               STRING(80)
+!!> GUID('e555cd98-19f3-43be-8b1b-14ff29a96def'),PROMPT('CurrentTab:'),HEADER('CurrentTab'),PICTURE(@s80)
+[SCREENCONTROLS]
+! PROMPT('LocalRequest:'),USE(?LocalRequest:Prompt)
+! ENTRY(@n-14),USE(LocalRequest)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(LocalRequest)
+LocalRequest             LONG
+!!> GUID('0a7fa5a8-081b-44b3-99c0-386f8028fccd'),PROMPT('LocalRequest:'),HEADER('LocalRequest'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('FilesOpened:'),USE(?FilesOpened:Prompt)
+! ENTRY(@n3),USE(FilesOpened)
+[REPORTCONTROLS]
+! STRING(@n3),USE(FilesOpened)
+FilesOpened              BYTE
+!!> GUID('ad490e13-f08d-4457-9bd1-bc582b486ff5'),PROMPT('FilesOpened:'),HEADER('FilesOpened'),PICTURE(@n3)
+ActionMessage            CSTRING(40)
+!!> GUID('384c6997-7813-4e33-9cbe-9edeee1c6270')
+[SCREENCONTROLS]
+! PROMPT('RecordChanged:'),USE(?RecordChanged:Prompt)
+! ENTRY(@n3),USE(RecordChanged)
+[REPORTCONTROLS]
+! STRING(@n3),USE(RecordChanged)
+RecordChanged            BYTE,AUTO
+!!> GUID('e1ec420b-aa8a-4b18-8976-0aecfe0b92fe'),PROMPT('RecordChanged:'),HEADER('RecordChanged'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('LOC : Back Ordered:'),USE(?LOC:BackOrdered:Prompt)
+! ENTRY(@s3),USE(LOC:BackOrdered)
+[REPORTCONTROLS]
+! STRING(@s3),USE(LOC:BackOrdered)
+LOC:BackOrdered          STRING(3)
+!!> GUID('654709dd-9c17-489c-8d02-f67f49b4c41c'),PROMPT('LOC : Back Ordered:'),HEADER('Back Ordered'),PICTURE(@s3)
+[SCREENCONTROLS]
+! PROMPT('LOC : Total Price:'),USE(?LOC:TotalPrice:Prompt)
+! ENTRY(@n$13.2B),USE(LOC:TotalPrice)
+[REPORTCONTROLS]
+! STRING(@n$13.2B),USE(LOC:TotalPrice)
+LOC:TotalPrice           DECIMAL(9,2)
+!!> GUID('6096df32-650e-46ac-a98e-fe3f3f7830eb'),PROMPT('LOC : Total Price:'),HEADER('LOC : Total Price'),PICTURE(@n$13.2B)
+[FILES]
+[PRIMARY]
+Orders
+[INSTANCE]
+4
+[KEY]
+ORD:KeyCustOrderNumber
+[SECONDARY]
+Customers Orders
+States Orders
+[OTHERS]
+InvHist
+[PROMPTS]
+%ButtonAction DEPEND %Control DEFAULT TIMES 14
+WHEN  ('') ('No Special Action')
+WHEN  ('?Cancel') ('No Special Action')
+WHEN  ('?CurrentTab') ('No Special Action')
+WHEN  ('?Help') ('No Special Action')
+WHEN  ('?OK') ('No Special Action')
+WHEN  ('?ORD:OrderNote') ('No Special Action')
+WHEN  ('?ORD:SameAdd') ('No Special Action')
+WHEN  ('?ORD:SameName') ('No Special Action')
+WHEN  ('?ORD:ShipAddress1') ('No Special Action')
+WHEN  ('?ORD:ShipAddress2') ('No Special Action')
+WHEN  ('?ORD:ShipCity') ('No Special Action')
+WHEN  ('?ORD:ShipState') ('No Special Action')
+WHEN  ('?ORD:ShipToName') ('No Special Action')
+WHEN  ('?ORD:ShipZip') ('No Special Action')
+
+%ButtonProcedure DEPEND %Control PROCEDURE TIMES 12
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ORD:OrderNote') ()
+WHEN  ('?ORD:SameAdd') ()
+WHEN  ('?ORD:SameName') ()
+WHEN  ('?ORD:ShipAddress1') ()
+WHEN  ('?ORD:ShipAddress2') ()
+WHEN  ('?ORD:ShipCity') ()
+WHEN  ('?ORD:ShipState') ()
+WHEN  ('?ORD:ShipToName') ()
+WHEN  ('?ORD:ShipZip') ()
+
+%ButtonThread DEPEND %Control LONG TIMES 12
+WHEN  ('?Cancel') (0)
+WHEN  ('?Help') (0)
+WHEN  ('?OK') (0)
+WHEN  ('?ORD:OrderNote') (0)
+WHEN  ('?ORD:SameAdd') (0)
+WHEN  ('?ORD:SameName') (0)
+WHEN  ('?ORD:ShipAddress1') (0)
+WHEN  ('?ORD:ShipAddress2') (0)
+WHEN  ('?ORD:ShipCity') (0)
+WHEN  ('?ORD:ShipState') (0)
+WHEN  ('?ORD:ShipToName') (0)
+WHEN  ('?ORD:ShipZip') (0)
+
+%ButtonThreadStack DEPEND %Control DEFAULT TIMES 14
+WHEN  ('') ('25000')
+WHEN  ('?Cancel') ('25000')
+WHEN  ('?CurrentTab') ('25000')
+WHEN  ('?Help') ('25000')
+WHEN  ('?OK') ('25000')
+WHEN  ('?ORD:OrderNote') ('25000')
+WHEN  ('?ORD:SameAdd') ('25000')
+WHEN  ('?ORD:SameName') ('25000')
+WHEN  ('?ORD:ShipAddress1') ('25000')
+WHEN  ('?ORD:ShipAddress2') ('25000')
+WHEN  ('?ORD:ShipCity') ('25000')
+WHEN  ('?ORD:ShipState') ('25000')
+WHEN  ('?ORD:ShipToName') ('25000')
+WHEN  ('?ORD:ShipZip') ('25000')
+
+%ButtonRequest DEPEND %Control DEFAULT TIMES 14
+WHEN  ('') ('None')
+WHEN  ('?Cancel') ('None')
+WHEN  ('?CurrentTab') ('None')
+WHEN  ('?Help') ('None')
+WHEN  ('?OK') ('None')
+WHEN  ('?ORD:OrderNote') ('None')
+WHEN  ('?ORD:SameAdd') ('None')
+WHEN  ('?ORD:SameName') ('None')
+WHEN  ('?ORD:ShipAddress1') ('None')
+WHEN  ('?ORD:ShipAddress2') ('None')
+WHEN  ('?ORD:ShipCity') ('None')
+WHEN  ('?ORD:ShipState') ('None')
+WHEN  ('?ORD:ShipToName') ('None')
+WHEN  ('?ORD:ShipZip') ('None')
+
+%PostLookupKey DEPEND %Control KEY TIMES 12
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ORD:OrderNote') ()
+WHEN  ('?ORD:SameAdd') ()
+WHEN  ('?ORD:SameName') ()
+WHEN  ('?ORD:ShipAddress1') ()
+WHEN  ('?ORD:ShipAddress2') ()
+WHEN  ('?ORD:ShipCity') ()
+WHEN  ('?ORD:ShipState') (STA:StateCodeKey)
+WHEN  ('?ORD:ShipToName') ()
+WHEN  ('?ORD:ShipZip') ()
+
+%PostLookupField DEPEND %Control COMPONENT TIMES 12
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ORD:OrderNote') ()
+WHEN  ('?ORD:SameAdd') ()
+WHEN  ('?ORD:SameName') ()
+WHEN  ('?ORD:ShipAddress1') ()
+WHEN  ('?ORD:ShipAddress2') ()
+WHEN  ('?ORD:ShipCity') ()
+WHEN  ('?ORD:ShipState') (STA:StateCode)
+WHEN  ('?ORD:ShipToName') ()
+WHEN  ('?ORD:ShipZip') ()
+
+%PostLookupProcedure DEPEND %Control PROCEDURE TIMES 12
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ORD:OrderNote') ()
+WHEN  ('?ORD:SameAdd') ()
+WHEN  ('?ORD:SameName') ()
+WHEN  ('?ORD:ShipAddress1') ()
+WHEN  ('?ORD:ShipAddress2') ()
+WHEN  ('?ORD:ShipCity') ()
+WHEN  ('?ORD:ShipState') (SelectStates)
+WHEN  ('?ORD:ShipToName') ()
+WHEN  ('?ORD:ShipZip') ()
+
+%WindowOperationMode DEFAULT  ('Use WINDOW setting')
+%INISaveWindow LONG  (1)
+%PostLookupDuringValidate DEPEND %Control LONG TIMES 14
+WHEN  ('') (1)
+WHEN  ('?Cancel') (1)
+WHEN  ('?CurrentTab') (1)
+WHEN  ('?Help') (1)
+WHEN  ('?OK') (1)
+WHEN  ('?ORD:OrderNote') (0)
+WHEN  ('?ORD:SameAdd') (1)
+WHEN  ('?ORD:SameName') (1)
+WHEN  ('?ORD:ShipAddress1') (0)
+WHEN  ('?ORD:ShipAddress2') (0)
+WHEN  ('?ORD:ShipCity') (0)
+WHEN  ('?ORD:ShipState') (1)
+WHEN  ('?ORD:ShipToName') (0)
+WHEN  ('?ORD:ShipZip') (0)
+
+%ReturnValue FIELD  ()
+%ButtonRunName DEPEND %Control DEFAULT TIMES 10
+WHEN  ('?Cancel') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+WHEN  ('?ORD:OrderNote') ('')
+WHEN  ('?ORD:ShipAddress1') ('')
+WHEN  ('?ORD:ShipAddress2') ('')
+WHEN  ('?ORD:ShipCity') ('')
+WHEN  ('?ORD:ShipState') ('')
+WHEN  ('?ORD:ShipToName') ('')
+WHEN  ('?ORD:ShipZip') ('')
+
+%ButtonRunParameters DEPEND %Control DEFAULT TIMES 10
+WHEN  ('?Cancel') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+WHEN  ('?ORD:OrderNote') ('')
+WHEN  ('?ORD:ShipAddress1') ('')
+WHEN  ('?ORD:ShipAddress2') ('')
+WHEN  ('?ORD:ShipCity') ('')
+WHEN  ('?ORD:ShipState') ('')
+WHEN  ('?ORD:ShipToName') ('')
+WHEN  ('?ORD:ShipZip') ('')
+
+%ButtonParameters DEPEND %Control DEFAULT TIMES 10
+WHEN  ('?Cancel') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+WHEN  ('?ORD:OrderNote') ('')
+WHEN  ('?ORD:ShipAddress1') ('')
+WHEN  ('?ORD:ShipAddress2') ('')
+WHEN  ('?ORD:ShipCity') ('')
+WHEN  ('?ORD:ShipState') ('')
+WHEN  ('?ORD:ShipToName') ('')
+WHEN  ('?ORD:ShipZip') ('')
+
+%PreLookupKey DEPEND %Control KEY TIMES 10
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ORD:OrderNote') ()
+WHEN  ('?ORD:ShipAddress1') ()
+WHEN  ('?ORD:ShipAddress2') ()
+WHEN  ('?ORD:ShipCity') ()
+WHEN  ('?ORD:ShipState') ()
+WHEN  ('?ORD:ShipToName') ()
+WHEN  ('?ORD:ShipZip') ()
+
+%PreLookupField DEPEND %Control COMPONENT TIMES 10
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ORD:OrderNote') ()
+WHEN  ('?ORD:ShipAddress1') ()
+WHEN  ('?ORD:ShipAddress2') ()
+WHEN  ('?ORD:ShipCity') ()
+WHEN  ('?ORD:ShipState') ()
+WHEN  ('?ORD:ShipToName') ()
+WHEN  ('?ORD:ShipZip') ()
+
+%PreLookupProcedure DEPEND %Control PROCEDURE TIMES 10
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+WHEN  ('?ORD:OrderNote') ()
+WHEN  ('?ORD:ShipAddress1') ()
+WHEN  ('?ORD:ShipAddress2') ()
+WHEN  ('?ORD:ShipCity') ()
+WHEN  ('?ORD:ShipState') ()
+WHEN  ('?ORD:ShipToName') ()
+WHEN  ('?ORD:ShipZip') ()
+
+%ForceWindowRefresh DEPEND %Control LONG TIMES 10
+WHEN  ('?Cancel') (0)
+WHEN  ('?Help') (0)
+WHEN  ('?OK') (0)
+WHEN  ('?ORD:OrderNote') (0)
+WHEN  ('?ORD:ShipAddress1') (0)
+WHEN  ('?ORD:ShipAddress2') (0)
+WHEN  ('?ORD:ShipCity') (0)
+WHEN  ('?ORD:ShipState') (0)
+WHEN  ('?ORD:ShipToName') (0)
+WHEN  ('?ORD:ShipZip') (0)
+
+%CheckedAssigns DEPEND %Control MULTI LONG TIMES 3
+WHEN  ('?ORD:OrderShipped') ()
+WHEN  ('?ORD:SameAdd') ()
+WHEN  ('?ORD:SameName') ()
+
+%CheckedAssignVariable DEPEND %CheckedAssigns FIELD TIMES 10
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ORD:OrderNote')TIMES 0
+WHEN  ('?ORD:ShipAddress1')TIMES 0
+WHEN  ('?ORD:ShipAddress2')TIMES 0
+WHEN  ('?ORD:ShipCity')TIMES 0
+WHEN  ('?ORD:ShipState')TIMES 0
+WHEN  ('?ORD:ShipToName')TIMES 0
+WHEN  ('?ORD:ShipZip')TIMES 0
+
+%CheckedAssignValue DEPEND %CheckedAssigns DEFAULT TIMES 10
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ORD:OrderNote')TIMES 0
+WHEN  ('?ORD:ShipAddress1')TIMES 0
+WHEN  ('?ORD:ShipAddress2')TIMES 0
+WHEN  ('?ORD:ShipCity')TIMES 0
+WHEN  ('?ORD:ShipState')TIMES 0
+WHEN  ('?ORD:ShipToName')TIMES 0
+WHEN  ('?ORD:ShipZip')TIMES 0
+
+%CheckedHides DEPEND %Control MULTI LONG TIMES 3
+WHEN  ('?ORD:OrderShipped') ()
+WHEN  ('?ORD:SameAdd') ()
+WHEN  ('?ORD:SameName') ()
+
+%CheckedControl DEPEND %CheckedHides DEFAULT TIMES 10
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ORD:OrderNote')TIMES 0
+WHEN  ('?ORD:ShipAddress1')TIMES 0
+WHEN  ('?ORD:ShipAddress2')TIMES 0
+WHEN  ('?ORD:ShipCity')TIMES 0
+WHEN  ('?ORD:ShipState')TIMES 0
+WHEN  ('?ORD:ShipToName')TIMES 0
+WHEN  ('?ORD:ShipZip')TIMES 0
+
+%CheckedControlAction DEPEND %CheckedHides DEFAULT TIMES 12
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ORD:OrderNote')TIMES 0
+WHEN  ('?ORD:ShipAddress1')TIMES 0
+WHEN  ('?ORD:ShipAddress2')TIMES 0
+WHEN  ('?ORD:ShipCity')TIMES 0
+WHEN  ('?ORD:ShipState')TIMES 0
+WHEN  ('?ORD:ShipToName')TIMES 0
+WHEN  ('?ORD:ShipZip')TIMES 0
+
+%UncheckedAssigns DEPEND %Control MULTI LONG TIMES 3
+WHEN  ('?ORD:OrderShipped') ()
+WHEN  ('?ORD:SameAdd') ()
+WHEN  ('?ORD:SameName') ()
+
+%UncheckedAssignVariable DEPEND %UncheckedAssigns FIELD TIMES 10
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ORD:OrderNote')TIMES 0
+WHEN  ('?ORD:ShipAddress1')TIMES 0
+WHEN  ('?ORD:ShipAddress2')TIMES 0
+WHEN  ('?ORD:ShipCity')TIMES 0
+WHEN  ('?ORD:ShipState')TIMES 0
+WHEN  ('?ORD:ShipToName')TIMES 0
+WHEN  ('?ORD:ShipZip')TIMES 0
+
+%UncheckedAssignValue DEPEND %UncheckedAssigns DEFAULT TIMES 10
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ORD:OrderNote')TIMES 0
+WHEN  ('?ORD:ShipAddress1')TIMES 0
+WHEN  ('?ORD:ShipAddress2')TIMES 0
+WHEN  ('?ORD:ShipCity')TIMES 0
+WHEN  ('?ORD:ShipState')TIMES 0
+WHEN  ('?ORD:ShipToName')TIMES 0
+WHEN  ('?ORD:ShipZip')TIMES 0
+
+%UnCheckedHides DEPEND %Control MULTI LONG TIMES 3
+WHEN  ('?ORD:OrderShipped') ()
+WHEN  ('?ORD:SameAdd') ()
+WHEN  ('?ORD:SameName') ()
+
+%UnCheckedControl DEPEND %UnCheckedHides DEFAULT TIMES 10
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ORD:OrderNote')TIMES 0
+WHEN  ('?ORD:ShipAddress1')TIMES 0
+WHEN  ('?ORD:ShipAddress2')TIMES 0
+WHEN  ('?ORD:ShipCity')TIMES 0
+WHEN  ('?ORD:ShipState')TIMES 0
+WHEN  ('?ORD:ShipToName')TIMES 0
+WHEN  ('?ORD:ShipZip')TIMES 0
+
+%UnCheckedControlAction DEPEND %UnCheckedHides DEFAULT TIMES 12
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?ORD:OrderNote')TIMES 0
+WHEN  ('?ORD:ShipAddress1')TIMES 0
+WHEN  ('?ORD:ShipAddress2')TIMES 0
+WHEN  ('?ORD:ShipCity')TIMES 0
+WHEN  ('?ORD:ShipState')TIMES 0
+WHEN  ('?ORD:ShipToName')TIMES 0
+WHEN  ('?ORD:ShipZip')TIMES 0
+
+%ClassItem UNIQUE DEFAULT  ('Default', 'WindowToolbar')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('WindowManager')
+WHEN  ('WindowToolbar') ('ToolbarClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Ask {20}PROCEDURE(),DERIVED', 'Init {19}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Kill {19}PROCEDURE(),BYTE,PROC,DERIVED', 'PrimeFields {12}PROCEDURE(),PROC,DERIVED', |
+  'Reset {18}PROCEDURE(BYTE Force=0),DERIVED', 'Run {20}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Run {20}PROCEDURE(USHORT Number,BYTE Request),BYTE,PROC,DERIVED', 'TakeAccepted {11}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'TakeSelected {11}PROCEDURE(),BYTE,PROC,DERIVED')
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('ThisWindow')
+WHEN  ('WindowToolbar') ('Toolbar')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (0)
+WHEN  ('WindowToolbar') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%CheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl1 DEPEND %CheckedEnables DEFAULT TIMES 0
+
+%CheckedControl1Action DEPEND %CheckedEnables DEFAULT TIMES 5
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%UnCheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl1 DEPEND %UnCheckedEnables DEFAULT TIMES 0
+
+%UnCheckedControl1Action DEPEND %UnCheckedEnables DEFAULT TIMES 5
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%LookupAssign DEPEND %Control MULTI LONG TIMES 0
+
+%MoreField DEPEND %LookupAssign DEFAULT TIMES 0
+
+%MoreTarget DEPEND %LookupAssign FIELD TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('NO')
+WHEN  ('WindowToolbar') ('NO')
+
+%ButtonReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ButtonReturnValueReferenceAssign DEPEND %Control LONG TIMES 0
+
+%ButtonThreadParameters DEPEND %Control DEFAULT TIMES 0
+
+%ButtonThreadReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ProcedureDisableEnhanceFocus LONG  (0)
+%ProcedureUseEnterInsteadTabOverride LONG  (0)
+%WindowUseEnterInsteadTab LONG  (1)
+%ProcedureUseEnterInsteadTabExcludeG LONG  (1)
+%WindowUseEnterInsteadTabExclude MULTI DEFAULT  ()
+%WindowStyles MULTI LONG  ()
+%WindowStyleFontName DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontSize DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontStyle DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontColor DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontCharSet DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStylePicture DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleOtherListboxes MULTI DEFAULT  ()
+%ProcedureAutoBindFields MULTI LONG  ()
+%ProcedureAutoBindField DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldTPL DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedures MULTI LONG  ()
+%ProcedureAutoBindProcedure DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedureTPL DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureUserBindFields MULTI LONG  ()
+%ProcedureUserBindField DEPEND %ProcedureUserBindFields FIELD TIMES 0
+
+%ProcedureAutoBindFieldIgnore DEPEND %ProcedureAutoBindFields LONG TIMES 0
+
+%ProcedureUserBindProcedures MULTI LONG  ()
+%ProcedureUserBindProcedure DEPEND %ProcedureUserBindProcedures PROCEDURE TIMES 0
+
+%ProcedureAutoBindProcedureIgnore DEPEND %ProcedureAutoBindProcedures LONG TIMES 0
+
+%ProcedureUserBindExpressions MULTI LONG  ()
+%ProcedureUserBindExpressionName DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%ProcedureUserBindExpression DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%PreLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%PostLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldsIgnored MULTI LONG  ()
+%ProcedureAutoBindFieldIgnored DEPEND %ProcedureAutoBindFieldsIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindProceduresIgnored MULTI LONG  ()
+%ProcedureAutoBindProcedureIgnored DEPEND %ProcedureAutoBindProceduresIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindValidToAddField LONG  (0)
+%ProcedureUseEnterInsteadTabExcludeListCombo LONG  (0)
+%ProcedureUseEnterInsteadTabEnableNextTabStop LONG  (0)
+%ExtUITabIcon DEPEND %Control DEFAULT TIMES 0
+
+%ExtUITabStyleOverrideGlobal DEPEND %Control LONG TIMES 0
+
+%ExtUITabStyle DEPEND %Control DEFAULT TIMES 2
+WHEN  ('') ('Default')
+WHEN  ('?CurrentTab') ('Default')
+
+%CheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedDisableControl DEPEND %CheckedDisables DEFAULT TIMES 0
+
+%CheckedDisableControlAction DEPEND %CheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%UnCheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedDisableControl DEPEND %UnCheckedDisables DEFAULT TIMES 0
+
+%UnCheckedDisableControlAction DEPEND %UnCheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%ProcedureOneInstance LONG  (0)
+%FieldGradientColorType DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('Off')
+
+%FieldGradientColorTypeVariable DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('')
+
+%FieldGradientColorTypeIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorFrom DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorFromVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorFromIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorTo DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorToVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorToIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+[EMBED]
+EMBED %ControlEventHandling
+[INSTANCES]
+WHEN '?ORD:SameName'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+!Actions on Update record
+IF Orders.Record.SameName = TRUE
+  CUS:CustNumber=ORD:CustNumber
+  Access:Customers.Fetch(CUS:KeyCustNumber)
+  ORD:ShipToName = CLIP(CUS:FirstName)&' '&CLIP(CUS:LastName)
+  DISPLAY
+  DISABLE(?ORD:ShipToName)
+  SELECT(?ORD:SameAdd)
+ELSE
+  ENABLE(?ORD:ShipToName)
+  SELECT(?ORD:ShipToName)
+END
+[END]
+WHEN 'Selected'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+!Actions on Change record
+IF SELF.Request = ChangeRecord
+  IF ORD:SameName = FALSE
+    DISABLE(?ORD:SameName)
+    SELECT(?ORD:ShipToName)
+  ELSE
+    ENABLE(?ORD:SameName)
+    SELECT(?ORD:SameName)
+  END
+END
+[END]
+[END]
+WHEN '?ORD:SameAdd'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+!Actions on Update Record
+IF Orders.Record.SameAdd = TRUE
+  DISABLE(?ORD:ShipAddress1)
+  DISABLE(?ORD:ShipAddress2)
+  DISABLE(?ORD:ShipCity)
+  DISABLE(?ORD:ShipState)
+  DISABLE(?ORD:ShipZip)
+  SELECT(?ORD:OrderShipped)
+ELSE
+  ENABLE(?ORD:ShipAddress1)
+  ENABLE(?ORD:ShipAddress2)
+  ENABLE(?ORD:ShipCity)
+  ENABLE(?ORD:ShipState)
+  ENABLE(?ORD:ShipZip)
+  SELECT(?ORD:ShipAddress1)
+END
+[END]
+WHEN 'Selected'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 6000
+PROPERTY:END
+!Actions on change record
+IF SELF.Request = ChangeRecord
+  IF ORD:SameAdd = FALSE
+    DISABLE(?ORD:SameAdd)
+    SELECT(?ORD:ShipAddress1)
+  ELSE
+    ENABLE(?ORD:SameAdd)
+    SELECT(?ORD:SameAdd)
+  END
+END
+[END]
+[END]
+[END]
+[END]
+[ADDITION]
+NAME ABC RecordValidation
+[INSTANCE]
+INSTANCE 1
+PROCPROP
+[PROMPTS]
+%ValidateOnAccept LONG  (1)
+%ValidateOnNonStopSelect LONG  (1)
+%ControlsExcluded MULTI LONG  ()
+%ControlToExclude DEPEND %ControlsExcluded DEFAULT TIMES 0
+
+%ValidateUsingColoration LONG  (0)
+%InvalidFieldColor LONG  (255)
+%InvalidPromptColor LONG  (255)
+%UseValidateMessage LONG  (0)
+%ValidationMessage DEFAULT  ('The values of Colored Fields are invalid, Please correct this information.')
+%MessageControl FIELD  ()
+[ADDITION]
+NAME ABC SaveButton
+[INSTANCE]
+INSTANCE 4
+PROCPROP
+[PROMPTS]
+%InsertAllowed LONG  (1)
+%InsertMessage DEFAULT  ('Adding a Orders Record')
+%ChangeAllowed LONG  (1)
+%ChangeMessage DEFAULT  ('Changing a Orders Record')
+%DeleteAllowed LONG  (1)
+%DeleteMessage DEFAULT  ('Deleting a Orders Record')
+%MessageHeader LONG  (0)
+%ActionOnDelete DEFAULT  ('Standard Warning')
+%PrimingFields MULTI LONG  (3, 4, 5, 6, 7, 8)
+%PrimedField DEPEND %PrimingFields FIELD TIMES 6
+WHEN  (3) (ORD:ShipToName)
+WHEN  (4) (ORD:ShipAddress1)
+WHEN  (5) (ORD:ShipAddress2)
+WHEN  (6) (ORD:ShipCity)
+WHEN  (7) (ORD:ShipState)
+WHEN  (8) (ORD:ShipZip)
+
+%PrimedValue DEPEND %PrimingFields DEFAULT TIMES 6
+WHEN  (3) ('CLIP(CUS:FirstName)&'' ''&CLIP(CUS:LastName)')
+WHEN  (4) ('CUS:Address1')
+WHEN  (5) ('CUS:Address2')
+WHEN  (6) ('CUS:City')
+WHEN  (7) ('CUS:State')
+WHEN  (8) ('CUS:ZipCode')
+
+%ActionOnCancel DEFAULT  ('Confirm Cancel')
+%MessageLocation DEFAULT  ('Title Bar')
+%MessageStatusSection DEFAULT  ('0')
+%AppendToTitle LONG  (0)
+%AppendToTitleID DEFAULT  ('')
+%AfterGoodInsert DEFAULT  ('Return to caller')
+%AskAfterAdd LONG  (0)
+%HistoryKey DEFAULT  ('734')
+%ViewMessage DEFAULT  ('View Record')
+[ADDITION]
+NAME ABC FormVCRControls
+[INSTANCE]
+INSTANCE 2
+PARENT 4
+[PROMPTS]
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarUpdateClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 0
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarForm')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[ADDITION]
+NAME ABC CancelButton
+[INSTANCE]
+INSTANCE 5
+[ADDITION]
+NAME ABC WindowResize
+[FIELDPROMPT]
+%ResizeAnchorTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorBottom DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowBottom DEPEND %Control LONG TIMES 0
+
+[INSTANCE]
+INSTANCE 6
+[PROMPTS]
+%AppStrategy DEFAULT  ('Spread')
+%RestrictMinSize LONG  (1)
+%WindowMinWidth DEFAULT  ('275')
+%WindowMinHeight DEFAULT  ('157')
+%RestrictMaxSize LONG  (0)
+%WindowMaxWidth DEFAULT  ('')
+%WindowMaxHeight DEFAULT  ('')
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('WindowResizeClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Init {19}PROCEDURE(BYTE AppStrategy=AppStrategy:Resize,BYTE SetWindowMinSize=False,BYTE SetWindowMaxSize=False)')
+
+%OverrideControls MULTI LONG  ()
+%OverrideControl DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%AutoFindParents DEFAULT  ('Default')
+%DeferMoves DEFAULT  ('Default')
+%AutoTransparent DEFAULT  ('Default')
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('Resizer')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%DisableResize DEPEND %OverrideControls LONG TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[WINDOW]
+QuickWindow WINDOW('Update Order'),AT(,,275,163),FONT('MS Sans Serif',8,COLOR:Black),RESIZE, |
+          CENTER,ICON('NOTE14.ICO'),GRAY,IMM,MDI,HLP('~UpdateOrder'),SYSTEM
+          SHEET,AT(3,2,269,159),USE(?CurrentTab),WIZARD,#ORIG(CurrentTab)
+            TAB('Tab 1'),USE(?Tab1),#ORIG(?Tab1)
+            END
+          END
+          PROMPT('Order Date:'),AT(8,7),USE(?ORD:OrderDate:Prompt),#LINK(?ORD:OrderDate),#ORIG(?ORD:OrderDate:Prompt)
+          STRING(@d1),AT(63,7,41,10),USE(ORD:OrderDate),#LINK(?ORD:OrderDate:Prompt),#ORIG(ORD:OrderDate)
+          PROMPT('Invoice Number:'),AT(131,7,57,10),USE(?ORD:InvoiceNumber:Prompt),#LINK(?ORD:InvoiceNumber), |
+            #ORIG(?ORD:InvoiceNumber:Prompt)
+          STRING(@n07),AT(197,7),USE(ORD:InvoiceNumber),#LINK(?ORD:InvoiceNumber:Prompt),#ORIG(ORD:InvoiceNumber)
+          CHECK('Same Name As Customer''s'),AT(63,18,113,10),USE(ORD:SameName),MSG('ShipTo nam' & |
+            'e same as Customer''s'),#ORIG(ORD:SameName)
+          PROMPT('Ship To Name:'),AT(8,31),USE(?ORD:ShipToName:Prompt),#LINK(?ORD:ShipToName), |
+            #ORIG(?ORD:ShipToName:Prompt)
+          ENTRY(@s45),AT(63,31,176,10),USE(ORD:ShipToName),CAP,MSG('Customer the order ' & |
+            'is shipped to'),#LINK(?ORD:ShipToName:Prompt),#ORIG(ORD:ShipToName)
+          CHECK('Same  Address As Customer''s'),AT(63,44,113,10),USE(ORD:SameAdd),MSG('Ship to ad' & |
+            'dress same as customer''s'),#ORIG(ORD:SameAsAdd)
+          PROMPT('Ship Address 1:'),AT(8,58),USE(?ORD:ShipAddress1:Prompt),#LINK(?ORD:ShipAddress1), |
+            #ORIG(?ORD:ShipAddress1:Prompt)
+          ENTRY(@s35),AT(63,58,144,10),USE(ORD:ShipAddress1),CAP,MSG('1st Line of ship address'), |
+            #LINK(?ORD:ShipAddress1:Prompt),#ORIG(ORD:ShipAddress1)
+          PROMPT('Ship Address 2:'),AT(8,71),USE(?ORD:ShipAddress2:Prompt),#LINK(?ORD:ShipAddress2), |
+            #ORIG(?ORD:ShipAddress2:Prompt)
+          ENTRY(@s35),AT(63,73,144,10),USE(ORD:ShipAddress2),CAP,MSG('2nd line of ship address'), |
+            #LINK(?ORD:ShipAddress2:Prompt),#ORIG(ORD:ShipAddress2)
+          PROMPT('Ship City:'),AT(8,87),USE(?ORD:ShipCity:Prompt),#LINK(?ORD:ShipCity),#ORIG(?ORD:ShipCity:Prompt)
+          ENTRY(@s25),AT(63,87,104,10),USE(ORD:ShipCity),CAP,MSG('City of Ship address'),#LINK(?ORD:ShipCity:Prompt), |
+            #ORIG(ORD:ShipCity)
+          PROMPT('Ship State:'),AT(8,103),USE(?ORD:ShipState:Prompt),#LINK(?ORD:ShipState), |
+            #ORIG(?ORD:ShipState:Prompt)
+          ENTRY(@s2),AT(63,103,25,10),USE(ORD:ShipState),UPR,MSG('State to ship to'),#LINK(?ORD:ShipState:Prompt), |
+            #ORIG(ORD:ShipState)
+          PROMPT('Ship Zip:'),AT(96,103,33,10),USE(?ORD:ShipZip:Prompt),#LINK(?ORD:ShipZip), |
+            #ORIG(?ORD:ShipZip:Prompt)
+          ENTRY(@K#####|-####KB),AT(131,103,60,10),USE(ORD:ShipZip),MSG('ZipCode of ship city'), |
+            #LINK(?ORD:ShipZip:Prompt),#ORIG(ORD:ShipZip)
+          CHECK('Order Shipped'),AT(205,103,59,10),USE(ORD:OrderShipped),MSG('Checked if' & |
+            ' order is shipped'),#ORIG(ORD:OrderShipped)
+          PROMPT('Order Note:'),AT(8,119),USE(?ORD:OrderNote:Prompt),#LINK(?ORD:OrderNote), |
+            #ORIG(?ORD:OrderNote:Prompt)
+          ENTRY(@s80),AT(63,119,204,10),USE(ORD:OrderNote),MSG('Additional Information ' & |
+            'about order'),SCROLL,#LINK(?ORD:OrderNote:Prompt),#ORIG(ORD:OrderNote)
+          BUTTON,AT(99,137,20,19),USE(?OK),LEFT,ICON('DISK12.ICO'),DEFAULT,FLAT,MSG('Save  reco' & |
+            'rd and Exit'),TIP('Save  record and Exit'),#ORIG(?OK),#SEQ(4)
+          BUTTON,AT(133,139,13,14),USE(?Help),ICON(ICON:Help),FLAT,HIDE,STD(STD:Help),TIP('Get Help'), |
+            #ORIG(?Button8)
+          BUTTON,AT(159,137,20,19),USE(?Cancel),ICON(ICON:Cross),FLAT,MSG('Cancel chang' & |
+            'es and Exit'),TIP('Cancel changes and Exit'),#ORIG(?Cancel),#SEQ(5)
+        END
+
+[END]

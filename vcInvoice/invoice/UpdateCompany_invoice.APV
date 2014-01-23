@@ -1,0 +1,838 @@
+[MODULE]
+NAME 'UpdateCompany_invoice.clw'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME UpdateCompany
+GLOBAL
+[COMMON]
+DESCRIPTION 'Update the Company File'
+FROM ABC Window
+CATEGORY 'Form'
+[DATA]
+[SCREENCONTROLS]
+! PROMPT('CurrentTab:'),USE(?CurrentTab:Prompt)
+! ENTRY(@s80),USE(CurrentTab)
+[REPORTCONTROLS]
+! STRING(@s80),USE(CurrentTab)
+CurrentTab               STRING(80)
+!!> GUID('147230dc-9ad1-4f79-aa4c-61130bacde49'),PROMPT('CurrentTab:'),HEADER('CurrentTab'),PICTURE(@s80)
+[SCREENCONTROLS]
+! PROMPT('LocalRequest:'),USE(?LocalRequest:Prompt)
+! ENTRY(@n-14),USE(LocalRequest)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(LocalRequest)
+LocalRequest             LONG
+!!> GUID('01d4fadc-7842-4390-ad7c-a85465d44ed9'),PROMPT('LocalRequest:'),HEADER('LocalRequest'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('FilesOpened:'),USE(?FilesOpened:Prompt)
+! ENTRY(@n3),USE(FilesOpened)
+[REPORTCONTROLS]
+! STRING(@n3),USE(FilesOpened)
+FilesOpened              BYTE
+!!> GUID('2e11789d-dfff-48b0-9384-22c272c12be4'),PROMPT('FilesOpened:'),HEADER('FilesOpened'),PICTURE(@n3)
+ActionMessage            CSTRING(40)
+!!> GUID('b8741ca2-9e5d-4ca1-a9bd-2059f8f56971')
+[SCREENCONTROLS]
+! PROMPT('RecordChanged:'),USE(?RecordChanged:Prompt)
+! ENTRY(@n3),USE(RecordChanged)
+[REPORTCONTROLS]
+! STRING(@n3),USE(RecordChanged)
+RecordChanged            BYTE,AUTO
+!!> GUID('db3707dd-f470-4449-8e78-f3f326f498c5'),PROMPT('RecordChanged:'),HEADER('RecordChanged'),PICTURE(@n3)
+[FILES]
+[PRIMARY]
+Company
+[INSTANCE]
+2
+[PROMPTS]
+%ButtonAction DEPEND %Control DEFAULT TIMES 6
+WHEN  ('') ('No Special Action')
+WHEN  ('?COM:State') ('No Special Action')
+WHEN  ('?Cancel') ('No Special Action')
+WHEN  ('?CurrentTab') ('No Special Action')
+WHEN  ('?Help') ('No Special Action')
+WHEN  ('?OK') ('No Special Action')
+
+%ButtonRunName DEPEND %Control DEFAULT TIMES 4
+WHEN  ('?COM:State') ('')
+WHEN  ('?Cancel') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+
+%ButtonRunParameters DEPEND %Control DEFAULT TIMES 4
+WHEN  ('?COM:State') ('')
+WHEN  ('?Cancel') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+
+%ButtonProcedure DEPEND %Control PROCEDURE TIMES 4
+WHEN  ('?COM:State') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%ButtonThread DEPEND %Control LONG TIMES 4
+WHEN  ('?COM:State') (0)
+WHEN  ('?Cancel') (0)
+WHEN  ('?Help') (0)
+WHEN  ('?OK') (0)
+
+%ButtonThreadStack DEPEND %Control DEFAULT TIMES 6
+WHEN  ('') ('25000')
+WHEN  ('?COM:State') ('25000')
+WHEN  ('?Cancel') ('25000')
+WHEN  ('?CurrentTab') ('25000')
+WHEN  ('?Help') ('25000')
+WHEN  ('?OK') ('25000')
+
+%ButtonParameters DEPEND %Control DEFAULT TIMES 4
+WHEN  ('?COM:State') ('')
+WHEN  ('?Cancel') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?OK') ('')
+
+%ButtonRequest DEPEND %Control DEFAULT TIMES 6
+WHEN  ('') ('None')
+WHEN  ('?COM:State') ('None')
+WHEN  ('?Cancel') ('None')
+WHEN  ('?CurrentTab') ('None')
+WHEN  ('?Help') ('None')
+WHEN  ('?OK') ('None')
+
+%PreLookupKey DEPEND %Control KEY TIMES 9
+WHEN  ('?COM:Address') ()
+WHEN  ('?COM:City') ()
+WHEN  ('?COM:Name') ()
+WHEN  ('?COM:Phone') ()
+WHEN  ('?COM:State') ()
+WHEN  ('?COM:Zipcode') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%PreLookupField DEPEND %Control COMPONENT TIMES 9
+WHEN  ('?COM:Address') ()
+WHEN  ('?COM:City') ()
+WHEN  ('?COM:Name') ()
+WHEN  ('?COM:Phone') ()
+WHEN  ('?COM:State') ()
+WHEN  ('?COM:Zipcode') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%PreLookupProcedure DEPEND %Control PROCEDURE TIMES 9
+WHEN  ('?COM:Address') ()
+WHEN  ('?COM:City') ()
+WHEN  ('?COM:Name') ()
+WHEN  ('?COM:Phone') ()
+WHEN  ('?COM:State') ()
+WHEN  ('?COM:Zipcode') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%PostLookupKey DEPEND %Control KEY TIMES 9
+WHEN  ('?COM:Address') ()
+WHEN  ('?COM:City') ()
+WHEN  ('?COM:Name') ()
+WHEN  ('?COM:Phone') ()
+WHEN  ('?COM:State') ()
+WHEN  ('?COM:Zipcode') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%PostLookupField DEPEND %Control COMPONENT TIMES 9
+WHEN  ('?COM:Address') ()
+WHEN  ('?COM:City') ()
+WHEN  ('?COM:Name') ()
+WHEN  ('?COM:Phone') ()
+WHEN  ('?COM:State') ()
+WHEN  ('?COM:Zipcode') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%PostLookupProcedure DEPEND %Control PROCEDURE TIMES 9
+WHEN  ('?COM:Address') ()
+WHEN  ('?COM:City') ()
+WHEN  ('?COM:Name') ()
+WHEN  ('?COM:Phone') ()
+WHEN  ('?COM:State') ()
+WHEN  ('?COM:Zipcode') ()
+WHEN  ('?Cancel') ()
+WHEN  ('?Help') ()
+WHEN  ('?OK') ()
+
+%ForceWindowRefresh DEPEND %Control LONG TIMES 9
+WHEN  ('?COM:Address') (0)
+WHEN  ('?COM:City') (0)
+WHEN  ('?COM:Name') (0)
+WHEN  ('?COM:Phone') (0)
+WHEN  ('?COM:State') (0)
+WHEN  ('?COM:Zipcode') (0)
+WHEN  ('?Cancel') (0)
+WHEN  ('?Help') (0)
+WHEN  ('?OK') (0)
+
+%ReturnValue FIELD  ()
+%WindowOperationMode DEFAULT  ('Use WINDOW setting')
+%INISaveWindow LONG  (1)
+%PostLookupDuringValidate DEPEND %Control LONG TIMES 11
+WHEN  ('') (1)
+WHEN  ('?COM:Address') (1)
+WHEN  ('?COM:City') (1)
+WHEN  ('?COM:Name') (1)
+WHEN  ('?COM:Phone') (1)
+WHEN  ('?COM:State') (0)
+WHEN  ('?COM:Zipcode') (1)
+WHEN  ('?Cancel') (1)
+WHEN  ('?CurrentTab') (1)
+WHEN  ('?Help') (1)
+WHEN  ('?OK') (1)
+
+%CheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedAssignVariable DEPEND %CheckedAssigns FIELD TIMES 4
+WHEN  ('?COM:State')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%CheckedAssignValue DEPEND %CheckedAssigns DEFAULT TIMES 4
+WHEN  ('?COM:State')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%CheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl DEPEND %CheckedHides DEFAULT TIMES 4
+WHEN  ('?COM:State')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%CheckedControlAction DEPEND %CheckedHides DEFAULT TIMES 6
+WHEN  ('')TIMES 0
+WHEN  ('?COM:State')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%UncheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%UncheckedAssignVariable DEPEND %UncheckedAssigns FIELD TIMES 4
+WHEN  ('?COM:State')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%UncheckedAssignValue DEPEND %UncheckedAssigns DEFAULT TIMES 4
+WHEN  ('?COM:State')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%UnCheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl DEPEND %UnCheckedHides DEFAULT TIMES 4
+WHEN  ('?COM:State')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%UnCheckedControlAction DEPEND %UnCheckedHides DEFAULT TIMES 6
+WHEN  ('')TIMES 0
+WHEN  ('?COM:State')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%ClassItem UNIQUE DEFAULT  ('Default', 'WindowToolbar')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('WindowManager')
+WHEN  ('WindowToolbar') ('ToolbarClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Ask {20}PROCEDURE(),DERIVED', 'Init {19}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Kill {19}PROCEDURE(),BYTE,PROC,DERIVED', 'Run {20}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'TakeAccepted {11}PROCEDURE(),BYTE,PROC,DERIVED')
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('ThisWindow')
+WHEN  ('WindowToolbar') ('Toolbar')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (0)
+WHEN  ('WindowToolbar') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%CheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl1 DEPEND %CheckedEnables DEFAULT TIMES 0
+
+%CheckedControl1Action DEPEND %CheckedEnables DEFAULT TIMES 5
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%UnCheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl1 DEPEND %UnCheckedEnables DEFAULT TIMES 0
+
+%UnCheckedControl1Action DEPEND %UnCheckedEnables DEFAULT TIMES 5
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?OK')TIMES 0
+
+%LookupAssign DEPEND %Control MULTI LONG TIMES 0
+
+%MoreField DEPEND %LookupAssign DEFAULT TIMES 0
+
+%MoreTarget DEPEND %LookupAssign FIELD TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('NO')
+WHEN  ('WindowToolbar') ('NO')
+
+%ButtonReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ButtonReturnValueReferenceAssign DEPEND %Control LONG TIMES 0
+
+%ButtonThreadParameters DEPEND %Control DEFAULT TIMES 0
+
+%ButtonThreadReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ProcedureDisableEnhanceFocus LONG  (0)
+%ProcedureUseEnterInsteadTabOverride LONG  (0)
+%WindowUseEnterInsteadTab LONG  (1)
+%ProcedureUseEnterInsteadTabExcludeG LONG  (1)
+%WindowUseEnterInsteadTabExclude MULTI DEFAULT  ()
+%WindowStyles MULTI LONG  ()
+%WindowStyleFontName DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontSize DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontStyle DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontColor DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontCharSet DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStylePicture DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleOtherListboxes MULTI DEFAULT  ()
+%ProcedureAutoBindFields MULTI LONG  ()
+%ProcedureAutoBindField DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldTPL DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedures MULTI LONG  ()
+%ProcedureAutoBindProcedure DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedureTPL DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureUserBindFields MULTI LONG  ()
+%ProcedureUserBindField DEPEND %ProcedureUserBindFields FIELD TIMES 0
+
+%ProcedureAutoBindFieldIgnore DEPEND %ProcedureAutoBindFields LONG TIMES 0
+
+%ProcedureUserBindProcedures MULTI LONG  ()
+%ProcedureUserBindProcedure DEPEND %ProcedureUserBindProcedures PROCEDURE TIMES 0
+
+%ProcedureAutoBindProcedureIgnore DEPEND %ProcedureAutoBindProcedures LONG TIMES 0
+
+%ProcedureUserBindExpressions MULTI LONG  ()
+%ProcedureUserBindExpressionName DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%ProcedureUserBindExpression DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%PreLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%PostLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldsIgnored MULTI LONG  ()
+%ProcedureAutoBindFieldIgnored DEPEND %ProcedureAutoBindFieldsIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindProceduresIgnored MULTI LONG  ()
+%ProcedureAutoBindProcedureIgnored DEPEND %ProcedureAutoBindProceduresIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindValidToAddField LONG  (0)
+%ProcedureUseEnterInsteadTabExcludeListCombo LONG  (0)
+%ProcedureUseEnterInsteadTabEnableNextTabStop LONG  (0)
+%ExtUITabIcon DEPEND %Control DEFAULT TIMES 0
+
+%ExtUITabStyleOverrideGlobal DEPEND %Control LONG TIMES 0
+
+%ExtUITabStyle DEPEND %Control DEFAULT TIMES 2
+WHEN  ('') ('Default')
+WHEN  ('?CurrentTab') ('Default')
+
+%CheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedDisableControl DEPEND %CheckedDisables DEFAULT TIMES 0
+
+%CheckedDisableControlAction DEPEND %CheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%UnCheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedDisableControl DEPEND %UnCheckedDisables DEFAULT TIMES 0
+
+%UnCheckedDisableControlAction DEPEND %UnCheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%ProcedureOneInstance LONG  (0)
+%FieldGradientColorType DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('Off')
+
+%FieldGradientColorTypeVariable DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('')
+
+%FieldGradientColorTypeIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorFrom DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorFromVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorFromIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorTo DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorToVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorToIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+[ADDITION]
+NAME ABC RecordValidation
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%ValidateOnAccept LONG  (0)
+%ValidateOnNonStopSelect LONG  (0)
+%ControlsExcluded MULTI LONG  ()
+%ControlToExclude DEPEND %ControlsExcluded DEFAULT TIMES 0
+
+%ValidateUsingColoration LONG  (0)
+%InvalidFieldColor LONG  (255)
+%InvalidPromptColor LONG  (255)
+%UseValidateMessage LONG  (0)
+%ValidationMessage DEFAULT  ('The values of Colored Fields are invalid, Please correct this information.')
+%MessageControl FIELD  ()
+[ADDITION]
+NAME ABC SaveButton
+[INSTANCE]
+INSTANCE 2
+PROCPROP
+[PROMPTS]
+%InsertAllowed LONG  (1)
+%InsertMessage DEFAULT  ('Enter  your Company''''s Information')
+%ChangeAllowed LONG  (1)
+%ChangeMessage DEFAULT  ('Change your Company''''s Information')
+%DeleteAllowed LONG  (0)
+%DeleteMessage DEFAULT  ('Record Will Be Deleted')
+%MessageHeader LONG  (0)
+%ActionOnDelete DEFAULT  ('Standard Warning')
+%PrimingFields MULTI LONG  ()
+%PrimedField DEPEND %PrimingFields FIELD TIMES 0
+
+%PrimedValue DEPEND %PrimingFields DEFAULT TIMES 0
+
+%ActionOnCancel DEFAULT  ('Confirm Cancel')
+%MessageLocation DEFAULT  ('Title Bar')
+%MessageStatusSection DEFAULT  ('0')
+%HistoryKey DEFAULT  ('734')
+%AppendToTitle LONG  (0)
+%AppendToTitleID DEFAULT  ('')
+%AfterGoodInsert DEFAULT  ('Return to caller')
+%AskAfterAdd LONG  (0)
+%ViewMessage DEFAULT  ('View Record')
+[ADDITION]
+NAME ABC FormVCRControls
+[INSTANCE]
+INSTANCE 5
+PARENT 2
+[PROMPTS]
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarUpdateClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 0
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarForm')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[ADDITION]
+NAME ABC CancelButton
+[INSTANCE]
+INSTANCE 3
+[ADDITION]
+NAME ABC WindowResize
+[FIELDPROMPT]
+%ResizeAnchorTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorBottom DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowBottom DEPEND %Control LONG TIMES 0
+
+[INSTANCE]
+INSTANCE 4
+[PROMPTS]
+%UseAppStrategy DEFAULT  ('1')
+%AppStrategy DEFAULT  ('Spread')
+%RestrictMinSize LONG  (1)
+%WindowMinWidth DEFAULT  ('199')
+%WindowMaxWidth DEFAULT  ('0')
+%WindowMinHeight DEFAULT  ('111')
+%RestrictMaxSize LONG  (0)
+%WindowMaxHeight DEFAULT  ('')
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('WindowResizeClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Init {19}PROCEDURE(BYTE AppStrategy=AppStrategy:Resize,BYTE SetWindowMinSize=False,BYTE SetWindowMaxSize=False)')
+
+%OverrideControls MULTI LONG  ()
+%OverrideControl DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%AutoFindParents DEFAULT  ('Default')
+%DeferMoves DEFAULT  ('Default')
+%AutoTransparent DEFAULT  ('Default')
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('Resizer')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%DisableResize DEPEND %OverrideControls LONG TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[WINDOW]
+QuickWindow WINDOW('Update Company'),AT(,,199,121),FONT('MS Sans Serif',8,COLOR:Black),RESIZE, |
+          CENTER,GRAY,IMM,HLP('~UpdateCompany'),SYSTEM
+          SHEET,AT(4,2,191,117),USE(?CurrentTab),WIZARD,#ORIG(CurrentTab)
+            TAB('Tab 1'),USE(?Tab1),#ORIG(?Tab1)
+            END
+          END
+          PROMPT('Name:'),AT(8,7),USE(?COM:Name:Prompt),#LINK(?COM:Name),#ORIG(?COM:Name:Prompt)
+          ENTRY(@s20),AT(49,7,84,10),USE(COM:Name),CAP,MSG('Company name'),#LINK(?COM:Name:Prompt), |
+            #ORIG(COM:Name)
+          PROMPT('Address:'),AT(8,20),USE(?COM:Address:Prompt),#LINK(?COM:Address),#ORIG(?COM:Address:Prompt)
+          ENTRY(@s35),AT(49,20,137,10),USE(COM:Address),CAP,MSG('First line of company''' & |
+            's address'),#LINK(?COM:Address:Prompt),#ORIG(COM:Address)
+          PROMPT('City:'),AT(8,34,17,10),USE(?COM:City:Prompt),#LINK(?COM:City),#ORIG(?COM:City:Prompt)
+          ENTRY(@s25),AT(49,34,104,10),USE(COM:City),CAP,MSG('Company''s city'),#LINK(?COM:City:Prompt), |
+            #ORIG(COM:City)
+          PROMPT('State:'),AT(8,47),USE(?COM:State:Prompt),#LINK(?COM:State),#ORIG(?COM:State:Prompt)
+          ENTRY(@s2),AT(49,47,25,10),USE(COM:State),UPR,MSG('Company''s state'),#LINK(?COM:State:Prompt), |
+            #ORIG(COM:State)
+          PROMPT('Zipcode:'),AT(8,61),USE(?COM:Zipcode:Prompt),#LINK(?COM:Zipcode),#ORIG(?COM:Zipcode:Prompt)
+          ENTRY(@K#####|-####K),AT(49,61,64,10),USE(COM:Zipcode),MSG('Company''s zipcode'), |
+            #LINK(?COM:Zipcode:Prompt),#ORIG(COM:Zipcode)
+          PROMPT('Phone:'),AT(8,74),USE(?COM:Phone:Prompt),#LINK(?COM:Phone),#ORIG(?COM:Phone:Prompt)
+          ENTRY(@P(###) ###-####P),AT(49,74,64,10),USE(COM:Phone),MSG('Company''s phone number'), |
+            #LINK(?COM:Phone:Prompt),#ORIG(COM:Phone)
+          BUTTON,AT(52,92,21,18),USE(?OK),ICON('DISK12.ICO'),DEFAULT,FLAT,TIP('Save chang' & |
+            'es and exit'),#ORIG(?OK),#SEQ(2)
+          BUTTON,AT(88,92,21,18),USE(?Help),ICON(ICON:Help),FLAT,STD(STD:Help),TIP('Get Help')
+          BUTTON,AT(124,92,21,18),USE(?Cancel),ICON(ICON:Cross),FLAT,TIP('Cancel change' & |
+            's and exit '),#ORIG(?Cancel),#SEQ(3)
+        END
+
+[END]

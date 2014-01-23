@@ -1,0 +1,92 @@
+[PROGRAM]
+[COMMON]
+FROM ABC ABC
+[DATA]
+[SCREENCONTROLS]
+! PROMPT('GLOT : Cust Name:'),USE(?GLOT:CustName:Prompt)
+! ENTRY(@s35),USE(GLOT:CustName)
+[REPORTCONTROLS]
+! STRING(@s35),USE(GLOT:CustName)
+GLOT:CustName            STRING(35),THREAD
+!!> GUID('f60c6409-37c9-43e5-b1ce-0b0cb08224da'),PROMPT('GLOT : Cust Name:'),HEADER('Full Name'),PICTURE(@s35)
+[SCREENCONTROLS]
+! PROMPT('GLOT : Ship Name:'),USE(?GLOT:ShipName:Prompt)
+! ENTRY(@s35),USE(GLOT:ShipName)
+[REPORTCONTROLS]
+! STRING(@s35),USE(GLOT:ShipName)
+GLOT:ShipName            STRING(35),THREAD
+!!> GUID('df6f2028-1ed6-4be3-a844-e4c9e019ab8a'),PROMPT('GLOT : Ship Name:'),HEADER('GLOT : Ship Name'),PICTURE(@s35)
+[SCREENCONTROLS]
+! PROMPT('GLOT : Cust Address:'),USE(?GLOT:CustAddress:Prompt)
+! ENTRY(@s45),USE(GLOT:CustAddress)
+[REPORTCONTROLS]
+! STRING(@s45),USE(GLOT:CustAddress)
+GLOT:CustAddress         STRING(45),THREAD
+!!> GUID('830f005b-e8b9-4fa3-bead-5a6c47cebc2f'),PROMPT('GLOT : Cust Address:'),HEADER('GLOT : Cust Address'),PICTURE(@s45)
+[SCREENCONTROLS]
+! PROMPT('GLOT : Ship Address:'),USE(?GLOT:ShipAddress:Prompt)
+! ENTRY(@s45),USE(GLOT:ShipAddress)
+[REPORTCONTROLS]
+! STRING(@s45),USE(GLOT:ShipAddress)
+GLOT:ShipAddress         STRING(45),THREAD
+!!> GUID('a4b5fe60-2c52-472d-83c5-d2c57aab44e6'),PROMPT('GLOT : Ship Address:'),HEADER('GLOT : Ship Address'),PICTURE(@s45)
+[SCREENCONTROLS]
+! PROMPT('GLOT : Cus CSZ:'),USE(?GLOT:CusCSZ:Prompt)
+! ENTRY(@s40),USE(GLOT:CusCSZ)
+[REPORTCONTROLS]
+! STRING(@s40),USE(GLOT:CusCSZ)
+GLOT:CusCSZ              STRING(40),THREAD
+!!> GUID('a87db4a7-f6d5-4351-bb06-844ac36c7a07'),PROMPT('GLOT : Cus CSZ:'),HEADER('GLOT : Cus CSZ'),PICTURE(@s40)
+[SCREENCONTROLS]
+! PROMPT('GLOT : Ship CSZ:'),USE(?GLOT:ShipCSZ:Prompt)
+! ENTRY(@s40),USE(GLOT:ShipCSZ)
+[REPORTCONTROLS]
+! STRING(@s40),USE(GLOT:ShipCSZ)
+GLOT:ShipCSZ             STRING(40),THREAD
+!!> GUID('6dadf45b-30b9-43a7-bd76-7c5bd461ca7d'),PROMPT('GLOT : Ship CSZ:'),HEADER('GLOT : Ship CSZ'),PICTURE(@s40)
+[SCREENCONTROLS]
+! PROMPT('GLO : Pathname:'),USE(?GLO:Pathname:Prompt)
+! ENTRY(@s50),USE(GLO:Pathname)
+[REPORTCONTROLS]
+! STRING(@s50),USE(GLO:Pathname)
+GLO:Pathname             STRING(50)
+!!> GUID('aec86a07-2aba-4da5-af87-822c258845c6'),PROMPT('GLO : Pathname:'),HEADER('GLO : Pathname'),PICTURE(@s50)
+[EMBED]
+EMBED %ProgramSetup
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+OPEN(Company)
+IF ERRORCODE() = 2                  !File not found
+  CREATE(Company)                   !Create file
+  OPEN(Company)
+  GlobalRequest = InsertRecord      !Insert mode for form
+  UpdateCompany
+ELSE
+  CLOSE(Company)
+END
+Relate:Company.Open
+SET(Company)
+Access:Company.Next()
+[END]
+EMBED %GlobalData
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+RE          ReportEngine
+[END]
+EMBED %AfterGlobalIncludes
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+   !C6RW library
+   INCLUDE('RWPRLIB.INC')
+[END]
+[END]
+[END]

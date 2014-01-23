@@ -1,0 +1,1237 @@
+[MODULE]
+NAME 'UpdateProducts_invoice.clw'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME UpdateProducts
+[COMMON]
+DESCRIPTION 'Update the Products File'
+FROM ABC Window
+CATEGORY 'Form'
+[DATA]
+[SCREENCONTROLS]
+! PROMPT('CurrentTab:'),USE(?CurrentTab:Prompt)
+! ENTRY(@s80),USE(CurrentTab)
+[REPORTCONTROLS]
+! STRING(@s80),USE(CurrentTab)
+CurrentTab               STRING(80)
+!!> GUID('7322347b-2fd0-4eda-b456-3e65e26eff22'),PROMPT('CurrentTab:'),HEADER('CurrentTab'),PICTURE(@s80)
+[SCREENCONTROLS]
+! PROMPT('LocalRequest:'),USE(?LocalRequest:Prompt)
+! ENTRY(@n-14),USE(LocalRequest)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(LocalRequest)
+LocalRequest             LONG
+!!> GUID('dfc4167f-5f99-429e-8f24-71879b2e74d2'),PROMPT('LocalRequest:'),HEADER('LocalRequest'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('FilesOpened:'),USE(?FilesOpened:Prompt)
+! ENTRY(@n3),USE(FilesOpened)
+[REPORTCONTROLS]
+! STRING(@n3),USE(FilesOpened)
+FilesOpened              BYTE
+!!> GUID('146ee957-3679-4d31-bb3b-7e2442b028ad'),PROMPT('FilesOpened:'),HEADER('FilesOpened'),PICTURE(@n3)
+ActionMessage            CSTRING(40)
+!!> GUID('7010e0fa-8af5-420c-93ed-51ae423e1763')
+[SCREENCONTROLS]
+! PROMPT('RecordChanged:'),USE(?RecordChanged:Prompt)
+! ENTRY(@n3),USE(RecordChanged)
+[REPORTCONTROLS]
+! STRING(@n3),USE(RecordChanged)
+RecordChanged            BYTE,AUTO
+!!> GUID('40a42d49-c5cc-40c1-bcce-58e59c888ae9'),PROMPT('RecordChanged:'),HEADER('RecordChanged'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('DOSDialogHeader:'),USE(?DOSDialogHeader:Prompt)
+! ENTRY(@s39),USE(DOSDialogHeader)
+[REPORTCONTROLS]
+! STRING(@s39),USE(DOSDialogHeader)
+DOSDialogHeader          CSTRING(40)
+!!> GUID('41beff2b-bf19-4a88-ab28-973a8a12c801'),PROMPT('DOSDialogHeader:'),HEADER('DOSDialogHeader'),PICTURE(@s39)
+[SCREENCONTROLS]
+! PROMPT('DOSExtParameter:'),USE(?DOSExtParameter:Prompt)
+! ENTRY(@s249),USE(DOSExtParameter)
+[REPORTCONTROLS]
+! STRING(@s249),USE(DOSExtParameter)
+DOSExtParameter          CSTRING(250)
+!!> GUID('983c4d83-8bc7-43bd-87e9-8b0d6d87854e'),PROMPT('DOSExtParameter:'),HEADER('DOSExtParameter'),PICTURE(@s249)
+[SCREENCONTROLS]
+! PROMPT('DOSTargetVariable:'),USE(?DOSTargetVariable:Prompt)
+! ENTRY(@s79),USE(DOSTargetVariable)
+[REPORTCONTROLS]
+! STRING(@s79),USE(DOSTargetVariable)
+DOSTargetVariable        CSTRING(80)
+!!> GUID('e29afe32-410f-46cf-b259-90bda03fadf2'),PROMPT('DOSTargetVariable:'),HEADER('DOSTargetVariable'),PICTURE(@s79)
+[SCREENCONTROLS]
+! PROMPT('LOC : File Name:'),USE(?LOC:FileName:Prompt)
+! ENTRY(@s85),USE(LOC:FileName)
+[REPORTCONTROLS]
+! STRING(@s85),USE(LOC:FileName)
+LOC:FileName             STRING(85)
+!!> GUID('b6f6dcaa-e5f6-40fb-9d7d-638b36ac9796'),PROMPT('LOC : File Name:'),HEADER('LOC : File Name'),PICTURE(@s85)
+[FILES]
+[PRIMARY]
+Products
+[INSTANCE]
+2
+[PROMPTS]
+%ButtonAction DEPEND %Control DEFAULT TIMES 15
+WHEN  ('') ('No Special Action')
+WHEN  ('?Cancel') ('No Special Action')
+WHEN  ('?CurrentTab') ('No Special Action')
+WHEN  ('?Group1') ('No Special Action')
+WHEN  ('?Help') ('No Special Action')
+WHEN  ('?Image1') ('No Special Action')
+WHEN  ('?LookupFile') ('No Special Action')
+WHEN  ('?OK') ('No Special Action')
+WHEN  ('?PRO:Cost') ('No Special Action')
+WHEN  ('?PRO:Description') ('No Special Action')
+WHEN  ('?PRO:PictureFile') ('No Special Action')
+WHEN  ('?PRO:Price') ('No Special Action')
+WHEN  ('?PRO:ProductSKU') ('No Special Action')
+WHEN  ('?PRO:QuantityInStock') ('No Special Action')
+WHEN  ('?PRO:ReorderQuantity') ('No Special Action')
+
+%ButtonRunName DEPEND %Control DEFAULT TIMES 13
+WHEN  ('?Cancel') ('')
+WHEN  ('?Group1') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?Image1') ('')
+WHEN  ('?LookupFile') ('')
+WHEN  ('?OK') ('')
+WHEN  ('?PRO:Cost') ('')
+WHEN  ('?PRO:Description') ('')
+WHEN  ('?PRO:PictureFile') ('')
+WHEN  ('?PRO:Price') ('')
+WHEN  ('?PRO:ProductSKU') ('')
+WHEN  ('?PRO:QuantityInStock') ('')
+WHEN  ('?PRO:ReorderQuantity') ('')
+
+%ButtonRunParameters DEPEND %Control DEFAULT TIMES 13
+WHEN  ('?Cancel') ('')
+WHEN  ('?Group1') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?Image1') ('')
+WHEN  ('?LookupFile') ('')
+WHEN  ('?OK') ('')
+WHEN  ('?PRO:Cost') ('')
+WHEN  ('?PRO:Description') ('')
+WHEN  ('?PRO:PictureFile') ('')
+WHEN  ('?PRO:Price') ('')
+WHEN  ('?PRO:ProductSKU') ('')
+WHEN  ('?PRO:QuantityInStock') ('')
+WHEN  ('?PRO:ReorderQuantity') ('')
+
+%ButtonProcedure DEPEND %Control PROCEDURE TIMES 13
+WHEN  ('?Cancel') ()
+WHEN  ('?Group1') ()
+WHEN  ('?Help') ()
+WHEN  ('?Image1') ()
+WHEN  ('?LookupFile') ()
+WHEN  ('?OK') ()
+WHEN  ('?PRO:Cost') ()
+WHEN  ('?PRO:Description') ()
+WHEN  ('?PRO:PictureFile') ()
+WHEN  ('?PRO:Price') ()
+WHEN  ('?PRO:ProductSKU') ()
+WHEN  ('?PRO:QuantityInStock') ()
+WHEN  ('?PRO:ReorderQuantity') ()
+
+%ButtonThread DEPEND %Control LONG TIMES 13
+WHEN  ('?Cancel') (0)
+WHEN  ('?Group1') (0)
+WHEN  ('?Help') (0)
+WHEN  ('?Image1') (0)
+WHEN  ('?LookupFile') (0)
+WHEN  ('?OK') (0)
+WHEN  ('?PRO:Cost') (0)
+WHEN  ('?PRO:Description') (0)
+WHEN  ('?PRO:PictureFile') (0)
+WHEN  ('?PRO:Price') (0)
+WHEN  ('?PRO:ProductSKU') (0)
+WHEN  ('?PRO:QuantityInStock') (0)
+WHEN  ('?PRO:ReorderQuantity') (0)
+
+%ButtonThreadStack DEPEND %Control DEFAULT TIMES 15
+WHEN  ('') ('25000')
+WHEN  ('?Cancel') ('25000')
+WHEN  ('?CurrentTab') ('25000')
+WHEN  ('?Group1') ('25000')
+WHEN  ('?Help') ('25000')
+WHEN  ('?Image1') ('25000')
+WHEN  ('?LookupFile') ('25000')
+WHEN  ('?OK') ('25000')
+WHEN  ('?PRO:Cost') ('25000')
+WHEN  ('?PRO:Description') ('25000')
+WHEN  ('?PRO:PictureFile') ('25000')
+WHEN  ('?PRO:Price') ('25000')
+WHEN  ('?PRO:ProductSKU') ('25000')
+WHEN  ('?PRO:QuantityInStock') ('25000')
+WHEN  ('?PRO:ReorderQuantity') ('25000')
+
+%ButtonParameters DEPEND %Control DEFAULT TIMES 13
+WHEN  ('?Cancel') ('')
+WHEN  ('?Group1') ('')
+WHEN  ('?Help') ('')
+WHEN  ('?Image1') ('')
+WHEN  ('?LookupFile') ('')
+WHEN  ('?OK') ('')
+WHEN  ('?PRO:Cost') ('')
+WHEN  ('?PRO:Description') ('')
+WHEN  ('?PRO:PictureFile') ('')
+WHEN  ('?PRO:Price') ('')
+WHEN  ('?PRO:ProductSKU') ('')
+WHEN  ('?PRO:QuantityInStock') ('')
+WHEN  ('?PRO:ReorderQuantity') ('')
+
+%ButtonRequest DEPEND %Control DEFAULT TIMES 15
+WHEN  ('') ('None')
+WHEN  ('?Cancel') ('None')
+WHEN  ('?CurrentTab') ('None')
+WHEN  ('?Group1') ('None')
+WHEN  ('?Help') ('None')
+WHEN  ('?Image1') ('None')
+WHEN  ('?LookupFile') ('None')
+WHEN  ('?OK') ('None')
+WHEN  ('?PRO:Cost') ('None')
+WHEN  ('?PRO:Description') ('None')
+WHEN  ('?PRO:PictureFile') ('None')
+WHEN  ('?PRO:Price') ('None')
+WHEN  ('?PRO:ProductSKU') ('None')
+WHEN  ('?PRO:QuantityInStock') ('None')
+WHEN  ('?PRO:ReorderQuantity') ('None')
+
+%PreLookupKey DEPEND %Control KEY TIMES 13
+WHEN  ('?Cancel') ()
+WHEN  ('?Group1') ()
+WHEN  ('?Help') ()
+WHEN  ('?Image1') ()
+WHEN  ('?LookupFile') ()
+WHEN  ('?OK') ()
+WHEN  ('?PRO:Cost') ()
+WHEN  ('?PRO:Description') ()
+WHEN  ('?PRO:PictureFile') ()
+WHEN  ('?PRO:Price') ()
+WHEN  ('?PRO:ProductSKU') ()
+WHEN  ('?PRO:QuantityInStock') ()
+WHEN  ('?PRO:ReorderQuantity') ()
+
+%PreLookupField DEPEND %Control COMPONENT TIMES 13
+WHEN  ('?Cancel') ()
+WHEN  ('?Group1') ()
+WHEN  ('?Help') ()
+WHEN  ('?Image1') ()
+WHEN  ('?LookupFile') ()
+WHEN  ('?OK') ()
+WHEN  ('?PRO:Cost') ()
+WHEN  ('?PRO:Description') ()
+WHEN  ('?PRO:PictureFile') ()
+WHEN  ('?PRO:Price') ()
+WHEN  ('?PRO:ProductSKU') ()
+WHEN  ('?PRO:QuantityInStock') ()
+WHEN  ('?PRO:ReorderQuantity') ()
+
+%PreLookupProcedure DEPEND %Control PROCEDURE TIMES 13
+WHEN  ('?Cancel') ()
+WHEN  ('?Group1') ()
+WHEN  ('?Help') ()
+WHEN  ('?Image1') ()
+WHEN  ('?LookupFile') ()
+WHEN  ('?OK') ()
+WHEN  ('?PRO:Cost') ()
+WHEN  ('?PRO:Description') ()
+WHEN  ('?PRO:PictureFile') ()
+WHEN  ('?PRO:Price') ()
+WHEN  ('?PRO:ProductSKU') ()
+WHEN  ('?PRO:QuantityInStock') ()
+WHEN  ('?PRO:ReorderQuantity') ()
+
+%PostLookupKey DEPEND %Control KEY TIMES 13
+WHEN  ('?Cancel') ()
+WHEN  ('?Group1') ()
+WHEN  ('?Help') ()
+WHEN  ('?Image1') ()
+WHEN  ('?LookupFile') ()
+WHEN  ('?OK') ()
+WHEN  ('?PRO:Cost') ()
+WHEN  ('?PRO:Description') ()
+WHEN  ('?PRO:PictureFile') ()
+WHEN  ('?PRO:Price') ()
+WHEN  ('?PRO:ProductSKU') ()
+WHEN  ('?PRO:QuantityInStock') ()
+WHEN  ('?PRO:ReorderQuantity') ()
+
+%PostLookupField DEPEND %Control COMPONENT TIMES 13
+WHEN  ('?Cancel') ()
+WHEN  ('?Group1') ()
+WHEN  ('?Help') ()
+WHEN  ('?Image1') ()
+WHEN  ('?LookupFile') ()
+WHEN  ('?OK') ()
+WHEN  ('?PRO:Cost') ()
+WHEN  ('?PRO:Description') ()
+WHEN  ('?PRO:PictureFile') ()
+WHEN  ('?PRO:Price') ()
+WHEN  ('?PRO:ProductSKU') ()
+WHEN  ('?PRO:QuantityInStock') ()
+WHEN  ('?PRO:ReorderQuantity') ()
+
+%PostLookupProcedure DEPEND %Control PROCEDURE TIMES 13
+WHEN  ('?Cancel') ()
+WHEN  ('?Group1') ()
+WHEN  ('?Help') ()
+WHEN  ('?Image1') ()
+WHEN  ('?LookupFile') ()
+WHEN  ('?OK') ()
+WHEN  ('?PRO:Cost') ()
+WHEN  ('?PRO:Description') ()
+WHEN  ('?PRO:PictureFile') ()
+WHEN  ('?PRO:Price') ()
+WHEN  ('?PRO:ProductSKU') ()
+WHEN  ('?PRO:QuantityInStock') ()
+WHEN  ('?PRO:ReorderQuantity') ()
+
+%ForceWindowRefresh DEPEND %Control LONG TIMES 13
+WHEN  ('?Cancel') (0)
+WHEN  ('?Group1') (0)
+WHEN  ('?Help') (0)
+WHEN  ('?Image1') (0)
+WHEN  ('?LookupFile') (0)
+WHEN  ('?OK') (0)
+WHEN  ('?PRO:Cost') (0)
+WHEN  ('?PRO:Description') (0)
+WHEN  ('?PRO:PictureFile') (0)
+WHEN  ('?PRO:Price') (0)
+WHEN  ('?PRO:ProductSKU') (0)
+WHEN  ('?PRO:QuantityInStock') (0)
+WHEN  ('?PRO:ReorderQuantity') (0)
+
+%ReturnValue FIELD  ()
+%WindowOperationMode DEFAULT  ('Use WINDOW setting')
+%INISaveWindow LONG  (1)
+%PostLookupDuringValidate DEPEND %Control LONG TIMES 15
+WHEN  ('') (1)
+WHEN  ('?Cancel') (1)
+WHEN  ('?CurrentTab') (1)
+WHEN  ('?Group1') (1)
+WHEN  ('?Help') (1)
+WHEN  ('?Image1') (1)
+WHEN  ('?LookupFile') (1)
+WHEN  ('?OK') (1)
+WHEN  ('?PRO:Cost') (0)
+WHEN  ('?PRO:Description') (0)
+WHEN  ('?PRO:PictureFile') (1)
+WHEN  ('?PRO:Price') (0)
+WHEN  ('?PRO:ProductSKU') (0)
+WHEN  ('?PRO:QuantityInStock') (0)
+WHEN  ('?PRO:ReorderQuantity') (0)
+
+%CheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedAssignVariable DEPEND %CheckedAssigns FIELD TIMES 13
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Group1')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?Image1')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:Cost')TIMES 0
+WHEN  ('?PRO:Description')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+WHEN  ('?PRO:Price')TIMES 0
+WHEN  ('?PRO:ProductSKU')TIMES 0
+WHEN  ('?PRO:QuantityInStock')TIMES 0
+WHEN  ('?PRO:ReorderQuantity')TIMES 0
+
+%CheckedAssignValue DEPEND %CheckedAssigns DEFAULT TIMES 13
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Group1')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?Image1')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:Cost')TIMES 0
+WHEN  ('?PRO:Description')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+WHEN  ('?PRO:Price')TIMES 0
+WHEN  ('?PRO:ProductSKU')TIMES 0
+WHEN  ('?PRO:QuantityInStock')TIMES 0
+WHEN  ('?PRO:ReorderQuantity')TIMES 0
+
+%CheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl DEPEND %CheckedHides DEFAULT TIMES 13
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Group1')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?Image1')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:Cost')TIMES 0
+WHEN  ('?PRO:Description')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+WHEN  ('?PRO:Price')TIMES 0
+WHEN  ('?PRO:ProductSKU')TIMES 0
+WHEN  ('?PRO:QuantityInStock')TIMES 0
+WHEN  ('?PRO:ReorderQuantity')TIMES 0
+
+%CheckedControlAction DEPEND %CheckedHides DEFAULT TIMES 15
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Group1')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?Image1')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:Cost')TIMES 0
+WHEN  ('?PRO:Description')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+WHEN  ('?PRO:Price')TIMES 0
+WHEN  ('?PRO:ProductSKU')TIMES 0
+WHEN  ('?PRO:QuantityInStock')TIMES 0
+WHEN  ('?PRO:ReorderQuantity')TIMES 0
+
+%UncheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%UncheckedAssignVariable DEPEND %UncheckedAssigns FIELD TIMES 13
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Group1')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?Image1')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:Cost')TIMES 0
+WHEN  ('?PRO:Description')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+WHEN  ('?PRO:Price')TIMES 0
+WHEN  ('?PRO:ProductSKU')TIMES 0
+WHEN  ('?PRO:QuantityInStock')TIMES 0
+WHEN  ('?PRO:ReorderQuantity')TIMES 0
+
+%UncheckedAssignValue DEPEND %UncheckedAssigns DEFAULT TIMES 13
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Group1')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?Image1')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:Cost')TIMES 0
+WHEN  ('?PRO:Description')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+WHEN  ('?PRO:Price')TIMES 0
+WHEN  ('?PRO:ProductSKU')TIMES 0
+WHEN  ('?PRO:QuantityInStock')TIMES 0
+WHEN  ('?PRO:ReorderQuantity')TIMES 0
+
+%UnCheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl DEPEND %UnCheckedHides DEFAULT TIMES 13
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?Group1')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?Image1')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:Cost')TIMES 0
+WHEN  ('?PRO:Description')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+WHEN  ('?PRO:Price')TIMES 0
+WHEN  ('?PRO:ProductSKU')TIMES 0
+WHEN  ('?PRO:QuantityInStock')TIMES 0
+WHEN  ('?PRO:ReorderQuantity')TIMES 0
+
+%UnCheckedControlAction DEPEND %UnCheckedHides DEFAULT TIMES 15
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Group1')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?Image1')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:Cost')TIMES 0
+WHEN  ('?PRO:Description')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+WHEN  ('?PRO:Price')TIMES 0
+WHEN  ('?PRO:ProductSKU')TIMES 0
+WHEN  ('?PRO:QuantityInStock')TIMES 0
+WHEN  ('?PRO:ReorderQuantity')TIMES 0
+
+%ClassItem UNIQUE DEFAULT  ('Default', 'WindowToolbar')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('WindowManager')
+WHEN  ('WindowToolbar') ('ToolbarClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Ask {20}PROCEDURE(),DERIVED', 'Init {19}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Kill {19}PROCEDURE(),BYTE,PROC,DERIVED', 'Run {20}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'TakeAccepted {11}PROCEDURE(),BYTE,PROC,DERIVED')
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('ThisWindow')
+WHEN  ('WindowToolbar') ('Toolbar')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (1)
+WHEN  ('WindowToolbar') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('')
+WHEN  ('WindowToolbar') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 2
+WHEN  ('Default') (0)
+WHEN  ('WindowToolbar') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 2
+WHEN  ('Default')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%CheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl1 DEPEND %CheckedEnables DEFAULT TIMES 0
+
+%CheckedControl1Action DEPEND %CheckedEnables DEFAULT TIMES 7
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+
+%UnCheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl1 DEPEND %UnCheckedEnables DEFAULT TIMES 0
+
+%UnCheckedControl1Action DEPEND %UnCheckedEnables DEFAULT TIMES 7
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+WHEN  ('?CurrentTab')TIMES 0
+WHEN  ('?Help')TIMES 0
+WHEN  ('?LookupFile')TIMES 0
+WHEN  ('?OK')TIMES 0
+WHEN  ('?PRO:PictureFile')TIMES 0
+
+%LookupAssign DEPEND %Control MULTI LONG TIMES 0
+
+%MoreField DEPEND %LookupAssign DEFAULT TIMES 0
+
+%MoreTarget DEPEND %LookupAssign FIELD TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 2
+WHEN  ('Default') ('NO')
+WHEN  ('WindowToolbar') ('NO')
+
+%ButtonReturnValueAssignment DEPEND %Control FIELD TIMES 1
+WHEN  ('?LookupFile') ()
+
+%ButtonReturnValueReferenceAssign DEPEND %Control LONG TIMES 1
+WHEN  ('?LookupFile') (0)
+
+%ButtonThreadParameters DEPEND %Control DEFAULT TIMES 1
+WHEN  ('?LookupFile') ('')
+
+%ButtonThreadReturnValueAssignment DEPEND %Control FIELD TIMES 1
+WHEN  ('?LookupFile') ()
+
+%ProcedureDisableEnhanceFocus LONG  (0)
+%ProcedureUseEnterInsteadTabOverride LONG  (0)
+%WindowUseEnterInsteadTab LONG  (1)
+%ProcedureUseEnterInsteadTabExcludeG LONG  (1)
+%WindowUseEnterInsteadTabExclude MULTI DEFAULT  ()
+%WindowStyles MULTI LONG  ()
+%WindowStyleFontName DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontSize DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontStyle DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontColor DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontCharSet DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStylePicture DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleOtherListboxes MULTI DEFAULT  ()
+%ProcedureAutoBindFields MULTI LONG  ()
+%ProcedureAutoBindField DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldTPL DEPEND %ProcedureAutoBindFields DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedures MULTI LONG  ()
+%ProcedureAutoBindProcedure DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedureTPL DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureUserBindFields MULTI LONG  ()
+%ProcedureUserBindField DEPEND %ProcedureUserBindFields FIELD TIMES 0
+
+%ProcedureAutoBindFieldIgnore DEPEND %ProcedureAutoBindFields LONG TIMES 0
+
+%ProcedureUserBindProcedures MULTI LONG  ()
+%ProcedureUserBindProcedure DEPEND %ProcedureUserBindProcedures PROCEDURE TIMES 0
+
+%ProcedureAutoBindProcedureIgnore DEPEND %ProcedureAutoBindProcedures LONG TIMES 0
+
+%ProcedureUserBindExpressions MULTI LONG  ()
+%ProcedureUserBindExpressionName DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%ProcedureUserBindExpression DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%PreLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%PostLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%ProcedureAutoBindFieldsIgnored MULTI LONG  ()
+%ProcedureAutoBindFieldIgnored DEPEND %ProcedureAutoBindFieldsIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindProceduresIgnored MULTI LONG  ()
+%ProcedureAutoBindProcedureIgnored DEPEND %ProcedureAutoBindProceduresIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindValidToAddField LONG  (0)
+%ProcedureUseEnterInsteadTabExcludeListCombo LONG  (0)
+%ProcedureUseEnterInsteadTabEnableNextTabStop LONG  (0)
+%ExtUITabIcon DEPEND %Control DEFAULT TIMES 0
+
+%ExtUITabStyleOverrideGlobal DEPEND %Control LONG TIMES 0
+
+%ExtUITabStyle DEPEND %Control DEFAULT TIMES 3
+WHEN  ('') ('Default')
+WHEN  ('?Cancel') ('Default')
+WHEN  ('?CurrentTab') ('Default')
+
+%CheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedDisableControl DEPEND %CheckedDisables DEFAULT TIMES 0
+
+%CheckedDisableControlAction DEPEND %CheckedDisables DEFAULT TIMES 2
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+
+%UnCheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedDisableControl DEPEND %UnCheckedDisables DEFAULT TIMES 0
+
+%UnCheckedDisableControlAction DEPEND %UnCheckedDisables DEFAULT TIMES 2
+WHEN  ('')TIMES 0
+WHEN  ('?Cancel')TIMES 0
+
+%ProcedureOneInstance LONG  (0)
+%FieldGradientColorType DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('Off')
+
+%FieldGradientColorTypeVariable DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('')
+
+%FieldGradientColorTypeIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorFrom DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorFromVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorFromIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorTo DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorToVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorToIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+[EMBED]
+EMBED %WindowManagerMethodCodeSection
+[INSTANCES]
+WHEN 'Init'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8310
+PROPERTY:END
+IF SELF.Request = ChangeRecord OR SELF.Request = DeleteRecord
+  ?Image1{PROP:TEXT} = Products.Record.PictureFile
+END
+[END]
+[END]
+[END]
+EMBED %ControlEventHandling
+[INSTANCES]
+WHEN '?LookupFile'
+[INSTANCES]
+WHEN 'Accepted'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 8800
+LABEL
+PROPERTY:END
+      !Display filename only and not the path.
+      IF LOC:FileName <> ''
+        LX# = LEN(CLIP(LOC:FileName))
+        LOOP X# = LX# TO 1 BY -1
+          IF LOC:FileName[X#] = '\'
+            BREAK
+          END
+        END
+        IF LOC:FileName[1 : (X#-1)] = LONGPATH(PATH())
+          PRO:PictureFile = UPPER(LOC:FileName[(X#+1) : LX#])
+          DISPLAY
+        END
+      END
+[END]
+[END]
+[END]
+[END]
+[ADDITION]
+NAME ABC RecordValidation
+[INSTANCE]
+INSTANCE 1
+PROCPROP
+[PROMPTS]
+%ValidateOnAccept LONG  (1)
+%ValidateOnNonStopSelect LONG  (1)
+%ControlsExcluded MULTI LONG  ()
+%ControlToExclude DEPEND %ControlsExcluded DEFAULT TIMES 0
+
+%ValidateUsingColoration LONG  (0)
+%InvalidFieldColor LONG  (255)
+%InvalidPromptColor LONG  (255)
+%UseValidateMessage LONG  (0)
+%ValidationMessage DEFAULT  ('The values of Colored Fields are invalid, Please correct this information.')
+%MessageControl FIELD  ()
+[ADDITION]
+NAME ABC SaveButton
+[INSTANCE]
+INSTANCE 2
+PROCPROP
+[PROMPTS]
+%InsertAllowed LONG  (1)
+%InsertMessage DEFAULT  ('Record Will Be Added')
+%ChangeAllowed LONG  (1)
+%ChangeMessage DEFAULT  ('Record Will Be Changed')
+%DeleteAllowed LONG  (1)
+%DeleteMessage DEFAULT  ('Record Will Be Deleted')
+%MessageHeader LONG  (0)
+%ActionOnDelete DEFAULT  ('Standard Warning')
+%PrimingFields MULTI LONG  ()
+%PrimedField DEPEND %PrimingFields FIELD TIMES 0
+
+%PrimedValue DEPEND %PrimingFields DEFAULT TIMES 0
+
+%ActionOnCancel DEFAULT  ('Confirm Cancel')
+%MessageLocation DEFAULT  ('Title Bar')
+%MessageStatusSection DEFAULT  ('0')
+%HistoryKey DEFAULT  ('734')
+%AppendToTitle LONG  (1)
+%AppendToTitleID DEFAULT  ('!CLIP(PRO:Description)')
+%AfterGoodInsert DEFAULT  ('Insert another record')
+%AskAfterAdd LONG  (1)
+%ViewMessage DEFAULT  ('View Record')
+[ADDITION]
+NAME ABC CancelButton
+[INSTANCE]
+INSTANCE 3
+[ADDITION]
+NAME ABC FormVCRControls
+[INSTANCE]
+INSTANCE 4
+[PROMPTS]
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarUpdateClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 0
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('ToolbarForm')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[ADDITION]
+NAME ABC WindowResize
+[FIELDPROMPT]
+%ResizeAnchorTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorBottom DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowTop DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowLeft DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowRight DEPEND %Control LONG TIMES 0
+
+%ResizeAnchorGrowBottom DEPEND %Control LONG TIMES 0
+
+[INSTANCE]
+INSTANCE 4
+[PROMPTS]
+%UseAppStrategy DEFAULT  ('1')
+%AppStrategy DEFAULT  ('Don''t alter controls')
+%RestrictMinSize LONG  (1)
+%WindowMinWidth DEFAULT  ('281')
+%WindowMaxWidth DEFAULT  ('281')
+%WindowMinHeight DEFAULT  ('127')
+%RestrictMaxSize LONG  (1)
+%WindowMaxHeight DEFAULT  ('127')
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('WindowResizeClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Init {19}PROCEDURE(BYTE AppStrategy=AppStrategy:Resize,BYTE SetWindowMinSize=False,BYTE SetWindowMaxSize=False)')
+
+%OverrideControls MULTI LONG  ()
+%OverrideControl DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertResize DEPEND %OverrideControls DEFAULT TIMES 0
+
+%HorizPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%VertPositional DEPEND %OverrideControls DEFAULT TIMES 0
+
+%AutoFindParents DEFAULT  ('Default')
+%DeferMoves DEFAULT  ('Default')
+%AutoTransparent DEFAULT  ('Default')
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('Resizer')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%DisableResize DEPEND %OverrideControls LONG TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+[ADDITION]
+NAME ABC DOSFileLookup
+[INSTANCE]
+INSTANCE 5
+[PROMPTS]
+%DOSFileDialogHeader DEFAULT  ('Locate and Select Product Image File')
+%DOSFileField FIELD  (LOC:FileName)
+%DOSInitialDirectory DEFAULT  ('')
+%ReturnToOriginalDir LONG  (1)
+%DOSVariableMask LONG  (0)
+%DOSVariableMaskValue FIELD  ()
+%DOSMaskDesc DEFAULT  ('JPEG Images')
+%DOSMask DEFAULT  ('*.JPG')
+%DOSMoreMasks MULTI LONG  (2, 3)
+%DOSMoreMaskDesc DEPEND %DOSMoreMasks DEFAULT TIMES 2
+WHEN  (2) ('BMP Images')
+WHEN  (3) ('GIF Files')
+
+%DOSMoreMask DEPEND %DOSMoreMasks DEFAULT TIMES 2
+WHEN  (2) ('*.BMP')
+WHEN  (3) ('*.GIF')
+
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('SelectFileClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 0
+
+%DOSInitialFilename DEFAULT  ('')
+%AllowMultiSelect LONG  (0)
+%ActionsToTake DEFAULT  ('')
+%DOSMaskVariable DEFAULT  ('')
+%RedisplayWindow LONG  (1)
+%UpdateFields MULTI LONG  ()
+%UpdateFeq DEPEND %UpdateFields DEFAULT TIMES 0
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('FileLookup5')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%AllowLongFilenames LONG  (0)
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+%DOSFileDialogType DEFAULT  ('Open')
+%AllowNoError LONG  (0)
+%AssignToImageControl LONG  (1)
+%ImageControl DEFAULT  ('?Image1')
+%ImageResize LONG  (1)
+%DefaultOnCancel LONG  (0)
+[WINDOW]
+QuickWindow WINDOW('Update Products'),AT(,,288,130),FONT('MS Sans Serif',8,COLOR:Black),DOUBLE, |
+          CENTER,ICON('FLOW04.ICO'),GRAY,IMM,MDI,HLP('~UpdateProducts'),PALETTE(256),SYSTEM
+          SHEET,AT(3,0,282,128),USE(?CurrentTab),WIZARD,#ORIG(CurrentTab),#ORDINAL(1)
+            TAB('Tab 1'),USE(?Tab1),#ORIG(?Tab1),#ORDINAL(2)
+            END
+          END
+          PROMPT('Product SKU:'),AT(7,9),USE(?PRO:ProductSKU:Prompt),#LINK(?PRO:ProductSKU), |
+            #ORIG(?PRO:ProductSKU:Prompt),#ORDINAL(3)
+          ENTRY(@s10),AT(70,9,44,10),USE(PRO:ProductSKU),LEFT(1),UPR,MSG('User defined ' & |
+            'Product Number'),REQ,#LINK(?PRO:ProductSKU:Prompt),#ORIG(PRO:ProductSKU),#ORDINAL(4)
+          PROMPT('Description:'),AT(7,25),USE(?PRO:Description:Prompt),#LINK(?PRO:Description), |
+            #ORIG(?PRO:Description:Prompt),#ORDINAL(5)
+          ENTRY(@s35),AT(70,25,101,10),USE(PRO:Description),LEFT(1),CAP,MSG('Enter Prod' & |
+            'uct''s Description'),REQ,#LINK(?PRO:Description:Prompt),#ORIG(PRO:Description), |
+            #ORDINAL(6)
+          PROMPT('Price:'),AT(7,41,29,10),USE(?PRO:Price:Prompt),#LINK(?PRO:Price),#ORIG(?PRO:Price:Prompt), |
+            #ORDINAL(7)
+          ENTRY(@n$10.2B),AT(70,41,35,10),USE(PRO:Price),DECIMAL(12),MSG('Enter Product''s Price'), |
+            #LINK(?PRO:Price:Prompt),#ORIG(PRO:Price),#ORDINAL(8)
+          PROMPT('Cost:'),AT(7,57,23,10),USE(?PRO:Cost:Prompt),#LINK(?PRO:Cost),#ORIG(?PRO:Cost:Prompt), |
+            #ORDINAL(9)
+          ENTRY(@n$10.2B),AT(70,57,35,10),USE(PRO:Cost),DECIMAL(12),MSG('Enter product''s cost'), |
+            #LINK(?PRO:Cost:Prompt),#ORIG(PRO:Cost),#ORDINAL(10)
+          ENTRY(@n-10.2),AT(70,73,35,10),USE(PRO:QuantityInStock),DECIMAL(12),MSG('Enter quan' & |
+            'tity of product in stock'),#LINK(?PRO:QuantityInStock:Prompt),#ORIG(PRO:QuantityInStock), |
+            #ORDINAL(11)
+          PROMPT('Quantity In Stock:'),AT(7,73,60,10),USE(?PRO:QuantityInStock:Prompt),#LINK(?PRO:QuantityInStock), |
+            #ORIG(?PRO:QuantityInStock:Prompt),#ORDINAL(12)
+          PROMPT('Reorder Quantity:'),AT(7,89,59,10),USE(?PRO:ReorderQuantity:Prompt),#LINK(?PRO:ReorderQuantity), |
+            #ORIG(?PRO:ReorderQuantity:Prompt),#ORDINAL(13)
+          ENTRY(@n9.2),AT(70,89,35,10),USE(PRO:ReorderQuantity),DECIMAL(12),MSG('Enter prod' & |
+            'uct''s quantity for re-order'),#LINK(?PRO:ReorderQuantity:Prompt),#ORIG(PRO:ReorderQuantity), |
+            #ORDINAL(14)
+          PROMPT('Picture File:'),AT(7,105),USE(?PRO:PictureFile:Prompt),#LINK(?PRO:PictureFile), |
+            #ORIG(?PRO:PictureFile:Prompt),#ORDINAL(15)
+          ENTRY(@s64),AT(70,105,101,10),USE(PRO:PictureFile),LEFT(1),DISABLE,MSG('Path of gr' & |
+            'aphic file'),#LINK(?PRO:PictureFile:Prompt),#ORIG(PRO:PictureFile),#ORDINAL(16)
+          BUTTON('Select Image'),AT(110,87,65,14),USE(?LookupFile),FONT(,,COLOR:Navy,FONT:bold), |
+            TIP('Insert or Change Image'),#ORIG(?LookupFile),#SEQ(5),#ORDINAL(17)
+          GROUP,AT(181,5,97,94),USE(?Group1),BEVEL(-2,2),BOXED,#ORIG(?Group1),#ORDINAL(18)
+            IMAGE,AT(185,9,89,87),USE(?Image1),#ORIG(?Image1),#ORDINAL(19)
+          END
+          BUTTON,AT(195,105,22,20),USE(?OK),ICON('DISK12.ICO'),DEFAULT,FLAT,TIP('Save recor' & |
+            'd and exit '),#ORIG(?OK),#SEQ(2),#ORDINAL(20)
+          BUTTON,AT(225,110,13,12),USE(?Help),ICON(ICON:Help),FLAT,HIDE,STD(STD:Help),#ORDINAL(21)
+          BUTTON,AT(244,105,22,20),USE(?Cancel),ICON(ICON:Cross),FLAT,TIP('Cancel chang' & |
+            'es and exit'),#ORIG(?Cancel),#SEQ(3),#ORDINAL(22)
+        END
+
+[END]

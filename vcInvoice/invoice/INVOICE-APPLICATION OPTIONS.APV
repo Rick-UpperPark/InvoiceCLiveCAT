@@ -1,0 +1,823 @@
+[APPLICATION]
+VERSION 34
+TODO ABC ToDo
+HLP 'INVOICE.HLP'
+DICTIONARY 'Invoice.dct'
+PROCEDURE Main
+[COMMON]
+FROM ABC
+[PROMPTS]
+%ClassItem UNIQUE DEFAULT  ('ErrorManager', 'ErrorStatusManager', 'FileManager:Company', |
+  'FileManager:Customers', 'FileManager:Detail', 'FileManager:InvHist', 'FileManager:Orders', |
+  'FileManager:Products', 'FileManager:States', 'FuzzyMatcher', 'INIManager', 'RelationManager:Company', |
+  'RelationManager:Customers', 'RelationManager:Detail', 'RelationManager:InvHist', |
+  'RelationManager:Orders', 'RelationManager:Products', 'RelationManager:States', |
+  'Translator')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 19
+WHEN  ('ErrorManager') ('ErrorClass')
+WHEN  ('ErrorStatusManager') ('ErrorStatusClass')
+WHEN  ('FileManager:Company') ('FileManager')
+WHEN  ('FileManager:Customers') ('FileManager')
+WHEN  ('FileManager:Detail') ('FileManager')
+WHEN  ('FileManager:InvHist') ('FileManager')
+WHEN  ('FileManager:Orders') ('FileManager')
+WHEN  ('FileManager:Products') ('FileManager')
+WHEN  ('FileManager:States') ('FileManager')
+WHEN  ('FuzzyMatcher') ('FuzzyClass')
+WHEN  ('INIManager') ('INIClass')
+WHEN  ('RelationManager:Company') ('RelationManager')
+WHEN  ('RelationManager:Customers') ('RelationManager')
+WHEN  ('RelationManager:Detail') ('RelationManager')
+WHEN  ('RelationManager:InvHist') ('RelationManager')
+WHEN  ('RelationManager:Orders') ('RelationManager')
+WHEN  ('RelationManager:Products') ('RelationManager')
+WHEN  ('RelationManager:States') ('RelationManager')
+WHEN  ('Translator') ('TranslatorClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 19
+WHEN  ('ErrorManager') ('')
+WHEN  ('ErrorStatusManager') ('')
+WHEN  ('FileManager:Company') ('')
+WHEN  ('FileManager:Customers') ('')
+WHEN  ('FileManager:Detail') ('')
+WHEN  ('FileManager:InvHist') ('')
+WHEN  ('FileManager:Orders') ('')
+WHEN  ('FileManager:Products') ('')
+WHEN  ('FileManager:States') ('')
+WHEN  ('FuzzyMatcher') ('')
+WHEN  ('INIManager') ('')
+WHEN  ('RelationManager:Company') ('')
+WHEN  ('RelationManager:Customers') ('')
+WHEN  ('RelationManager:Detail') ('')
+WHEN  ('RelationManager:InvHist') ('')
+WHEN  ('RelationManager:Orders') ('')
+WHEN  ('RelationManager:Products') ('')
+WHEN  ('RelationManager:States') ('')
+WHEN  ('Translator') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 14
+WHEN  ('FileManager:Company') ('Init {19}PROCEDURE(),DERIVED', 'Kill {19}PROCEDURE(),DERIVED', |
+  'UseFile {16}PROCEDURE(BYTE UseType = UseType:Uses),BYTE,PROC,DERIVED')
+WHEN  ('FileManager:Customers') ('Init {19}PROCEDURE(),DERIVED', 'Kill {19}PROCEDURE(),DERIVED', |
+  'PrimeFields {12}PROCEDURE(),PROC,DERIVED', 'UseFile {16}PROCEDURE(BYTE UseType = UseType:Uses),BYTE,PROC,DERIVED', |
+  'ValidateFieldServer    PROCEDURE(UNSIGNED Id,BYTE HandleErrors),BYTE,PROC,DERIVED')
+WHEN  ('FileManager:Detail') ('Init {19}PROCEDURE(),DERIVED', 'Kill {19}PROCEDURE(),DERIVED', |
+  'UseFile {16}PROCEDURE(BYTE UseType = UseType:Uses),BYTE,PROC,DERIVED', 'ValidateFieldServer    PROCEDURE(UNSIGNED Id,BYTE HandleErrors),BYTE,PROC,DERIVED')
+WHEN  ('FileManager:InvHist') ('Init {19}PROCEDURE(),DERIVED', 'Kill {19}PROCEDURE(),DERIVED', |
+  'PrimeFields {12}PROCEDURE(),PROC,DERIVED', 'UseFile {16}PROCEDURE(BYTE UseType = UseType:Uses),BYTE,PROC,DERIVED', |
+  'ValidateFieldServer    PROCEDURE(UNSIGNED Id,BYTE HandleErrors),BYTE,PROC,DERIVED')
+WHEN  ('FileManager:Orders') ('Init {19}PROCEDURE(),DERIVED', 'Kill {19}PROCEDURE(),DERIVED', |
+  'PrimeFields {12}PROCEDURE(),PROC,DERIVED', 'UseFile {16}PROCEDURE(BYTE UseType = UseType:Uses),BYTE,PROC,DERIVED', |
+  'ValidateFieldServer    PROCEDURE(UNSIGNED Id,BYTE HandleErrors),BYTE,PROC,DERIVED')
+WHEN  ('FileManager:Products') ('Init {19}PROCEDURE(),DERIVED', 'Kill {19}PROCEDURE(),DERIVED', |
+  'UseFile {16}PROCEDURE(BYTE UseType = UseType:Uses),BYTE,PROC,DERIVED')
+WHEN  ('FileManager:States') ('Init {19}PROCEDURE(),DERIVED', 'Kill {19}PROCEDURE(),DERIVED', |
+  'UseFile {16}PROCEDURE(BYTE UseType = UseType:Uses),BYTE,PROC,DERIVED')
+WHEN  ('RelationManager:Company') ('Init {19}PROCEDURE', 'Kill {19}PROCEDURE(),DERIVED')
+WHEN  ('RelationManager:Customers') ('Init {19}PROCEDURE', 'DeferedAddRelations    PROCEDURE(),DERIVED', |
+  'Kill {19}PROCEDURE(),DERIVED')
+WHEN  ('RelationManager:Detail') ('Init {19}PROCEDURE', 'DeferedAddRelations    PROCEDURE(),DERIVED', |
+  'Kill {19}PROCEDURE(),DERIVED')
+WHEN  ('RelationManager:InvHist') ('Init {19}PROCEDURE', 'DeferedAddRelations    PROCEDURE(),DERIVED', |
+  'Kill {19}PROCEDURE(),DERIVED')
+WHEN  ('RelationManager:Orders') ('Init {19}PROCEDURE', 'DeferedAddRelations    PROCEDURE(),DERIVED', |
+  'Kill {19}PROCEDURE(),DERIVED')
+WHEN  ('RelationManager:Products') ('Init {19}PROCEDURE', 'DeferedAddRelations    PROCEDURE(),DERIVED', |
+  'Kill {19}PROCEDURE(),DERIVED')
+WHEN  ('RelationManager:States') ('Init {19}PROCEDURE', 'DeferedAddRelations    PROCEDURE(),DERIVED', |
+  'Kill {19}PROCEDURE(),DERIVED')
+
+%ProgramAuthor DEFAULT  ('')
+%ProgramIcon DEFAULT  ('')
+%MessageDescription LONG  (1)
+%GlobalExternal LONG  (0)
+%ExternalSource DEFAULT  ('Dynamic Link Library (DLL)')
+%GenerateEmbedComments LONG  (1)
+%INIType DEFAULT  ('NVD_INI')
+%INIFile DEFAULT  ('Program Name.INI')
+%ININame DEFAULT  ('.\Invoice.ini')
+%INIProgramIniLocation DEFAULT  ('APPDIR')
+%INICSIDLDirectory DEFAULT  ('SV:CSIDL_PERSONAL')
+%CSIDLCompanyDir DEFAULT  ('')
+%CSIDLProductDir DEFAULT  ('')
+%CSIDLCreate LONG  (0)
+%INIInAppDirectory LONG  (1)
+%REGRoot DEFAULT  ('REG_CLASSES_ROOT')
+%DisableINISaveWindow LONG  (1)
+%PreserveVars MULTI LONG  ()
+%PreserveVar DEPEND %PreserveVars DEFAULT TIMES 0
+
+%EnableRunTimeTranslator LONG  (0)
+%FuzzyMatchingEnabled LONG  (0)
+%IgnoreCase LONG  (0)
+%WordOnly LONG  (0)
+%ButtonMarginsCompatibility LONG  (0)
+%UseDefaultXPManifest LONG  (0)
+%GenerateXPManifest LONG  (1)
+%LinkGenerateXPManifest LONG  (1)
+%AddVistaXPManifest LONG  (1)
+%VistaManifestExecutionLevel DEFAULT  ('asInvoker')
+%VistaManifestUIAccess LONG  (0)
+%NoThemedControlsDependency LONG  (0)
+%W7ManifestVista LONG  (0)
+%W7ManifestW7 LONG  (0)
+%W7ManifestW8 LONG  (1)
+%ForceMakeTransparentXPManifest LONG  (1)
+%ForceMakeColorXPManifest LONG  (0)
+%ForceSHEETNoTheme LONG  (0)
+%ExtUIXPMenuEnableGlobal LONG  (1)
+%ExtUIXPMenuColorTypeGlobal DEFAULT  ('XPLunaBlue')
+%ExtUIXPMenuDisableImageBar LONG  (1)
+%ExtUIXPMenuEnableRuntime LONG  (0)
+%ExtUIXPMenuRuntimeVar DEFAULT  ('GLOT:CustName')
+%ExtUIXPMenuColorLeftGlobal LONG  (16706781)
+%ExtUIXPMenuColorRightGlobal LONG  (14854529)
+%ExtUIXPMenuColorSelectionBarLeftGlobal LONG  (16706781)
+%ExtUIXPMenuColorSelectionBarRightGlobal LONG  (14854529)
+%ExtUIXPMenuSelVertical LONG  (1)
+%ExtUIXPMenuColorSelectionBorderGlobal LONG  (8388608)
+%ExtUIXPMenuColorHotLeftGlobal LONG  (16706781)
+%ExtUIXPMenuColorHotRightGlobal LONG  (14854529)
+%ExtUIXPMenuColorSelectedLeftGlobal LONG  (16706781)
+%ExtUIXPMenuColorSelectedRightGlobal LONG  (14854529)
+%ExtUIXPMenuColorNormalBarLeftGlobal LONG  (15920364)
+%ExtUIXPMenuColorNormalBarRightGlobal LONG  (15920364)
+%ExtUIXPMenuColorItemBackgroundGlobal LONG  (-2147483644)
+%ExtUIXPMenuColorNormalText LONG  (0)
+%ExtUIXPMenuColorSelectedText LONG  (0)
+%ExtUIXPMenuColorHotText LONG  (0)
+%ExtUIXPMenuFlat LONG  (1)
+%ExtUIXPMenuShowImageBar LONG  (0)
+%ExtUIXPMenuSeparator3D LONG  (1)
+%ExtUIXPMenuSeparatorFull LONG  (0)
+%ExtUIXPMenuVerticalLine LONG  (1)
+%ExtUIMDITabGlobal DEFAULT  ('DISABLE')
+%ExtUIMDITabStyleGlobal DEFAULT  ('Default')
+%ExtUITabStyleGlobal DEFAULT  ('Default')
+%WindowEnableEnhanceFocus LONG  (0)
+%SelectedText LONG  (1)
+%SelectedRadio LONG  (1)
+%SelectedSpin LONG  (1)
+%SelectedCheck LONG  (1)
+%SelectedDropList LONG  (1)
+%SelectedList LONG  (1)
+%SelectedDisplayChangeColor LONG  (1)
+%SelectedColor LONG  (65535)
+%SelectedStyle LONG  (1)
+%SelectedRequired LONG  (0)
+%SelectedRequiredColor LONG  (65535)
+%SelectedDisplayBox LONG  (1)
+%SelectedDisplayBoxFillColor LONG  (65535)
+%SelectedDisplayBoxBorderColor LONG  (0)
+%SelectedDisplayBoxBorderSize DEFAULT  ('2')
+%SelectedRequiredBox LONG  (0)
+%SelectedRequiredDisplayBoxFillColor LONG  (255)
+%SelectedRequiredDisplayBoxBorderColor LONG  (0)
+%SelectedCaret LONG  (1)
+%SelectedCaretColor LONG  (8421504)
+%SelectedCaretCharacter DEFAULT  ('»')
+%SelectedCaretCharacterSeparation DEFAULT  ('8')
+%ExcludeSelectedDropList LONG  (1)
+%GlobalUseEnterInsteadTab LONG  (0)
+%GlobalUseEnterInsteadTabExclude MULTI DEFAULT  ()
+%GlobalUseEnterInsteadTabEnable DEFAULT  ('Enable')
+%GlobalUseEnterInsteadTabEnableValue DEFAULT  ('True')
+%GlobalInterLine DEFAULT  ('0')
+%GlobalEnableAutoSizeColumn LONG  (0)
+%GlobalEnableListFormatManager LONG  (0)
+%GlobalUserFieldListFormatManager DEFAULT  ('1')
+%TableOrigin DEFAULT  ('Application')
+%FileEquate DEFAULT  ('LFM_CFile')
+%ConfigFilePRE DEFAULT  ('CFG')
+%ConfigFileOEM LONG  (0)
+%ConfigFileTHREAD LONG  (1)
+%ConfigFileENCRYPT LONG  (0)
+%ConfigFilePASSWORD DEFAULT  ('')
+%FormatNameSize DEFAULT  ('30')
+%FormatBufferSize DEFAULT  ('5120')
+%VariableBufferSize DEFAULT  ('2048')
+%ConfigFilePath DEFAULT  ('')
+%UseConfigFileName DEFAULT  ('Default')
+%ConfigFileNAME DEFAULT  ('Formats.FDB')
+%ColonCounter DEFAULT  ('')
+%WrongSymbol DEFAULT  ('')
+%DictionaryTableOrigin FILE  ()
+%GlobalLFMSortOrderMenuText DEFAULT  ('SortOrder')
+%GlobalEnableRebase LONG  (0)
+%RBDMethod DEFAULT  ('Specify manually')
+%RBDImageBase DEFAULT  ('10000000')
+%DefaultGenerate LONG  (0)
+%DefaultRILogout LONG  (1)
+%LockRecoverTime DEFAULT  ('10')
+%DefaultThreaded DEFAULT  ('Use File Setting')
+%DefaultCreate DEFAULT  ('Use File Setting')
+%DefaultExternal DEFAULT  ('None External')
+%DefaultLocalExternal LONG  (0)
+%DefaultExternalSource DEFAULT  ('')
+%DefaultExternalAPP LONG  (0)
+%DefaultExport LONG  (0)
+%DefaultOpenMode DEFAULT  ('Share')
+%DefaultUserAccess DEFAULT  ('Read/Write')
+%DefaultOtherAccess DEFAULT  ('Deny None')
+%DefaultLazyOpen LONG  (1)
+%GeneratePropDataPath LONG  (0)
+%PropDataPathLocation DEFAULT  ('CSIDLLIKEINI')
+%DataPathCSIDLDirectory DEFAULT  ('SV:CSIDL_PERSONAL')
+%DataPathCSIDLCompanyDir DEFAULT  ('')
+%DataPathCSIDLProductDir DEFAULT  ('')
+%DataPathCSIDLCreate LONG  (0)
+%DataPathOtherDirectory DEFAULT  ('')
+%DataPathOtherDirectoryCreate LONG  (0)
+%OverrideGenerate DEPEND %File LONG TIMES 7
+WHEN  ('Company') (0)
+WHEN  ('Customers') (0)
+WHEN  ('Detail') (0)
+WHEN  ('InvHist') (0)
+WHEN  ('Orders') (0)
+WHEN  ('Products') (0)
+WHEN  ('States') (0)
+
+%OverrideRILogout DEPEND %File DEFAULT TIMES 8
+WHEN  ('') ('Use Default')
+WHEN  ('Company') ('Use Default')
+WHEN  ('Customers') ('')
+WHEN  ('Detail') ('')
+WHEN  ('InvHist') ('')
+WHEN  ('Orders') ('')
+WHEN  ('Products') ('')
+WHEN  ('States') ('')
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 19
+WHEN  ('ErrorManager') ('YES')
+WHEN  ('ErrorStatusManager') ('YES')
+WHEN  ('FileManager:Company') ('YES')
+WHEN  ('FileManager:Customers') ('YES')
+WHEN  ('FileManager:Detail') ('YES')
+WHEN  ('FileManager:InvHist') ('YES')
+WHEN  ('FileManager:Orders') ('YES')
+WHEN  ('FileManager:Products') ('YES')
+WHEN  ('FileManager:States') ('YES')
+WHEN  ('FuzzyMatcher') ('YES')
+WHEN  ('INIManager') ('YES')
+WHEN  ('RelationManager:Company') ('YES')
+WHEN  ('RelationManager:Customers') ('YES')
+WHEN  ('RelationManager:Detail') ('YES')
+WHEN  ('RelationManager:InvHist') ('YES')
+WHEN  ('RelationManager:Orders') ('YES')
+WHEN  ('RelationManager:Products') ('YES')
+WHEN  ('RelationManager:States') ('YES')
+WHEN  ('Translator') ('YES')
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 19
+WHEN  ('ErrorManager') ('GlobalErrors')
+WHEN  ('ErrorStatusManager') ('GlobalErrorsStatus')
+WHEN  ('FileManager:Company') ('Hide:Access:Company')
+WHEN  ('FileManager:Customers') ('Hide:Access:Customers')
+WHEN  ('FileManager:Detail') ('Hide:Access:Detail')
+WHEN  ('FileManager:InvHist') ('Hide:Access:InvHist')
+WHEN  ('FileManager:Orders') ('Hide:Access:Orders')
+WHEN  ('FileManager:Products') ('Hide:Access:Products')
+WHEN  ('FileManager:States') ('Hide:Access:States')
+WHEN  ('FuzzyMatcher') ('FuzzyMatcher')
+WHEN  ('INIManager') ('INIMgr')
+WHEN  ('RelationManager:Company') ('Hide:Relate:Company')
+WHEN  ('RelationManager:Customers') ('Hide:Relate:Customers')
+WHEN  ('RelationManager:Detail') ('Hide:Relate:Detail')
+WHEN  ('RelationManager:InvHist') ('Hide:Relate:InvHist')
+WHEN  ('RelationManager:Orders') ('Hide:Relate:Orders')
+WHEN  ('RelationManager:Products') ('Hide:Relate:Products')
+WHEN  ('RelationManager:States') ('Hide:Relate:States')
+WHEN  ('Translator') ('Translator')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 19
+WHEN  ('ErrorManager') (1)
+WHEN  ('ErrorStatusManager') (1)
+WHEN  ('FileManager:Company') (1)
+WHEN  ('FileManager:Customers') (1)
+WHEN  ('FileManager:Detail') (1)
+WHEN  ('FileManager:InvHist') (1)
+WHEN  ('FileManager:Orders') (1)
+WHEN  ('FileManager:Products') (1)
+WHEN  ('FileManager:States') (1)
+WHEN  ('FuzzyMatcher') (1)
+WHEN  ('INIManager') (1)
+WHEN  ('RelationManager:Company') (1)
+WHEN  ('RelationManager:Customers') (1)
+WHEN  ('RelationManager:Detail') (1)
+WHEN  ('RelationManager:InvHist') (1)
+WHEN  ('RelationManager:Orders') (1)
+WHEN  ('RelationManager:Products') (1)
+WHEN  ('RelationManager:States') (1)
+WHEN  ('Translator') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 19
+WHEN  ('ErrorManager') (1)
+WHEN  ('ErrorStatusManager') (1)
+WHEN  ('FileManager:Company') (1)
+WHEN  ('FileManager:Customers') (1)
+WHEN  ('FileManager:Detail') (1)
+WHEN  ('FileManager:InvHist') (1)
+WHEN  ('FileManager:Orders') (1)
+WHEN  ('FileManager:Products') (1)
+WHEN  ('FileManager:States') (1)
+WHEN  ('FuzzyMatcher') (1)
+WHEN  ('INIManager') (1)
+WHEN  ('RelationManager:Company') (1)
+WHEN  ('RelationManager:Customers') (1)
+WHEN  ('RelationManager:Detail') (1)
+WHEN  ('RelationManager:InvHist') (1)
+WHEN  ('RelationManager:Orders') (1)
+WHEN  ('RelationManager:Products') (1)
+WHEN  ('RelationManager:States') (1)
+WHEN  ('Translator') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 19
+WHEN  ('ErrorManager') ('AStringValue')
+WHEN  ('ErrorStatusManager') ('')
+WHEN  ('FileManager:Company') ('AStringValue')
+WHEN  ('FileManager:Customers') ('AStringValue')
+WHEN  ('FileManager:Detail') ('AStringValue')
+WHEN  ('FileManager:InvHist') ('AStringValue')
+WHEN  ('FileManager:Orders') ('AStringValue')
+WHEN  ('FileManager:Products') ('AStringValue')
+WHEN  ('FileManager:States') ('AStringValue')
+WHEN  ('FuzzyMatcher') ('AStringValue')
+WHEN  ('INIManager') ('AStringValue')
+WHEN  ('RelationManager:Company') ('AStringValue')
+WHEN  ('RelationManager:Customers') ('AStringValue')
+WHEN  ('RelationManager:Detail') ('AStringValue')
+WHEN  ('RelationManager:InvHist') ('AStringValue')
+WHEN  ('RelationManager:Orders') ('AStringValue')
+WHEN  ('RelationManager:Products') ('AStringValue')
+WHEN  ('RelationManager:States') ('AStringValue')
+WHEN  ('Translator') ('AStringValue')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 19
+WHEN  ('ErrorManager') (0)
+WHEN  ('ErrorStatusManager') (0)
+WHEN  ('FileManager:Company') (0)
+WHEN  ('FileManager:Customers') (0)
+WHEN  ('FileManager:Detail') (0)
+WHEN  ('FileManager:InvHist') (0)
+WHEN  ('FileManager:Orders') (0)
+WHEN  ('FileManager:Products') (0)
+WHEN  ('FileManager:States') (0)
+WHEN  ('FuzzyMatcher') (0)
+WHEN  ('INIManager') (0)
+WHEN  ('RelationManager:Company') (0)
+WHEN  ('RelationManager:Customers') (0)
+WHEN  ('RelationManager:Detail') (0)
+WHEN  ('RelationManager:InvHist') (0)
+WHEN  ('RelationManager:Orders') (0)
+WHEN  ('RelationManager:Products') (0)
+WHEN  ('RelationManager:States') (0)
+WHEN  ('Translator') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 3
+WHEN  ('FuzzyMatcher')TIMES 0
+WHEN  ('INIManager')TIMES 0
+WHEN  ('RelationManager:Customers')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 3
+WHEN  ('FuzzyMatcher')TIMES 0
+WHEN  ('INIManager')TIMES 0
+WHEN  ('RelationManager:Customers')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%OverrideThreaded DEPEND %File DEFAULT TIMES 8
+WHEN  ('') ('Use Default')
+WHEN  ('Company') ('Use Default')
+WHEN  ('Customers') ('')
+WHEN  ('Detail') ('')
+WHEN  ('InvHist') ('')
+WHEN  ('Orders') ('')
+WHEN  ('Products') ('')
+WHEN  ('States') ('')
+
+%OverrideCreate DEPEND %File DEFAULT TIMES 8
+WHEN  ('') ('Use Default')
+WHEN  ('Company') ('Use Default')
+WHEN  ('Customers') ('')
+WHEN  ('Detail') ('')
+WHEN  ('InvHist') ('')
+WHEN  ('Orders') ('')
+WHEN  ('Products') ('')
+WHEN  ('States') ('')
+
+%OverrideExternal DEPEND %File DEFAULT TIMES 8
+WHEN  ('') ('Use Default')
+WHEN  ('Company') ('Use Default')
+WHEN  ('Customers') ('')
+WHEN  ('Detail') ('')
+WHEN  ('InvHist') ('')
+WHEN  ('Orders') ('')
+WHEN  ('Products') ('')
+WHEN  ('States') ('')
+
+%OverrideLocalExternal DEPEND %File LONG TIMES 0
+
+%OverrideExternalSource DEPEND %File DEFAULT TIMES 7
+WHEN  ('Company') ('')
+WHEN  ('Customers') ('')
+WHEN  ('Detail') ('')
+WHEN  ('InvHist') ('')
+WHEN  ('Orders') ('')
+WHEN  ('Products') ('')
+WHEN  ('States') ('')
+
+%OverrideExternalAPP DEPEND %File LONG TIMES 7
+WHEN  ('Company') (0)
+WHEN  ('Customers') (0)
+WHEN  ('Detail') (0)
+WHEN  ('InvHist') (0)
+WHEN  ('Orders') (0)
+WHEN  ('Products') (0)
+WHEN  ('States') (0)
+
+%OverrideExport DEPEND %File LONG TIMES 7
+WHEN  ('Company') (0)
+WHEN  ('Customers') (0)
+WHEN  ('Detail') (0)
+WHEN  ('InvHist') (0)
+WHEN  ('Orders') (0)
+WHEN  ('Products') (0)
+WHEN  ('States') (0)
+
+%FileDeclarationMode DEPEND %File DEFAULT TIMES 8
+WHEN  ('') ('Use User Options')
+WHEN  ('Company') ('Use User Options')
+WHEN  ('Customers') ('Use User Options')
+WHEN  ('Detail') ('Use User Options')
+WHEN  ('InvHist') ('Use User Options')
+WHEN  ('Orders') ('Use User Options')
+WHEN  ('Products') ('Use User Options')
+WHEN  ('States') ('Use User Options')
+
+%FileDeclarationType DEPEND %File LONG TIMES 8
+WHEN  ('') (0)
+WHEN  ('Company') (0)
+WHEN  ('Customers') (0)
+WHEN  ('Detail') (0)
+WHEN  ('InvHist') (0)
+WHEN  ('Orders') (0)
+WHEN  ('Products') (0)
+WHEN  ('States') (0)
+
+%FileDeclarationThread DEPEND %File LONG TIMES 8
+WHEN  ('') (0)
+WHEN  ('Company') (1)
+WHEN  ('Customers') (1)
+WHEN  ('Detail') (1)
+WHEN  ('InvHist') (1)
+WHEN  ('Orders') (1)
+WHEN  ('Products') (1)
+WHEN  ('States') (1)
+
+%FileDeclarationBindable DEPEND %File LONG TIMES 8
+WHEN  ('') (1)
+WHEN  ('Company') (1)
+WHEN  ('Customers') (1)
+WHEN  ('Detail') (1)
+WHEN  ('InvHist') (1)
+WHEN  ('Orders') (1)
+WHEN  ('Products') (1)
+WHEN  ('States') (1)
+
+%FileDeclarationName DEPEND %File DEFAULT TIMES 0
+
+%FileDeclarationOver DEPEND %File DEFAULT TIMES 0
+
+%OverrideOpenMode DEPEND %File DEFAULT TIMES 8
+WHEN  ('') ('Use Default')
+WHEN  ('Company') ('Use Default')
+WHEN  ('Customers') ('')
+WHEN  ('Detail') ('')
+WHEN  ('InvHist') ('')
+WHEN  ('Orders') ('')
+WHEN  ('Products') ('')
+WHEN  ('States') ('')
+
+%OverrideUserAccess DEPEND %File DEFAULT TIMES 8
+WHEN  ('') ('Use Default')
+WHEN  ('Company') ('Use Default')
+WHEN  ('Customers') ('Use Default')
+WHEN  ('Detail') ('Use Default')
+WHEN  ('InvHist') ('Use Default')
+WHEN  ('Orders') ('Use Default')
+WHEN  ('Products') ('Use Default')
+WHEN  ('States') ('Use Default')
+
+%OverrideOtherAccess DEPEND %File DEFAULT TIMES 8
+WHEN  ('') ('Use Default')
+WHEN  ('Company') ('Use Default')
+WHEN  ('Customers') ('Use Default')
+WHEN  ('Detail') ('Use Default')
+WHEN  ('InvHist') ('Use Default')
+WHEN  ('Orders') ('Use Default')
+WHEN  ('Products') ('Use Default')
+WHEN  ('States') ('Use Default')
+
+%OverrideLazyOpen DEPEND %File DEFAULT TIMES 8
+WHEN  ('') ('Use Default')
+WHEN  ('Company') ('Use Default')
+WHEN  ('Customers') ('Use Default')
+WHEN  ('Detail') ('Use Default')
+WHEN  ('InvHist') ('Use Default')
+WHEN  ('Orders') ('Use Default')
+WHEN  ('Products') ('Use Default')
+WHEN  ('States') ('Use Default')
+
+%StandardExternalModule DEPEND %Module LONG TIMES 22
+WHEN  ('') (1)
+WHEN  ('invoice.clw') (1)
+WHEN  ('invoice001.clw') (1)
+WHEN  ('invoice002.clw') (1)
+WHEN  ('invoice003.clw') (1)
+WHEN  ('invoice004.clw') (1)
+WHEN  ('invoice005.clw') (1)
+WHEN  ('invoice006.clw') (1)
+WHEN  ('invoice007.clw') (1)
+WHEN  ('invoice008.clw') (1)
+WHEN  ('invoice009.clw') (1)
+WHEN  ('invoice010.clw') (1)
+WHEN  ('invoice011.clw') (1)
+WHEN  ('invoice012.clw') (1)
+WHEN  ('invoice013.clw') (1)
+WHEN  ('invoice014.clw') (1)
+WHEN  ('invoice015.clw') (1)
+WHEN  ('invoice016.clw') (1)
+WHEN  ('invoice017.clw') (1)
+WHEN  ('invoice018.clw') (1)
+WHEN  ('invoice019.clw') (1)
+WHEN  ('invoice020.clw') (1)
+
+%NoGenerateGlobals LONG  (0)
+%WindowManagerType DEFAULT  ('WindowManager')
+%ResetOnGainFocus LONG  (0)
+%AutoToolbar LONG  (1)
+%AutoRefresh LONG  (1)
+%ImageClass DEFAULT  ('ImageManager')
+%ErrorStatusManagerType DEFAULT  ('ErrorStatusClass')
+%ErrorManagerType DEFAULT  ('ErrorClass')
+%DefaultErrorCategory DEFAULT  ('ABC')
+%AllowSelectCopy LONG  (0)
+%StoreErrorHistory LONG  (0)
+%LimitStoredHistory LONG  (0)
+%ErrorHistoryThreshold DEFAULT  ('300')
+%HistoryViewTrigger DEFAULT  ('Level:Fatal')
+%PopupClass DEFAULT  ('PopupClass')
+%SelectFileClass DEFAULT  ('SelectFileClass')
+%ResizerType DEFAULT  ('WindowResizeClass')
+%ResizerDeFaultFindParents LONG  (1)
+%ResizerDefaultOptimizeMoves LONG  (0)
+%ResizerDefaultOptimizeRedraws LONG  (1)
+%INIClass DEFAULT  ('INIClass')
+%RunTimeTranslatorType DEFAULT  ('TranslatorClass')
+%ExtractionFilename DEFAULT  ('')
+%TranslationGroups MULTI LONG  ()
+%TranslationFile DEPEND %TranslationGroups DEFAULT TIMES 0
+
+%TranslationGroup DEPEND %TranslationGroups DEFAULT TIMES 0
+
+%CalendarManagerType DEFAULT  ('CalendarClass')
+%GlobalChangeColor LONG  (0)
+%GlobalColorSunday LONG  (255)
+%GlobalColorSaturday LONG  (255)
+%GlobalColorHoliday LONG  (32768)
+%GlobalColorOther LONG  (0)
+%GlobalSelectOnClose DEFAULT  ('Select')
+%GlobalUseABCClasess LONG  (1)
+%FileManagerType DEFAULT  ('FileManager')
+%ViewManagerType DEFAULT  ('ViewManager')
+%RelationManagerType DEFAULT  ('RelationManager')
+%BrowserType DEFAULT  ('BrowseClass')
+%ActiveInvisible LONG  (0)
+%AllowUnfilled LONG  (0)
+%RetainRow LONG  (1)
+%FileDropManagerType DEFAULT  ('FileDropClass')
+%FileDropComboManagerType DEFAULT  ('FileDropComboClass')
+%FormVCRManagerType DEFAULT  ('FormVCRClass')
+%BrowseEIPManagerType DEFAULT  ('BrowseEIPManager')
+%EditInPlaceInterface DEFAULT  ('Original')
+%EditInPlaceType DEFAULT  ('EditEntryClass')
+%EditInPlaceEntryType DEFAULT  ('EditEntryClass')
+%EditInPlaceTextType DEFAULT  ('EditTextClass')
+%EditInPlaceCheckType DEFAULT  ('EditCheckClass')
+%EditInPlaceSpinType DEFAULT  ('EditSpinClass')
+%EditInPlaceDropListType DEFAULT  ('EditDropListClass')
+%EditInPlaceDropComboType DEFAULT  ('EditDropComboClass')
+%EditInPlaceColorType DEFAULT  ('EditColorClass')
+%EditInPlaceFileType DEFAULT  ('EditFileClass')
+%EditInPlaceFontType DEFAULT  ('EditFontClass')
+%EditInPlaceMultiSelectType DEFAULT  ('EditMultiSelectClass')
+%EditInPlaceCalendarType DEFAULT  ('EditCalendarClass')
+%EditInPlaceLookupType DEFAULT  ('EditLookupClass')
+%EditInPlaceOtherType DEFAULT  ('EditEntryClass')
+%QBEFormType DEFAULT  ('QueryFormClass')
+%QBEFormVisualType DEFAULT  ('QueryFormVisual')
+%QBEListType DEFAULT  ('QueryListClass')
+%QBEListVisualType DEFAULT  ('QueryListVisual')
+%StepManagerType DEFAULT  ('StepClass')
+%StepManagerLongType DEFAULT  ('StepLongClass')
+%StepManagerRealType DEFAULT  ('StepRealClass')
+%StepManagerStringType DEFAULT  ('StepStringClass')
+%StepManagerCustomType DEFAULT  ('StepCustomClass')
+%StepLocatorType DEFAULT  ('StepLocatorClass')
+%EntryLocatorType DEFAULT  ('EntryLocatorClass')
+%IncrementalLocatorType DEFAULT  ('IncrementalLocatorClass')
+%FilteredLocatorType DEFAULT  ('FilterLocatorClass')
+%FuzzyMatcherClass DEFAULT  ('FuzzyClass')
+%GridClass DEFAULT  ('GridClass')
+%SidebarClass DEFAULT  ('SidebarClass')
+%ProcessType DEFAULT  ('ProcessClass')
+%PrintPreviewType DEFAULT  ('PrintPreviewClass')
+%ReportManagerType DEFAULT  ('ReportManager')
+%ReportTargetSelectorManagerType DEFAULT  ('ReportTargetSelectorClass')
+%BreakManagerType DEFAULT  ('BreakManagerClass')
+%AsciiViewerClass DEFAULT  ('AsciiViewerClass')
+%AsciiSearchClass DEFAULT  ('AsciiSearchClass')
+%AsciiPrintClass DEFAULT  ('AsciiPrintClass')
+%AsciiFileManagerType DEFAULT  ('AsciiFileClass')
+%ToolbarClass DEFAULT  ('ToolbarClass')
+%ToolbarListBoxType DEFAULT  ('ToolbarListboxClass')
+%ToolbarRelTreeType DEFAULT  ('ToolbarReltreeClass')
+%ToolbarUpdateClassType DEFAULT  ('ToolbarUpdateClass')
+%ToolbarFormVCRType DEFAULT  ('ToolbarFormVCRClass')
+%OverrideAbcSettings LONG  (0)
+%AbcSourceLocation DEFAULT  ('LINK')
+%AbcLibraryName DEFAULT  ('')
+%AppTemplateFamily DEFAULT  ('ABC')
+%CWTemplateVersion DEFAULT  ('v9.0')
+%ABCVersion DEFAULT  ('9000')
+%WindowFrameDragging LONG  (1)
+%INIActive LONG  (1)
+%DefaultCloseFile DEFAULT  ('Close the File')
+%GlobalUseDefaultFileManager LONG  (1)
+%GlobalFileManagerClass DEFAULT  ('')
+%GlobalUseDefaultRelationManager LONG  (1)
+%GlobalRelationManagerClass DEFAULT  ('')
+%OverrideCloseFile DEPEND %File DEFAULT TIMES 7
+WHEN  ('Company') ('Use Default')
+WHEN  ('Customers') ('')
+WHEN  ('Detail') ('')
+WHEN  ('InvHist') ('')
+WHEN  ('Orders') ('')
+WHEN  ('Products') ('')
+WHEN  ('States') ('')
+
+%OverrideUseDefaultFileManager DEPEND %File LONG TIMES 7
+WHEN  ('Company') (1)
+WHEN  ('Customers') (1)
+WHEN  ('Detail') (1)
+WHEN  ('InvHist') (1)
+WHEN  ('Orders') (1)
+WHEN  ('Products') (1)
+WHEN  ('States') (1)
+
+%OverrideFileManagerClass DEPEND %File DEFAULT TIMES 7
+WHEN  ('Company') ('')
+WHEN  ('Customers') ('')
+WHEN  ('Detail') ('')
+WHEN  ('InvHist') ('')
+WHEN  ('Orders') ('')
+WHEN  ('Products') ('')
+WHEN  ('States') ('')
+
+%OverrideUseDefaultRelationManager DEPEND %File LONG TIMES 7
+WHEN  ('Company') (1)
+WHEN  ('Customers') (1)
+WHEN  ('Detail') (1)
+WHEN  ('InvHist') (1)
+WHEN  ('Orders') (1)
+WHEN  ('Products') (1)
+WHEN  ('States') (1)
+
+%OverrideRelationManagerClass DEPEND %File DEFAULT TIMES 7
+WHEN  ('Company') ('')
+WHEN  ('Customers') ('')
+WHEN  ('Detail') ('')
+WHEN  ('InvHist') ('')
+WHEN  ('Orders') ('')
+WHEN  ('Products') ('')
+WHEN  ('States') ('')
+
+%WarnOnLogoutError LONG  (1)
+%EnableExceptionMessage LONG  (0)
+[PERSIST]
+%GenerationCompleted DEPEND %Module DEFAULT TIMES 21
+WHEN  ('invoice.clw') ('1')
+WHEN  ('invoice001.clw') ('1')
+WHEN  ('invoice002.clw') ('1')
+WHEN  ('invoice003.clw') ('1')
+WHEN  ('invoice004.clw') ('1')
+WHEN  ('invoice005.clw') ('1')
+WHEN  ('invoice006.clw') ('1')
+WHEN  ('invoice007.clw') ('1')
+WHEN  ('invoice008.clw') ('1')
+WHEN  ('invoice009.clw') ('1')
+WHEN  ('invoice010.clw') ('1')
+WHEN  ('invoice011.clw') ('1')
+WHEN  ('invoice012.clw') ('1')
+WHEN  ('invoice013.clw') ('1')
+WHEN  ('invoice014.clw') ('1')
+WHEN  ('invoice015.clw') ('1')
+WHEN  ('invoice016.clw') ('1')
+WHEN  ('invoice017.clw') ('1')
+WHEN  ('invoice018.clw') ('1')
+WHEN  ('invoice019.clw') ('1')
+WHEN  ('invoice020.clw') ('1')
+
+%LastProgramExtension DEFAULT  ('EXE')
+%LastApplicationDebug DEFAULT  ('')
+%LastApplicationLocalLibrary DEFAULT  ('')
+%LastTarget32 DEFAULT  ('1')
+%SaveCreateLocalMap DEFAULT  ('1')
+[PROJECT]
+#system win32 exe
+#model clarion dll
+#set RELEASE = on
+#pragma define(_ABCDllMode_=>0)
+#pragma define(_ABCLinkMode_=>1)
+#compile "invoice.clw"
+#compile "invoice001.clw"
+#compile "invoice002.clw"
+#compile "invoice003.clw"
+#compile "invoice004.clw"
+#compile "invoice005.clw"
+#compile "invoice006.clw"
+#compile "invoice007.clw"
+#compile "invoice008.clw"
+#compile "invoice009.clw"
+#compile "invoice010.clw"
+#compile "invoice011.clw"
+#compile "invoice012.clw"
+#compile "invoice013.clw"
+#compile "invoice014.clw"
+#compile "invoice015.clw"
+#compile "invoice016.clw"
+#compile "invoice017.clw"
+#compile "invoice018.clw"
+#compile "invoice019.clw"
+#compile "invoice020.clw"
+#compile "invoice_BC0.CLW"
+#compile "INVOICE_BC.CLW"
+#pragma link("QkQBE.ico")
+#pragma link("QkLoad.ico")
+#pragma link("File.ico")
+#pragma link("Folder.ico")
+#pragma link("Invoice.ico")
+#pragma link("star1.ico")
+#pragma link("C%V%tps%X%%L%.lib")
+#pragma link("invoice.EXE.manifest")
+#link "invoice.EXE"

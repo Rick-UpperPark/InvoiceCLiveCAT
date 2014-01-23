@@ -1,0 +1,35 @@
+[MODULE]
+NAME 'CityStateZip_invoice.clw'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME CityStateZip
+PROTOTYPE '(<<String>,<<String>,<<String>),String'
+PARAMETERS '(LOC:City,LOC:State,LOC:Zip)'
+[COMMON]
+DESCRIPTION 'Function to return CSZ'
+FROM ABC Source
+[PROMPTS]
+%GenerateOpenClose LONG  (0)
+%GenerateSaveRestore LONG  (0)
+[EMBED]
+EMBED %ProcessedCode
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 4000
+PROPERTY:END
+ !Format City, State, and Zip
+  IF OMITTED(1) OR LOC:City = ''
+    RETURN(LOC:State &'  '& LOC:Zip)
+  ELSIF OMITTED(2) OR LOC:State = ''
+    RETURN(CLIP(LOC:City) &',  '& LOC:Zip)
+  ELSIF OMITTED(3) OR LOC:Zip = ''
+    RETURN(CLIP(LOC:City) &',  '& LOC:State)
+  ELSE
+    RETURN(CLIP(LOC:City) &', '& LOC:State &'  '& LOC:Zip)
+  END
+
+[END]
+[END]
+[END]

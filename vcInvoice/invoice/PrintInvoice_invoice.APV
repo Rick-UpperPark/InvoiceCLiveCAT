@@ -1,0 +1,1473 @@
+[MODULE]
+NAME 'PrintInvoice_invoice.clw'
+[COMMON]
+FROM ABC GENERATED
+[PROCEDURE]
+NAME PrintInvoice
+[COMMON]
+DESCRIPTION 'Prints Invoice - Using the Pause Control Template'
+FROM ABC Report
+[DATA]
+[SCREENCONTROLS]
+! PROMPT('LocalRequest:'),USE(?LocalRequest:Prompt)
+! ENTRY(@n-14),USE(LocalRequest)
+[REPORTCONTROLS]
+! STRING(@n-14),USE(LocalRequest)
+LocalRequest             LONG
+!!> GUID('b6bde2ae-9f00-4ff1-ace4-348b66ba33fe'),PROMPT('LocalRequest:'),HEADER('LocalRequest'),PICTURE(@n-14)
+[SCREENCONTROLS]
+! PROMPT('FilesOpened:'),USE(?FilesOpened:Prompt)
+! ENTRY(@n3),USE(FilesOpened)
+[REPORTCONTROLS]
+! STRING(@n3),USE(FilesOpened)
+FilesOpened              BYTE
+!!> GUID('12ff935b-ba0a-4063-bf80-b38aa69280e2'),PROMPT('FilesOpened:'),HEADER('FilesOpened'),PICTURE(@n3)
+[SCREENCONTROLS]
+! PROMPT('Extend Price:'),USE(?ExtendPrice:Prompt)
+! ENTRY(@n$10.2),USE(ExtendPrice)
+[REPORTCONTROLS]
+! STRING(@n$10.2),USE(ExtendPrice)
+ExtendPrice              DECIMAL(7,2)
+!!> GUID('1e580b3d-f902-4d48-bf1c-bf45d4b4b45b'),PROMPT('Extend Price:'),HEADER('Extend Price'),PICTURE(@n$10.2)
+[SCREENCONTROLS]
+! PROMPT('LOC : CCSZ:'),USE(?LOC:CCSZ:Prompt)
+! ENTRY(@s35),USE(LOC:CCSZ)
+[REPORTCONTROLS]
+! STRING(@s35),USE(LOC:CCSZ)
+LOC:CCSZ                 STRING(35)
+!!> GUID('178c18ea-c94a-4c57-8a8f-2323994e7898'),PROMPT('LOC : CCSZ:'),HEADER('LOC : CCSZ'),PICTURE(@s35)
+Progress:Thermometer     BYTE
+!!> GUID('791526f6-1c4e-42b0-b6cd-6b2f66371390')
+[FILES]
+[PRIMARY]
+Orders
+[INSTANCE]
+2
+[KEY]
+ORD:InvoiceNumberKey
+[PRIMARY]
+Detail
+[INSTANCE]
+0
+[KEY]
+DTL:KeyDetails
+[SECONDARY]
+Products Detail
+[OTHERS]
+Customers
+Orders
+Company
+[PROMPTS]
+%RangeLimitType DEFAULT  ('Current Value')
+%ReturnValue FIELD  ()
+%WindowMessage DEFAULT  ('')
+%EnablePrintPreview LONG  (1)
+%EnableQuickScan LONG  (1)
+%RecordFilter DEFAULT  ('DTL:CustNumber=ORD:CustNumber AND DTL:OrderNumber=ORD:OrderNumber')
+%ApproxRecordCount DEFAULT  ('')
+%RangeField COMPONENT  ()
+%RangeLimit FIELD  ()
+%RangeLow FIELD  ()
+%RangeHigh FIELD  ()
+%RangeFile FILE  ()
+%HotFields MULTI LONG  (1, 2, 3, 4, 5, 6, 7)
+%HotField DEPEND %HotFields FIELD TIMES 7
+WHEN  (1) (DTL:CustNumber)
+WHEN  (2) (DTL:OrderNumber)
+WHEN  (3) (ORD:CustNumber)
+WHEN  (4) (ORD:OrderNumber)
+WHEN  (5) (GLOT:CustName)
+WHEN  (6) (GLOT:CustAddress)
+WHEN  (7) (GLOT:CusCSZ)
+
+%HotFieldBound DEPEND %HotFields LONG TIMES 7
+WHEN  (1) (1)
+WHEN  (2) (1)
+WHEN  (3) (1)
+WHEN  (4) (1)
+WHEN  (5) (1)
+WHEN  (6) (1)
+WHEN  (7) (1)
+
+%DetailFilter DEPEND %ReportControl DEFAULT TIMES 58
+WHEN  ('') ('FALSE')
+WHEN  ('?Box1') ('')
+WHEN  ('?Box5') ('')
+WHEN  ('?Box6') ('')
+WHEN  ('?COM:Address') ('')
+WHEN  ('?COM:Name') ('')
+WHEN  ('?COM:Phone') ('')
+WHEN  ('?DTL:BackOrdered') ('')
+WHEN  ('?DTL:Discount') ('')
+WHEN  ('?DTL:Discount:2') ('')
+WHEN  ('?DTL:QuantityOrdered') ('')
+WHEN  ('?DTL:TaxPaid') ('')
+WHEN  ('?DTL:TaxPaid:2') ('')
+WHEN  ('?DTL:TotalCost') ('')
+WHEN  ('?DTL:TotalCost:2') ('')
+WHEN  ('?ExtendPrice') ('')
+WHEN  ('?ExtendPrice:2') ('')
+WHEN  ('?GLOT:CusCSZ') ('')
+WHEN  ('?GLOT:CustAddress') ('')
+WHEN  ('?GLOT:CustName') ('')
+WHEN  ('?GLOT:ShipAddress') ('')
+WHEN  ('?GLOT:ShipCSZ') ('')
+WHEN  ('?GLOT:ShipName') ('')
+WHEN  ('?Group1') ('')
+WHEN  ('?Group2') ('')
+WHEN  ('?Image1') ('')
+WHEN  ('?Image2') ('')
+WHEN  ('?LOC:CCSZ') ('')
+WHEN  ('?Line1') ('')
+WHEN  ('?Line2') ('')
+WHEN  ('?Line3') ('')
+WHEN  ('?Line4') ('')
+WHEN  ('?Line5') ('')
+WHEN  ('?Line6') ('')
+WHEN  ('?Line7') ('')
+WHEN  ('?NoteString') ('')
+WHEN  ('?ORD:InvoiceNumber') ('')
+WHEN  ('?ORD:OrderDate') ('')
+WHEN  ('?PRO:Description') ('')
+WHEN  ('?PRO:Price') ('')
+WHEN  ('?PRO:ProductSKU') ('')
+WHEN  ('?String15') ('')
+WHEN  ('?String17') ('')
+WHEN  ('?String18') ('')
+WHEN  ('?String19') ('')
+WHEN  ('?String20') ('')
+WHEN  ('?String21') ('')
+WHEN  ('?String22') ('')
+WHEN  ('?String23') ('')
+WHEN  ('?String24') ('')
+WHEN  ('?String27') ('')
+WHEN  ('?String30') ('')
+WHEN  ('?String31') ('')
+WHEN  ('?String32') ('')
+WHEN  ('?String33') ('')
+WHEN  ('?String35') ('')
+WHEN  ('?String36') ('')
+WHEN  ('?detail1') ('FALSE')
+
+%DetailFilterExclusive DEPEND %ReportControl LONG TIMES 58
+WHEN  ('') (0)
+WHEN  ('?Box1') (0)
+WHEN  ('?Box5') (0)
+WHEN  ('?Box6') (0)
+WHEN  ('?COM:Address') (0)
+WHEN  ('?COM:Name') (0)
+WHEN  ('?COM:Phone') (0)
+WHEN  ('?DTL:BackOrdered') (0)
+WHEN  ('?DTL:Discount') (0)
+WHEN  ('?DTL:Discount:2') (0)
+WHEN  ('?DTL:QuantityOrdered') (0)
+WHEN  ('?DTL:TaxPaid') (0)
+WHEN  ('?DTL:TaxPaid:2') (0)
+WHEN  ('?DTL:TotalCost') (0)
+WHEN  ('?DTL:TotalCost:2') (0)
+WHEN  ('?ExtendPrice') (0)
+WHEN  ('?ExtendPrice:2') (0)
+WHEN  ('?GLOT:CusCSZ') (0)
+WHEN  ('?GLOT:CustAddress') (0)
+WHEN  ('?GLOT:CustName') (0)
+WHEN  ('?GLOT:ShipAddress') (0)
+WHEN  ('?GLOT:ShipCSZ') (0)
+WHEN  ('?GLOT:ShipName') (0)
+WHEN  ('?Group1') (0)
+WHEN  ('?Group2') (0)
+WHEN  ('?Image1') (0)
+WHEN  ('?Image2') (0)
+WHEN  ('?LOC:CCSZ') (0)
+WHEN  ('?Line1') (0)
+WHEN  ('?Line2') (0)
+WHEN  ('?Line3') (0)
+WHEN  ('?Line4') (0)
+WHEN  ('?Line5') (0)
+WHEN  ('?Line6') (0)
+WHEN  ('?Line7') (0)
+WHEN  ('?NoteString') (0)
+WHEN  ('?ORD:InvoiceNumber') (0)
+WHEN  ('?ORD:OrderDate') (0)
+WHEN  ('?PRO:Description') (0)
+WHEN  ('?PRO:Price') (0)
+WHEN  ('?PRO:ProductSKU') (0)
+WHEN  ('?String15') (0)
+WHEN  ('?String17') (0)
+WHEN  ('?String18') (0)
+WHEN  ('?String19') (0)
+WHEN  ('?String20') (0)
+WHEN  ('?String21') (0)
+WHEN  ('?String22') (0)
+WHEN  ('?String23') (0)
+WHEN  ('?String24') (0)
+WHEN  ('?String27') (0)
+WHEN  ('?String30') (0)
+WHEN  ('?String31') (0)
+WHEN  ('?String32') (0)
+WHEN  ('?String33') (0)
+WHEN  ('?String35') (0)
+WHEN  ('?String36') (0)
+WHEN  ('?detail1') (1)
+
+%ClassItem UNIQUE DEFAULT  ('BreakMgr', 'Default', 'Previewer', 'Process', 'ProgressMgr', |
+  'TargetSelector', 'WindowToolbar')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 6
+WHEN  ('BreakMgr') ('BreakManagerClass')
+WHEN  ('Default') ('ReportManager')
+WHEN  ('Previewer') ('PrintPreviewClass')
+WHEN  ('Process') ('ProcessClass')
+WHEN  ('ProgressMgr') ('StepClass')
+WHEN  ('TargetSelector') ('ReportTargetSelectorClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 6
+WHEN  ('BreakMgr') ('')
+WHEN  ('Default') ('')
+WHEN  ('Previewer') ('')
+WHEN  ('Process') ('')
+WHEN  ('ProgressMgr') ('StepLongClass')
+WHEN  ('TargetSelector') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 2
+WHEN  ('Default') ('Init {19}PROCEDURE(),BYTE,PROC,DERIVED', 'Kill {19}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Next {19}PROCEDURE(),BYTE,PROC,DERIVED', 'Paused {17}BYTE', 'Timer {18}LONG', |
+  'TakeAccepted {11}PROCEDURE(),BYTE,PROC,DERIVED', 'TakeCloseEvent {9}PROCEDURE(),BYTE,PROC,DERIVED', |
+  'Cancelled {14}BYTE', 'TakeWindowEvent        PROCEDURE(),BYTE,PROC,DERIVED')
+WHEN  ('Process') ('TakeRecord {13}PROCEDURE(),BYTE,PROC,DERIVED')
+
+%WindowOperationMode DEFAULT  ('Use WINDOW setting')
+%INISaveWindow LONG  (1)
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 6
+WHEN  ('BreakMgr') ('BreakMgr')
+WHEN  ('Default') ('ThisWindow')
+WHEN  ('Previewer') ('Previewer')
+WHEN  ('Process') ('ThisReport')
+WHEN  ('ProgressMgr') ('ProgressMgr')
+WHEN  ('TargetSelector') ('TargetSelector')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 7
+WHEN  ('BreakMgr') (1)
+WHEN  ('Default') (1)
+WHEN  ('Previewer') (1)
+WHEN  ('Process') (1)
+WHEN  ('ProgressMgr') (1)
+WHEN  ('TargetSelector') (1)
+WHEN  ('WindowToolbar') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 7
+WHEN  ('BreakMgr') (1)
+WHEN  ('Default') (1)
+WHEN  ('Previewer') (1)
+WHEN  ('Process') (1)
+WHEN  ('ProgressMgr') (1)
+WHEN  ('TargetSelector') (1)
+WHEN  ('WindowToolbar') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 7
+WHEN  ('BreakMgr') ('ADOBlob')
+WHEN  ('Default') ('')
+WHEN  ('Previewer') ('')
+WHEN  ('Process') ('')
+WHEN  ('ProgressMgr') ('')
+WHEN  ('TargetSelector') ('ADOBlob')
+WHEN  ('WindowToolbar') ('')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 7
+WHEN  ('BreakMgr') (0)
+WHEN  ('Default') (0)
+WHEN  ('Previewer') (0)
+WHEN  ('Process') (0)
+WHEN  ('ProgressMgr') (0)
+WHEN  ('TargetSelector') (0)
+WHEN  ('WindowToolbar') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 6
+WHEN  ('Default')TIMES 0
+WHEN  ('Previewer')TIMES 0
+WHEN  ('Process')TIMES 0
+WHEN  ('ProgressMgr')TIMES 0
+WHEN  ('TargetSelector')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 6
+WHEN  ('Default')TIMES 0
+WHEN  ('Previewer')TIMES 0
+WHEN  ('Process')TIMES 0
+WHEN  ('ProgressMgr')TIMES 0
+WHEN  ('TargetSelector')TIMES 0
+WHEN  ('WindowToolbar')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%AddSortFields DEFAULT  ('')
+%ManuallySetProgressLimits LONG  (0)
+%LowLimit DEFAULT  ('')
+%HighLimit DEFAULT  ('')
+%InitialZoom DEFAULT  ('Page Width')
+%AllowUserZooms LONG  (1)
+%InitWindowPosition LONG  (0)
+%WinXPos DEFAULT  ('')
+%WinYPos DEFAULT  ('')
+%WinWidth DEFAULT  ('315')
+%WinHeight DEFAULT  ('200')
+%MaximizePreviewWindow LONG  (1)
+%ButtonAction DEPEND %Control DEFAULT TIMES 4
+WHEN  ('') ('No Special Action')
+WHEN  ('?Pause') ('No Special Action')
+WHEN  ('?Progress:Cancel') ('No Special Action')
+WHEN  ('?String3') ('No Special Action')
+
+%ButtonRunName DEPEND %Control DEFAULT TIMES 2
+WHEN  ('?Pause') ('')
+WHEN  ('?Progress:Cancel') ('')
+
+%ButtonRunParameters DEPEND %Control DEFAULT TIMES 2
+WHEN  ('?Pause') ('')
+WHEN  ('?Progress:Cancel') ('')
+
+%ButtonProcedure DEPEND %Control PROCEDURE TIMES 2
+WHEN  ('?Pause') ()
+WHEN  ('?Progress:Cancel') ()
+
+%ButtonThread DEPEND %Control LONG TIMES 2
+WHEN  ('?Pause') (0)
+WHEN  ('?Progress:Cancel') (0)
+
+%ButtonThreadStack DEPEND %Control DEFAULT TIMES 4
+WHEN  ('') ('25000')
+WHEN  ('?Pause') ('25000')
+WHEN  ('?Progress:Cancel') ('25000')
+WHEN  ('?String3') ('25000')
+
+%ButtonParameters DEPEND %Control DEFAULT TIMES 0
+
+%ButtonRequest DEPEND %Control DEFAULT TIMES 4
+WHEN  ('') ('None')
+WHEN  ('?Pause') ('None')
+WHEN  ('?Progress:Cancel') ('None')
+WHEN  ('?String3') ('None')
+
+%PreLookupKey DEPEND %Control KEY TIMES 0
+
+%PreLookupField DEPEND %Control COMPONENT TIMES 0
+
+%PreLookupProcedure DEPEND %Control PROCEDURE TIMES 0
+
+%PostLookupKey DEPEND %Control KEY TIMES 0
+
+%PostLookupField DEPEND %Control COMPONENT TIMES 0
+
+%PostLookupProcedure DEPEND %Control PROCEDURE TIMES 0
+
+%PostLookupDuringValidate DEPEND %Control LONG TIMES 4
+WHEN  ('') (1)
+WHEN  ('?Pause') (1)
+WHEN  ('?Progress:Cancel') (1)
+WHEN  ('?String3') (1)
+
+%ForceWindowRefresh DEPEND %Control LONG TIMES 0
+
+%CheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedAssignVariable DEPEND %CheckedAssigns FIELD TIMES 0
+
+%CheckedAssignValue DEPEND %CheckedAssigns DEFAULT TIMES 0
+
+%CheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl DEPEND %CheckedHides DEFAULT TIMES 0
+
+%CheckedControlAction DEPEND %CheckedHides DEFAULT TIMES 4
+WHEN  ('')TIMES 0
+WHEN  ('?Pause')TIMES 0
+WHEN  ('?Progress:Cancel')TIMES 0
+WHEN  ('?String3')TIMES 0
+
+%CheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedControl1 DEPEND %CheckedEnables DEFAULT TIMES 0
+
+%CheckedControl1Action DEPEND %CheckedEnables DEFAULT TIMES 4
+WHEN  ('')TIMES 0
+WHEN  ('?Pause')TIMES 0
+WHEN  ('?Progress:Cancel')TIMES 0
+WHEN  ('?String3')TIMES 0
+
+%UncheckedAssigns DEPEND %Control MULTI LONG TIMES 0
+
+%UncheckedAssignVariable DEPEND %UncheckedAssigns FIELD TIMES 0
+
+%UncheckedAssignValue DEPEND %UncheckedAssigns DEFAULT TIMES 0
+
+%UnCheckedHides DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl DEPEND %UnCheckedHides DEFAULT TIMES 0
+
+%UnCheckedControlAction DEPEND %UnCheckedHides DEFAULT TIMES 4
+WHEN  ('')TIMES 0
+WHEN  ('?Pause')TIMES 0
+WHEN  ('?Progress:Cancel')TIMES 0
+WHEN  ('?String3')TIMES 0
+
+%UnCheckedEnables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedControl1 DEPEND %UnCheckedEnables DEFAULT TIMES 0
+
+%UnCheckedControl1Action DEPEND %UnCheckedEnables DEFAULT TIMES 4
+WHEN  ('')TIMES 0
+WHEN  ('?Pause')TIMES 0
+WHEN  ('?Progress:Cancel')TIMES 0
+WHEN  ('?String3')TIMES 0
+
+%LookupAssign DEPEND %Control MULTI LONG TIMES 0
+
+%MoreField DEPEND %LookupAssign DEFAULT TIMES 0
+
+%MoreTarget DEPEND %LookupAssign FIELD TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 7
+WHEN  ('BreakMgr') ('NO')
+WHEN  ('Default') ('NO')
+WHEN  ('Previewer') ('NO')
+WHEN  ('Process') ('NO')
+WHEN  ('ProgressMgr') ('NO')
+WHEN  ('TargetSelector') ('NO')
+WHEN  ('WindowToolbar') ('NO')
+
+%ButtonReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ButtonReturnValueReferenceAssign DEPEND %Control LONG TIMES 0
+
+%ButtonThreadParameters DEPEND %Control DEFAULT TIMES 0
+
+%ButtonThreadReturnValueAssignment DEPEND %Control FIELD TIMES 0
+
+%ProcedureDisableEnhanceFocus LONG  (0)
+%ProcedureUseEnterInsteadTabOverride LONG  (0)
+%WindowUseEnterInsteadTab LONG  (1)
+%ProcedureUseEnterInsteadTabExcludeG LONG  (1)
+%WindowUseEnterInsteadTabExclude MULTI DEFAULT  ()
+%WindowStyles MULTI LONG  ()
+%WindowStyleFontName DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontNameIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontSize DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontSizeIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontStyle DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontStyleIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleFontColor DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleFontCharSet DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormal DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundNormalVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundNormalIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleForegroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleForegroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelected DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleBackgroundSelectedVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStyleBackgroundSelectedIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStylePicture DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureVariable DEPEND %WindowStyles DEFAULT TIMES 0
+
+%WindowStylePictureIsVariable DEPEND %WindowStyles LONG TIMES 0
+
+%WindowStyleOtherListboxes MULTI DEFAULT  ()
+%ProcedureAutoBindFields MULTI LONG  (1, 2, 3, 4, 5, 6, 7)
+%ProcedureAutoBindField DEPEND %ProcedureAutoBindFields DEFAULT TIMES 7
+WHEN  (1) ('DTL:CustNumber')
+WHEN  (2) ('ORD:CustNumber')
+WHEN  (3) ('DTL:OrderNumber')
+WHEN  (4) ('ORD:OrderNumber')
+WHEN  (5) ('GLOT:CustName')
+WHEN  (6) ('GLOT:CustAddress')
+WHEN  (7) ('GLOT:CusCSZ')
+
+%ProcedureAutoBindFieldTPL DEPEND %ProcedureAutoBindFields DEFAULT TIMES 7
+WHEN  (1) ('PauseButton(ABC)')
+WHEN  (2) ('Report')
+WHEN  (3) ('PauseButton(ABC)')
+WHEN  (4) ('Report')
+WHEN  (5) ('Report')
+WHEN  (6) ('Report')
+WHEN  (7) ('Report')
+
+%ProcedureAutoBindProcedures MULTI LONG  ()
+%ProcedureAutoBindProcedure DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureAutoBindProcedureTPL DEPEND %ProcedureAutoBindProcedures DEFAULT TIMES 0
+
+%ProcedureUserBindFields MULTI LONG  ()
+%ProcedureUserBindField DEPEND %ProcedureUserBindFields FIELD TIMES 0
+
+%ProcedureAutoBindFieldIgnore DEPEND %ProcedureAutoBindFields LONG TIMES 0
+
+%ProcedureUserBindProcedures MULTI LONG  ()
+%ProcedureUserBindProcedure DEPEND %ProcedureUserBindProcedures PROCEDURE TIMES 0
+
+%ProcedureAutoBindProcedureIgnore DEPEND %ProcedureAutoBindProcedures LONG TIMES 0
+
+%ProcedureUserBindExpressions MULTI LONG  ()
+%ProcedureUserBindExpressionName DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%ProcedureUserBindExpression DEPEND %ProcedureUserBindExpressions DEFAULT TIMES 0
+
+%ReportTargetList MULTI LONG  ()
+%ReportTargetListName DEPEND %ReportTargetList DEFAULT TIMES 0
+
+%ReportTargetListClass DEPEND %ReportTargetList DEFAULT TIMES 0
+
+%ReportTargetListObject DEPEND %ReportTargetList DEFAULT TIMES 0
+
+%ReportTargetListCondition DEPEND %ReportTargetList DEFAULT TIMES 0
+
+%ReportTargetHiddenControls MULTI LONG  ()
+%ReportTargetHiddenControl DEPEND %ReportTargetHiddenControls DEFAULT TIMES 0
+
+%ReportTargetHiddenControlTemplate DEPEND %ReportTargetHiddenControls DEFAULT TIMES 0
+
+%ReportDataSource DEFAULT  ('File')
+%MDIProgressWindow LONG  (0)
+%ProgressInterval DEFAULT  ('10')
+%AdditionalSortType DEFAULT  ('Manual')
+%AddSortFieldsAssisted MULTI LONG  ()
+%AddSortFieldAssisted DEPEND %AddSortFieldsAssisted FIELD TIMES 0
+
+%AddSortFieldAssistedOrder DEPEND %AddSortFieldsAssisted DEFAULT TIMES 0
+
+%AddConditionalSort MULTI LONG  ()
+%AddConditionalSortCondition DEPEND %AddConditionalSort DEFAULT TIMES 0
+
+%AddConditionalSortFieldsAssisted DEPEND %AddConditionalSort MULTI LONG TIMES 0
+
+%AddConditionalSortFieldAssisted DEPEND %AddConditionalSortFieldsAssisted FIELD TIMES 0
+
+%AddConditionalSortFieldAssistedOrder DEPEND %AddConditionalSortFieldsAssisted DEFAULT TIMES 0
+
+%AddSortDynamicNamed MULTI LONG  ()
+%AddSortFieldDinNameDescription DEPEND %AddSortDynamicNamed DEFAULT TIMES 0
+
+%AddSortFieldsDinName DEPEND %AddSortDynamicNamed MULTI LONG TIMES 0
+
+%AddSortFieldDinName DEPEND %AddSortFieldsDinName FIELD TIMES 0
+
+%AddSortFieldDinNameOrder DEPEND %AddSortFieldsDinName DEFAULT TIMES 0
+
+%AddSortFieldsDinSort MULTI LONG  ()
+%AddSortFieldDinSortDescription DEPEND %AddSortFieldsDinSort DEFAULT TIMES 0
+
+%AddSortFieldDinSort DEPEND %AddSortFieldsDinSort FIELD TIMES 0
+
+%AddSortFieldDinSortOrder DEPEND %AddSortFieldsDinSort DEFAULT TIMES 0
+
+%AdditionalSortWindowTitle DEFAULT  ('Select the Order')
+%AdditionalSortWindowMessage DEFAULT  ('Select the order to process the data.')
+%AdditionalSortWindowOkButtonText DEFAULT  ('&OK')
+%AdditionalSortWindowOkButtonIcon DEFAULT  ('SOK.ICO')
+%AdditionalSortWindowOkButtonCursor DEFAULT  ('')
+%AdditionalSortWindowOkButtonKeyCode DEFAULT  ('')
+%AdditionalSortWindowOkButtonMsg DEFAULT  ('Accept data and close the window')
+%AdditionalSortWindowOkButtonTip DEFAULT  ('Accept data and close the window')
+%AdditionalSortWindowOkButtonFlat LONG  (1)
+%AdditionalSortWindowOkButtonSkip LONG  (0)
+%AdditionalSortWindowOkButtonJustification DEFAULT  ('Left')
+%AdditionalSortWindowCancelButtonText DEFAULT  ('&Cancel')
+%AdditionalSortWindowCancelButtonIcon DEFAULT  ('SCANCEL.ICO')
+%AdditionalSortWindowCancelButtonCursor DEFAULT  ('')
+%AdditionalSortWindowCancelButtonKeyCode DEFAULT  ('')
+%AdditionalSortWindowCancelButtonMsg DEFAULT  ('Cancel operation')
+%AdditionalSortWindowCancelButtonTip DEFAULT  ('Cancel operation')
+%AdditionalSortWindowCancelButtonFlat LONG  (1)
+%AdditionalSortWindowCancelButtonSkip LONG  (0)
+%AdditionalSortWindowCancelButtonJustification DEFAULT  ('Left')
+%AdditionalSortWindowUpButtonText DEFAULT  ('')
+%AdditionalSortWindowUpButtonIcon DEFAULT  ('SUP.ICO')
+%AdditionalSortWindowUpButtonCursor DEFAULT  ('')
+%AdditionalSortWindowUpButtonKeyCode DEFAULT  ('')
+%AdditionalSortWindowUpButtonMsg DEFAULT  ('Move field up')
+%AdditionalSortWindowUpButtonTip DEFAULT  ('Move field up')
+%AdditionalSortWindowUpButtonFlat LONG  (1)
+%AdditionalSortWindowUpButtonSkip LONG  (0)
+%AdditionalSortWindowUpButtonJustification DEFAULT  ('Left')
+%AdditionalSortWindowDownButtonText DEFAULT  ('')
+%AdditionalSortWindowDownButtonIcon DEFAULT  ('SDOWN.ICO')
+%AdditionalSortWindowDownButtonCursor DEFAULT  ('')
+%AdditionalSortWindowDownButtonKeyCode DEFAULT  ('')
+%AdditionalSortWindowDownButtonMsg DEFAULT  ('Move field down')
+%AdditionalSortWindowDownButtonTip DEFAULT  ('Move field down')
+%AdditionalSortWindowDownButtonFlat LONG  (1)
+%AdditionalSortWindowDownButtonSkip LONG  (0)
+%AdditionalSortWindowDownButtonJustification DEFAULT  ('Left')
+%AdditionalSortWindowChOrdButtonText DEFAULT  ('')
+%AdditionalSortWindowChOrdButtonIcon DEFAULT  ('SCH-ORD.ICO')
+%AdditionalSortWindowChOrdButtonCursor DEFAULT  ('')
+%AdditionalSortWindowChOrdButtonKeyCode DEFAULT  ('')
+%AdditionalSortWindowChOrdButtonMsg DEFAULT  ('Change Order')
+%AdditionalSortWindowChOrdButtonTip DEFAULT  ('Change Order')
+%AdditionalSortWindowChOrdButtonFlat LONG  (1)
+%AdditionalSortWindowChOrdButtonSkip LONG  (0)
+%AdditionalSortWindowChOrdButtonJustification DEFAULT  ('Left')
+%ReportDataSourceQueueName DEFAULT  ('')
+%ReportTargetOutput DEFAULT  ('Printer')
+%ReportTargetAskWithPrint LONG  (1)
+%ReportTargetOtherOutput DEFAULT  ('')
+%HigherKeys MULTI LONG  ()
+%HigherKey DEPEND %HigherKeys COMPONENT TIMES 0
+
+%HigherKeyField DEPEND %HigherKeys FIELD TIMES 0
+
+%HigherKeyValueType DEPEND %HigherKeys DEFAULT TIMES 0
+
+%HigherKeyValueVariable DEPEND %HigherKeys FIELD TIMES 0
+
+%HigherKeyValueFixed DEPEND %HigherKeys DEFAULT TIMES 0
+
+%RuntimeSkipPreview DEFAULT  ('False')
+%MDIPreviewer LONG  (0)
+%ProcessBreaks MULTI LONG  ()
+%BreakName DEPEND %ProcessBreaks DEFAULT TIMES 0
+
+%BreakLevelCero DEPEND %ProcessBreaks LONG TIMES 0
+
+%BreakLevelBreakNumber DEPEND %ProcessBreaks LONG TIMES 0
+
+%BreakLevel DEPEND %ProcessBreaks LONG TIMES 0
+
+%BreakFields DEPEND %ProcessBreaks MULTI LONG TIMES 0
+
+%BreakField DEPEND %BreakFields FIELD TIMES 0
+
+%BreakTotals DEPEND %ProcessBreaks MULTI LONG TIMES 0
+
+%BreakTotalTarget DEPEND %BreakTotals FIELD TIMES 0
+
+%BreakTotalType DEPEND %BreakTotals DEFAULT TIMES 0
+
+%BreakTotalField DEPEND %BreakTotals FIELD TIMES 0
+
+%BreakTotalBasedOn DEPEND %BreakTotals DEFAULT TIMES 0
+
+%BreakTotalCondition DEPEND %BreakTotals DEFAULT TIMES 0
+
+%BreakTotalReset DEPEND %BreakTotals LONG TIMES 0
+
+%BreakReportHeaderYes DEPEND %ProcessBreaks LONG TIMES 0
+
+%BreakReportHeader DEPEND %ProcessBreaks DEFAULT TIMES 0
+
+%BreakReportFooterYes DEPEND %ProcessBreaks LONG TIMES 0
+
+%BreakReportFooter DEPEND %ProcessBreaks DEFAULT TIMES 0
+
+%HotFieldRestoreOnBreak DEPEND %HotFields LONG TIMES 0
+
+%PreLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%PostLookupProcedureParameters DEPEND %Control DEFAULT TIMES 0
+
+%DetailFilterExternal DEPEND %ReportControl DEFAULT TIMES 59
+WHEN  ('') ('')
+WHEN  ('?Box1') ('')
+WHEN  ('?Box5') ('')
+WHEN  ('?Box6') ('')
+WHEN  ('?COM:Address') ('')
+WHEN  ('?COM:Name') ('')
+WHEN  ('?COM:Phone') ('')
+WHEN  ('?DTL:BackOrdered') ('')
+WHEN  ('?DTL:Discount') ('')
+WHEN  ('?DTL:Discount:2') ('')
+WHEN  ('?DTL:QuantityOrdered') ('')
+WHEN  ('?DTL:TaxPaid') ('')
+WHEN  ('?DTL:TaxPaid:2') ('')
+WHEN  ('?DTL:TotalCost') ('')
+WHEN  ('?DTL:TotalCost:2') ('')
+WHEN  ('?ExtendPrice') ('')
+WHEN  ('?ExtendPrice:2') ('')
+WHEN  ('?GLOT:CusCSZ') ('')
+WHEN  ('?GLOT:CustAddress') ('')
+WHEN  ('?GLOT:CustName') ('')
+WHEN  ('?GLOT:ShipAddress') ('')
+WHEN  ('?GLOT:ShipCSZ') ('')
+WHEN  ('?GLOT:ShipName') ('')
+WHEN  ('?Group1') ('')
+WHEN  ('?Group2') ('')
+WHEN  ('?Image1') ('')
+WHEN  ('?Image2') ('')
+WHEN  ('?LOC:CCSZ') ('')
+WHEN  ('?Line1') ('')
+WHEN  ('?Line2') ('')
+WHEN  ('?Line3') ('')
+WHEN  ('?Line4') ('')
+WHEN  ('?Line5') ('')
+WHEN  ('?Line6') ('')
+WHEN  ('?Line7') ('')
+WHEN  ('?NoteString') ('')
+WHEN  ('?ORD:InvoiceNumber') ('')
+WHEN  ('?ORD:OrderDate') ('')
+WHEN  ('?PRO:Description') ('')
+WHEN  ('?PRO:Price') ('')
+WHEN  ('?PRO:ProductSKU') ('')
+WHEN  ('?String15') ('')
+WHEN  ('?String17') ('')
+WHEN  ('?String18') ('')
+WHEN  ('?String19') ('')
+WHEN  ('?String20') ('')
+WHEN  ('?String21') ('')
+WHEN  ('?String22') ('')
+WHEN  ('?String23') ('')
+WHEN  ('?String24') ('')
+WHEN  ('?String27') ('')
+WHEN  ('?String30') ('')
+WHEN  ('?String31') ('')
+WHEN  ('?String32') ('')
+WHEN  ('?String33') ('')
+WHEN  ('?String35') ('')
+WHEN  ('?String36') ('')
+WHEN  ('?detail') ('')
+WHEN  ('?detail1') ('')
+
+%ProcedureAutoBindFieldsIgnored MULTI LONG  ()
+%ProcedureAutoBindFieldIgnored DEPEND %ProcedureAutoBindFieldsIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindProceduresIgnored MULTI LONG  ()
+%ProcedureAutoBindProcedureIgnored DEPEND %ProcedureAutoBindProceduresIgnored DEFAULT TIMES 0
+
+%ProcedureAutoBindValidToAddField LONG  (0)
+%ProcedureUseEnterInsteadTabExcludeListCombo LONG  (0)
+%ProcedureUseEnterInsteadTabEnableNextTabStop LONG  (0)
+%BreakTotalFieldWeight DEPEND %BreakTotals FIELD TIMES 0
+
+%UseMRP LONG  (1)
+%ExtUITabIcon DEPEND %Control DEFAULT TIMES 0
+
+%ExtUITabStyleOverrideGlobal DEPEND %Control LONG TIMES 0
+
+%ExtUITabStyle DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('Default')
+
+%CheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%CheckedDisableControl DEPEND %CheckedDisables DEFAULT TIMES 0
+
+%CheckedDisableControlAction DEPEND %CheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%UnCheckedDisables DEPEND %Control MULTI LONG TIMES 0
+
+%UnCheckedDisableControl DEPEND %UnCheckedDisables DEFAULT TIMES 0
+
+%UnCheckedDisableControlAction DEPEND %UnCheckedDisables DEFAULT TIMES 1
+WHEN  ('')TIMES 0
+
+%ProcedureOneInstance LONG  (0)
+%FirstPage DEFAULT  ('')
+%ReportTargetOpen LONG  (0)
+%HideOutputProgress LONG  (0)
+%FieldGradientColorType DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('Off')
+
+%FieldGradientColorTypeVariable DEPEND %Control DEFAULT TIMES 1
+WHEN  ('') ('')
+
+%FieldGradientColorTypeIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorFrom DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorFromVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorFromIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+%FieldGradientColorTo DEPEND %Control LONG TIMES 1
+WHEN  ('') (-1)
+
+%FieldGradientColorToVariable DEPEND %Control DEFAULT TIMES 0
+
+%FieldGradientColorToIsVariable DEPEND %Control LONG TIMES 1
+WHEN  ('') (0)
+
+[EMBED]
+EMBED %WindowManagerMethodCodeSection
+[INSTANCES]
+WHEN 'Next'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 1300
+PROPERTY:END
+ !Process company record
+ SET(Company)
+ Access:Company.Next()
+ LOC:CCSZ = CLIP(Company.Record.City) & ', ' & Company.Record.State|
+              & '  ' & CLIP(Company.Record.Zipcode)
+[END]
+[END]
+WHEN 'TakeCloseEvent'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 2500
+PROPERTY:END
+!Print second Detail band
+PRINT(RPT:Detail1)
+[END]
+[END]
+[END]
+EMBED %ProcessManagerMethodCodeSection
+[INSTANCES]
+WHEN 'TakeRecord'
+[INSTANCES]
+WHEN '(),BYTE'
+[DEFINITION]
+[SOURCE]
+PROPERTY:BEGIN
+PRIORITY 500
+PROPERTY:END
+!Get Customer records
+CUS:CustNumber=ORD:CustNumber
+Access:Customers.Fetch(CUS:KeyCustNumber)
+[END]
+[END]
+[END]
+[END]
+[ADDITION]
+NAME ABC PauseButton
+[INSTANCE]
+INSTANCE 1
+[PROMPTS]
+%PauseText DEFAULT  ('Pause')
+%RestartText DEFAULT  ('Restart')
+%DeferOpen LONG  (1)
+%StartText DEFAULT  ('Go')
+%MultiStart LONG  (1)
+[ADDITION]
+NAME ABC FileDrop
+[INSTANCE]
+INSTANCE 2
+[PROMPTS]
+%ClassItem UNIQUE DEFAULT  ('Default')
+%DefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('FileDropClass')
+
+%ActualDefaultBaseClassType DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('')
+
+%ClassLines DEPEND %ClassItem MULTI DEFAULT TIMES 1
+WHEN  ('Default') ('Q {22}&Queue:FileDrop {16}!Reference to display queue')
+
+%FillField FIELD  ()
+%TargetField FIELD  ()
+%MoreAssignments MULTI LONG  ()
+%MoreField DEPEND %MoreAssignments FIELD TIMES 0
+
+%MoreTarget DEPEND %MoreAssignments FIELD TIMES 0
+
+%RecordFilter DEFAULT  ('')
+%DefaultFill LONG  (0)
+%RangeField COMPONENT  ()
+%RangeLimitType DEFAULT  ('Current Value')
+%RangeLimit FIELD  ()
+%RangeLow FIELD  ()
+%RangeHigh FIELD  ()
+%RangeFile FILE  ()
+%ControlFieldForegroundNormal DEPEND %Control DEPEND %ControlField LONG TIMES 3
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+WHEN  ('?Pause')TIMES 0
+
+%ControlFieldBackgroundNormal DEPEND %Control DEPEND %ControlField LONG TIMES 3
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+WHEN  ('?Pause')TIMES 0
+
+%ControlFieldForegroundSelected DEPEND %Control DEPEND %ControlField LONG TIMES 3
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+WHEN  ('?Pause')TIMES 0
+
+%ControlFieldBackgroundSelected DEPEND %Control DEPEND %ControlField LONG TIMES 3
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+WHEN  ('?Pause')TIMES 0
+
+%ConditionalColors DEPEND %Control DEPEND %ControlField MULTI LONG TIMES 0
+
+%ColorCondition DEPEND %ConditionalColors DEFAULT TIMES 0
+
+%ConditionalControlFieldForegroundNormal DEPEND %ConditionalColors LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('')TIMES 0
+WHEN  ('?Pause')TIMES 0
+
+%ConditionalControlFieldBackgroundNormal DEPEND %ConditionalColors LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('')TIMES 0
+WHEN  ('?Pause')TIMES 0
+
+%ConditionalControlFieldForegroundSelected DEPEND %ConditionalColors LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('')TIMES 0
+WHEN  ('?Pause')TIMES 0
+
+%ConditionalControlFieldBackgroundSelected DEPEND %ConditionalColors LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('')TIMES 0
+WHEN  ('?Pause')TIMES 0
+
+%ControlFieldIcon DEPEND %Control DEPEND %ControlField DEFAULT TIMES 0
+
+%ConditionalIcons DEPEND %Control DEPEND %ControlField MULTI LONG TIMES 0
+
+%IconCondition DEPEND %ConditionalIcons DEFAULT TIMES 0
+
+%ConditionalControlFieldIcon DEPEND %ConditionalIcons DEFAULT TIMES 0
+
+%HotFields MULTI LONG  ()
+%HotField DEPEND %HotFields FIELD TIMES 0
+
+%HotFieldBound DEPEND %HotFields LONG TIMES 0
+
+%SortFields MULTI LONG  ()
+%SortField DEPEND %SortFields FIELD TIMES 0
+
+%ThisObjectName DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('FDB2')
+
+%UseDefaultABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%UseABCBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (1)
+
+%ABCBaseClass DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('AsciiFileClass')
+
+%ExtBaseClass DEPEND %ClassItem DEFAULT TIMES 0
+
+%BaseClassIncludeFile DEPEND %ClassItem DEFAULT TIMES 0
+
+%DeriveFromBaseClass DEPEND %ClassItem LONG TIMES 1
+WHEN  ('Default') (0)
+
+%NewMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewMethodName DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewMethodPrototype DEPEND %NewMethods DEFAULT TIMES 0
+
+%NewClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%NewClassProperty DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataType DEPEND %NewClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%NewClassOtherType DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataIsRef DEPEND %NewClassPropertyItems LONG TIMES 0
+
+%NewClassDataSize DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim1 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim2 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim3 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%NewClassDataDim4 DEPEND %NewClassPropertyItems DEFAULT TIMES 0
+
+%ClassMethods DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassMethodName DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassMethodPrototype DEPEND %ClassMethods DEFAULT TIMES 0
+
+%ClassPropertyItems DEPEND %ClassItem MULTI LONG TIMES 0
+
+%ClassProperty DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataType DEPEND %ClassPropertyItems DEFAULT TIMES 1
+WHEN  ('Default')TIMES 0
+
+%ClassOtherType DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataIsRef DEPEND %ClassPropertyItems LONG TIMES 0
+
+%ClassDataSize DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim1 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim2 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim3 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%ClassDataDim4 DEPEND %ClassPropertyItems DEFAULT TIMES 0
+
+%HotFieldBindOnly DEPEND %HotFields LONG TIMES 0
+
+%ControlFieldStyle DEPEND %Control DEPEND %ControlField DEFAULT TIMES 0
+
+%ConditionalStyles DEPEND %Control DEPEND %ControlField MULTI LONG TIMES 0
+
+%StyleCondition DEPEND %ConditionalStyles DEFAULT TIMES 0
+
+%ConditionalControlFieldStyle DEPEND %ConditionalStyles DEFAULT TIMES 0
+
+%GlobalObject DEPEND %ClassItem DEFAULT TIMES 1
+WHEN  ('Default') ('NO')
+
+%HigherKeys MULTI LONG  ()
+%HigherKey DEPEND %HigherKeys COMPONENT TIMES 0
+
+%HigherKeyField DEPEND %HigherKeys FIELD TIMES 0
+
+%HigherKeyValueType DEPEND %HigherKeys DEFAULT TIMES 0
+
+%HigherKeyValueVariable DEPEND %HigherKeys FIELD TIMES 0
+
+%HigherKeyValueFixed DEPEND %HigherKeys DEFAULT TIMES 0
+
+%UseSameColorForAll LONG  (0)
+%ControlGreenBarColor DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (0)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (0)
+WHEN  ('ORD:OrderDate') (0)
+WHEN  ('ORD:ShipToName') (0)
+
+%GreenBarOnForegroundNormal DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+
+%GreenBarOnBackgroundNormal DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+
+%GreenBarOnForegroundSelected DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+
+%GreenBarOnBackgroundSelected DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+
+%GreenBarOffForegroundNormal DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+
+%GreenBarOffBackgroundNormal DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+
+%GreenBarOffForegroundSelected DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+
+%GreenBarOffBackgroundSelected DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (-1)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (-1)
+WHEN  ('ORD:OrderDate') (-1)
+WHEN  ('ORD:ShipToName') (-1)
+
+%AllControlGreenBarColor LONG  (0)
+%AllControlGreenBarColorAlternate LONG  (0)
+%AllControlFieldForegroundNormal LONG  (-1)
+%AllControlFieldBackgroundNormal LONG  (-1)
+%AllControlFieldForegroundSelected LONG  (-1)
+%AllControlFieldBackgroundSelected LONG  (-1)
+%ConditionalColorsAll MULTI LONG  ()
+%ColorConditionAll DEPEND %ConditionalColorsAll DEFAULT TIMES 0
+
+%ConditionalAllControlFieldForegroundNormal DEPEND %ConditionalColorsAll LONG TIMES 0
+
+%ConditionalAllControlFieldBackgroundNormal DEPEND %ConditionalColorsAll LONG TIMES 0
+
+%ConditionalAllControlFieldForegroundSelected DEPEND %ConditionalColorsAll LONG TIMES 0
+
+%ConditionalAllControlFieldBackgroundSelected DEPEND %ConditionalColorsAll LONG TIMES 0
+
+%AllGreenBarOnForegroundNormal LONG  (-1)
+%AllGreenBarOnBackgroundNormal LONG  (-1)
+%AllGreenBarOnForegroundSelected LONG  (-1)
+%AllGreenBarOnBackgroundSelected LONG  (-1)
+%AllGreenBarOffForegroundNormal LONG  (-1)
+%AllGreenBarOffBackgroundNormal LONG  (-1)
+%AllGreenBarOffForegroundSelected LONG  (-1)
+%AllGreenBarOffBackgroundSelected LONG  (-1)
+%ControlFieldIconIsNumber DEPEND %Control DEPEND %ControlField LONG TIMES 0
+
+%ConditionalControlFieldIconIsNumber DEPEND %ConditionalIcons LONG TIMES 0
+
+%UseSameStyleForAll LONG  (0)
+%ControlGreenBarStyle DEPEND %Control DEPEND %ControlField LONG TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') (0)
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') (0)
+WHEN  ('ORD:OrderDate') (0)
+WHEN  ('ORD:ShipToName') (0)
+
+%GreenBarOnStyleType DEPEND %Control DEPEND %ControlField DEFAULT TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') ('Local List')
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') ('Local List')
+WHEN  ('ORD:OrderDate') ('Local List')
+WHEN  ('ORD:ShipToName') ('Local List')
+
+%GreenBarOnStyleLocalList DEPEND %Control DEPEND %ControlField DEFAULT TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') ('')
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') ('')
+WHEN  ('ORD:OrderDate') ('')
+WHEN  ('ORD:ShipToName') ('')
+
+%GreenBarOnStyle DEPEND %Control DEPEND %ControlField DEFAULT TIMES 0
+
+%GreenBarOffStyleType DEPEND %Control DEPEND %ControlField DEFAULT TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') ('Local List')
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') ('Local List')
+WHEN  ('ORD:OrderDate') ('Local List')
+WHEN  ('ORD:ShipToName') ('Local List')
+
+%GreenBarOffStyleLocalList DEPEND %Control DEPEND %ControlField DEFAULT TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') ('')
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') ('')
+WHEN  ('ORD:OrderDate') ('')
+WHEN  ('ORD:ShipToName') ('')
+
+%GreenBarOffStyle DEPEND %Control DEPEND %ControlField DEFAULT TIMES 0
+
+%ControlFieldStyleType DEPEND %Control DEPEND %ControlField DEFAULT TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') ('Local List')
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') ('Local List')
+WHEN  ('ORD:OrderDate') ('Local List')
+WHEN  ('ORD:ShipToName') ('Local List')
+
+%ControlFieldStyleLocalList DEPEND %Control DEPEND %ControlField DEFAULT TIMES 2
+WHEN  ('')TIMES 1
+WHEN  ('') ('')
+WHEN  ('?ORD:InvoiceNumber:2')TIMES 3
+WHEN  ('ORD:InvoiceNumber') ('')
+WHEN  ('ORD:OrderDate') ('')
+WHEN  ('ORD:ShipToName') ('')
+
+%ConditionalControlFieldStyleType DEPEND %ConditionalStyles DEFAULT TIMES 1
+WHEN  ('')TIMES 1
+WHEN  ('')TIMES 0
+
+%ConditionalControlFieldStyleLocalList DEPEND %ConditionalStyles DEFAULT TIMES 1
+WHEN  ('')TIMES 1
+WHEN  ('')TIMES 0
+
+%AllControlGreenBarStyle LONG  (0)
+%AllControlGreenBarStyleAlternate LONG  (0)
+%AllControlFieldStyleType DEFAULT  ('Local List')
+%AllControlFieldStyleLocalList DEFAULT  ('')
+%AllControlFieldStyle DEFAULT  ('')
+%ConditionalStylesAll MULTI LONG  ()
+%StyleConditionAll DEPEND %ConditionalStylesAll DEFAULT TIMES 0
+
+%ConditionalAllControlFieldStyleType DEPEND %ConditionalStylesAll DEFAULT TIMES 0
+
+%ConditionalAllControlFieldStyleLocalList DEPEND %ConditionalStylesAll DEFAULT TIMES 0
+
+%ConditionalAllControlFieldStyle DEPEND %ConditionalStylesAll DEFAULT TIMES 0
+
+%AllGreenBarOnStyleType DEFAULT  ('Local List')
+%AllGreenBarOnStyleLocalList DEFAULT  ('')
+%AllGreenBarOnStyle DEFAULT  ('')
+%AllGreenBarOffStyleType DEFAULT  ('Local List')
+%AllGreenBarOffStyleLocalList DEFAULT  ('')
+%AllGreenBarOffStyle DEFAULT  ('')
+%ControlFieldTipField DEPEND %Control DEPEND %ControlField FIELD TIMES 0
+
+%TableSchematicsDescription DEFAULT  ('')
+%DropDoNotIncludePrimaryKey LONG  (0)
+%UseMRP LONG  (1)
+%DropIncludeEmpty LONG  (0)
+%DropIncludeAll LONG  (0)
+[WINDOW]
+ProgressWindow WINDOW('Report Progress...'),AT(,,168,94),DOUBLE,CENTER,GRAY,TIMER(1)
+          PROGRESS,AT(24,15,111,12),USE(Progress:Thermometer),RANGE(0,100),#ORIG(Progress:Thermometer)
+          STRING(''),AT(3,3,162,10),USE(?Progress:UserString),CENTER,#ORIG(?Progress:UserString)
+          STRING(''),AT(3,30,162,10),USE(?Progress:PctText),CENTER,#ORIG(?Progress:PctText)
+          STRING('Select An Invoice And Press Go To Preview'),AT(2,44,164,10),USE(?String3), |
+            FONT(,,COLOR:Maroon,FONT:bold),CENTER,#ORIG(?String3)
+          LIST,AT(9,60,150,12),USE(ORD:InvoiceNumber,,?ORD:InvoiceNumber:2),VSCROLL,DROP(5), |
+            FORMAT('33L(3)|~Invoice #~L(2)@n07@41L(3)|~Order Date~L(2)@d1@180L(2)|~Ship To~@s45@'), |
+            FROM(Queue:FileDrop),#FIELDS(ORD:InvoiceNumber,ORD:OrderDate,ORD:ShipToName),#ORIG(ORD:InvoiceNumber), |
+            #SEQ(2)
+          BUTTON('Exit'),AT(115,77,44,13),USE(?Progress:Cancel),FONT(,,COLOR:Green,FONT:bold), |
+            LEFT,ICON(ICON:NoPrint),TIP('Exit window or cancel printing'),#ORIG(?Progress:Cancel)
+          BUTTON('Pause'),AT(9,77,44,13),USE(?Pause),FONT(,,COLOR:Green,FONT:bold),LEFT,ICON(ICON:Print1), |
+            TIP('Preview Invoice to Print'),#ORIG(?Pause),#SEQ(1)
+        END
+
+[REPORT]
+Report  REPORT,AT(500,4115,7500,5875),PRE(RPT),FONT('MS Sans Serif',10,COLOR:Black,FONT:regular), |
+          THOUS
+          HEADER,AT(500,500,7500,3583)
+            IMAGE('LANTHUR.GIF'),AT(5396,21,1875,1594),USE(?Image1),#ORIG(?Image1)
+            LINE,AT(2927,344,1458,0),USE(?Line1),COLOR(COLOR:Black),LINEWIDTH(2),#ORIG(?Line1)
+            IMAGE('RANTHUR.GIF'),AT(92,25,1875,1594),USE(?Image2),#ORIG(?Image2)
+            STRING('INVOICE'),AT(1979,10,3375,323),USE(?String35),FONT('MS Sans Serif',24, |
+              ,FONT:bold),CENTER,#ORIG(?String35)
+            STRING(@s20),AT(1979,448,3375,333),USE(COM:Name),FONT('MS Sans Serif',18,,FONT:bold), |
+              CENTER,#ORIG(?String5)
+            STRING(@s35),AT(1979,781,3396,219),USE(COM:Address),FONT('MS Sans Serif',12,,FONT:bold), |
+              CENTER,#ORIG(?String6)
+            STRING(@s35),AT(1979,1031,3396,219),USE(LOC:CCSZ),FONT('MS Sans Serif',12,,FONT:bold), |
+              CENTER,#ORIG(?String7)
+            STRING(@P(###) ###-####P),AT(1979,1250,3396,219),USE(COM:Phone),FONT('MS Sans Serif', |
+              12,,FONT:bold),CENTER,#ORIG(?String8)
+            BOX,AT(73,1927,7232,333),USE(?Box1),LINEWIDTH(2),ROUND,#ORIG(?Box1)
+            STRING('Product SKU'),AT(104,3354,917,198),USE(?String17),TRN,#ORIG(?String17)
+            STRING('Product Description'),AT(1063,3354,2083,198),USE(?String18),TRN,#ORIG(?String18)
+            STRING('Quantity'),AT(5521,3354,729,198),USE(?String20),RIGHT(50),TRN,#ORIG(?String20)
+            STRING('Extension'),AT(6500,3354,781,198),USE(?String21),RIGHT(50),TRN,#ORIG(?String21)
+            LINE,AT(83,3563,7232,0),USE(?Line3),COLOR(COLOR:Black),LINEWIDTH(2),#ORIG(?Line3)
+            STRING('BackOrder'),AT(3729,3354,708,198),USE(?String36),TRN,#ORIG(?String36)
+            STRING('Price'),AT(4896,3354,406,198),USE(?String19),TRN,#ORIG(?String19)
+            STRING('Invoice #'),AT(177,1969,927,240),USE(?String15),FONT('MS Sans Serif',14, |
+              ,FONT:bold),TRN,#ORIG(?String15)
+            STRING('Order Date:'),AT(3625,2010,917,177),USE(?String33),FONT(,,,FONT:bold), |
+              TRN,#ORIG(?String33)
+            STRING(@d1),AT(4531,2010,729,177),USE(ORD:OrderDate),CENTER,TRN,#ORIG(ORD:OrderDate)
+            STRING(@n07),AT(1125,2021,729,177),USE(ORD:InvoiceNumber),CENTER,TRN,#ORIG(ORD:InvoiceNumber)
+            GROUP,AT(4083,2563,3250,573),USE(?Group2),FONT('MS Sans Serif',10),#ORIG(?Group2)
+              STRING(@s35),AT(4146,2604,2948,167),USE(GLOT:ShipName),#ORIG(GLOT:ShipName)
+              STRING(@s45),AT(4146,2771,3125,167),USE(GLOT:ShipAddress),#ORIG(GLOT:ShipAddress)
+              STRING(@s40),AT(4146,2927,3125,167),USE(GLOT:ShipCSZ),#ORIG(GLOT:ShipCSZ)
+            END
+            GROUP,AT(146,2573,3250,573),USE(?Group1),FONT('MS Sans Serif',10),#ORIG(?Group1)
+              STRING(@s35),AT(208,2604,3083,167),USE(GLOT:CustName),#ORIG(GLOT:CustName)
+              STRING(@s45),AT(208,2771,3125,167),USE(GLOT:CustAddress),#ORIG(GLOT:CustAddress)
+              STRING(@s40),AT(208,2927,3000,167),USE(GLOT:CusCSZ),#ORIG(GLOT:CusCSZ)
+            END
+            LINE,AT(83,3302,7232,0),USE(?Line2),COLOR(COLOR:Black),LINEWIDTH(2),#ORIG(?Line2)
+            STRING('Ship To:'),AT(4031,2302,750,198),USE(?String31),FONT(,,,FONT:bold),#ORIG(?String31)
+            BOX,AT(83,2531,3302,625),USE(?Box6),LINEWIDTH(2),ROUND,#ORIG(?Box6)
+            BOX,AT(4010,2531,3302,625),USE(?Box5),LINEWIDTH(2),ROUND,#ORIG(?Box5)
+            STRING('Sold To:'),AT(167,2313,750,188),USE(?String32),FONT(,,,FONT:bold),#ORIG(?String32)
+          END
+detail    DETAIL,AT(,,,242),USE(?detail)
+            STRING(@n$14.2B),AT(5406,21,83,52),USE(DTL:TotalCost),HIDE,TRN,#ORIG(DTL:TotalCost)
+            STRING(@n$10.2B),AT(5500,10,135,52),USE(DTL:Discount),HIDE,TRN,#ORIG(DTL:Discount)
+            STRING(@s10),AT(115,42,896,167),USE(PRO:ProductSKU),#ORIG(PRO:ProductSKU)
+            STRING(@s35),AT(1083,42,2677,167),USE(PRO:Description),#ORIG(PRO:Description)
+            CHECK,AT(3969,42,250,177),USE(DTL:BackOrdered),#ORIG(DTL:BackOrdered)
+            STRING(@n7),AT(5635,42,635,167),USE(DTL:QuantityOrdered),RIGHT(100),#ORIG(DTL:QuantityOrdered)
+            STRING(@n$10.2),AT(6458,42,823,167),USE(ExtendPrice),DECIMAL(250),#ORIG(?String16)
+            STRING(@n$10.2),AT(4552,42,771,167),USE(PRO:Price),DECIMAL(250),#ORIG(PRO:Price)
+            STRING(@n$10.2B),AT(5635,10,63,52),USE(DTL:TaxPaid,,?DTL:TaxPaid:2),HIDE,TRN,#ORIG(DTL:TaxPaid)
+          END
+detail1   DETAIL,AT(,,,967),USE(?detail1)
+            LINE,AT(83,10,7232,0),USE(?Line4),COLOR(COLOR:Black),LINEWIDTH(2),#ORIG(?Line4)
+            STRING('Sub-total:'),AT(5594,52,813,198),USE(?String23),FONT(,,,FONT:bold),LEFT(50), |
+              TRN,#FREEZE,#ORIG(?String23)
+            STRING(@n$10.2),AT(6458,250,844,167),USE(DTL:Discount,,?DTL:Discount:2),DECIMAL(250), |
+              SUM,TALLY(detail),#ORIG(DTL:Discount)
+            STRING(@n$10.2),AT(6448,52,844,198),USE(ExtendPrice,,?ExtendPrice:2),DECIMAL(250), |
+              SUM,TALLY(detail),TRN,#FREEZE,#ORIG(?String36)
+            STRING('Discount:'),AT(5604,250,781,167),USE(?String24),LEFT(50),#ORIG(?String24)
+            STRING('NOTE: Product on Back-Order will be available in 4 days.'),AT(83,396,3750, |
+              240),USE(?NoteString),FONT('MS Sans Serif',10),CENTER,#ORIG(?String41)
+            STRING('Tax:'),AT(5604,417,760,167),USE(?String27),LEFT(50),#ORIG(?String27)
+            STRING(@n$10.2),AT(6458,417,844,167),USE(DTL:TaxPaid),DECIMAL(250),SUM,TALLY(detail), |
+              #ORIG(DTL:TaxPaid)
+            LINE,AT(6350,615,962,0),USE(?Line5),COLOR(COLOR:Black),LINEWIDTH(2),#ORIG(?Line5)
+            STRING('Total:'),AT(5594,667,583,198),USE(?String30),FONT(,,,FONT:bold),LEFT(50), |
+              TRN,#ORIG(?String30)
+            LINE,AT(6354,875,962,0),USE(?Line6),COLOR(COLOR:Black),LINEWIDTH(2),#ORIG(?Line6)
+            LINE,AT(6354,906,962,0),USE(?Line7),COLOR(COLOR:Black),LINEWIDTH(2),#ORIG(?Line7)
+            STRING(@n$14.2),AT(6240,656,1052,208),USE(DTL:TotalCost,,?DTL:TotalCost:2),DECIMAL(250), |
+              SUM,TALLY(detail),TRN,#ORIG(DTL:TotalCost)
+          END
+          FOOTER,AT(500,10021,7500,275)
+            STRING('Thank You For Your Order, Please Call Again.'),AT(21,10,7438,208),USE(?String22), |
+              FONT('MS Sans Serif',10,,FONT:bold),CENTER,#ORIG(?String22)
+          END
+        END
+
+[FORMULA]
+DEFINE PriceFormula
+ASSIGN ExtendPrice
+CLASS Before Print Detail
+INSTANCE 0
+DESCRIPTION
+= DTL:Price * DTL:QuantityOrdered
+DEFINE CustName
+ASSIGN GLOT:CustName
+CLASS Before Print Detail
+INSTANCE 0
+DESCRIPTION
+= CLIP(CUS:FirstName) & '   ' & CLIP(CUS:LastName)
+DEFINE CustAddress
+ASSIGN GLOT:CustAddress
+CLASS Before Print Detail
+INSTANCE 0
+DESCRIPTION
+= CLIP(CUS:Address1) & '    ' & CLIP(CUS:Address2)
+DEFINE CustCSZ
+ASSIGN GLOT:CusCSZ
+CLASS Before Print Detail
+INSTANCE 0
+DESCRIPTION
+= CLIP(CUS:City) & ',   ' & CUS:State & '    ' & CLIP(CUS:ZipCode)
+DEFINE ShipName
+ASSIGN GLOT:ShipName
+CLASS Before Print Detail
+INSTANCE 0
+DESCRIPTION
+= CLIP(ORD:ShipToName)
+DEFINE ShipAddress
+ASSIGN GLOT:ShipAddress
+CLASS Before Print Detail
+INSTANCE 0
+DESCRIPTION
+= CLIP(ORD:ShipAddress1) & '   ' & CLIP(ORD:ShipAddress2)
+DEFINE ShipCSZ
+ASSIGN GLOT:ShipCSZ
+CLASS Before Print Detail
+INSTANCE 0
+DESCRIPTION
+= CLIP(ORD:ShipCity) & ',  ' & ORD:ShipState & '    ' & CLIP(ORD:ShipZip)
+[END]
