@@ -34,6 +34,11 @@
     <Library Include="QkQBE.ico" />
     <Library Include="star1.ico" />
     <FileDriver Include="TOPSPEED" />
+    <Compile Include="BrowseAllOrders_invoice.clw" />
+    <Compile Include="BrowseCustomers_invoice.clw" />
+    <Compile Include="BrowseOrders_invoice.clw" />
+    <Compile Include="BrowseProducts_invoice.clw" />
+    <Compile Include="CityStateZip_invoice.clw" />
     <Compile Include="invoice.clw">
       <Generated>true</Generated>
     </Compile>
@@ -43,6 +48,21 @@
     <Compile Include="invoice_BC0.CLW">
       <Generated>true</Generated>
     </Compile>
+    <Compile Include="Main_invoice.clw" />
+    <Compile Include="PrintCUS_StateKey_invoice.clw" />
+    <Compile Include="PrintInvoiceFromBrowse_invoice.clw" />
+    <Compile Include="PrintInvoice_invoice.clw" />
+    <Compile Include="PrintMailingLabels_invoice.clw" />
+    <Compile Include="PrintPRO_KeyProductSKU_invoice.clw" />
+    <Compile Include="PrintSelectedProduct_invoice.clw" />
+    <Compile Include="SelectProducts_invoice.clw" />
+    <Compile Include="SelectStates_invoice.clw" />
+    <Compile Include="SplashScreen_invoice.clw" />
+    <Compile Include="UpdateCompany_invoice.clw" />
+    <Compile Include="UpdateCustomers_invoice.clw" />
+    <Compile Include="UpdateDetail_invoice.clw" />
+    <Compile Include="UpdateOrders_invoice.clw" />
+    <Compile Include="UpdateProducts_invoice.clw" />
   </ItemGroup>
   <Import Project="$(ClarionBinPath)\SoftVelocity.Build.Clarion.targets" />
 </Project>
