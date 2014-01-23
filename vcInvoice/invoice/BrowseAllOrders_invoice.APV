@@ -39,8 +39,7 @@ Products Detail
 %ReturnValue FIELD  ()
 %WindowOperationMode DEFAULT  ('Use WINDOW setting')
 %INISaveWindow LONG  (1)
-%ButtonAction DEPEND %Control DEFAULT TIMES 10
-WHEN  ('') ('No Special Action')
+%ButtonAction DEPEND %Control DEFAULT TIMES 9
 WHEN  ('?Change') ('No Special Action')
 WHEN  ('?Close') ('No Special Action')
 WHEN  ('?Contract') ('No Special Action')
@@ -95,8 +94,7 @@ WHEN  ('?Insert') (0)
 WHEN  ('?RelTree') (0)
 WHEN  ('?String1') (0)
 
-%ButtonThreadStack DEPEND %Control DEFAULT TIMES 10
-WHEN  ('') ('25000')
+%ButtonThreadStack DEPEND %Control DEFAULT TIMES 9
 WHEN  ('?Change') ('25000')
 WHEN  ('?Close') ('25000')
 WHEN  ('?Contract') ('25000')
@@ -118,8 +116,7 @@ WHEN  ('?Insert') ('')
 WHEN  ('?RelTree') ('')
 WHEN  ('?String1') ('')
 
-%ButtonRequest DEPEND %Control DEFAULT TIMES 10
-WHEN  ('') ('None')
+%ButtonRequest DEPEND %Control DEFAULT TIMES 9
 WHEN  ('?Change') ('None')
 WHEN  ('?Close') ('None')
 WHEN  ('?Contract') ('None')
@@ -196,8 +193,7 @@ WHEN  ('?Insert') ()
 WHEN  ('?RelTree') ()
 WHEN  ('?String1') ()
 
-%PostLookupDuringValidate DEPEND %Control LONG TIMES 10
-WHEN  ('') (1)
+%PostLookupDuringValidate DEPEND %Control LONG TIMES 9
 WHEN  ('?Change') (1)
 WHEN  ('?Close') (1)
 WHEN  ('?Contract') (1)
@@ -256,8 +252,7 @@ WHEN  ('?Insert')TIMES 0
 WHEN  ('?RelTree')TIMES 0
 WHEN  ('?String1')TIMES 0
 
-%CheckedControlAction DEPEND %CheckedHides DEFAULT TIMES 10
-WHEN  ('')TIMES 0
+%CheckedControlAction DEPEND %CheckedHides DEFAULT TIMES 9
 WHEN  ('?Change')TIMES 0
 WHEN  ('?Close')TIMES 0
 WHEN  ('?Contract')TIMES 0
@@ -305,8 +300,7 @@ WHEN  ('?Insert')TIMES 0
 WHEN  ('?RelTree')TIMES 0
 WHEN  ('?String1')TIMES 0
 
-%UnCheckedControlAction DEPEND %UnCheckedHides DEFAULT TIMES 10
-WHEN  ('')TIMES 0
+%UnCheckedControlAction DEPEND %UnCheckedHides DEFAULT TIMES 9
 WHEN  ('?Change')TIMES 0
 WHEN  ('?Close')TIMES 0
 WHEN  ('?Contract')TIMES 0
@@ -415,8 +409,7 @@ WHEN  ('WindowToolbar')TIMES 0
 
 %CheckedControl1 DEPEND %CheckedEnables DEFAULT TIMES 0
 
-%CheckedControl1Action DEPEND %CheckedEnables DEFAULT TIMES 8
-WHEN  ('')TIMES 0
+%CheckedControl1Action DEPEND %CheckedEnables DEFAULT TIMES 7
 WHEN  ('?Change')TIMES 0
 WHEN  ('?Close')TIMES 0
 WHEN  ('?Contract')TIMES 0
@@ -429,8 +422,7 @@ WHEN  ('?RelTree')TIMES 0
 
 %UnCheckedControl1 DEPEND %UnCheckedEnables DEFAULT TIMES 0
 
-%UnCheckedControl1Action DEPEND %UnCheckedEnables DEFAULT TIMES 8
-WHEN  ('')TIMES 0
+%UnCheckedControl1Action DEPEND %UnCheckedEnables DEFAULT TIMES 7
 WHEN  ('?Change')TIMES 0
 WHEN  ('?Close')TIMES 0
 WHEN  ('?Contract')TIMES 0
@@ -558,48 +550,38 @@ WHEN  ('WindowToolbar') ('NO')
 
 %ExtUITabStyleOverrideGlobal DEPEND %Control LONG TIMES 0
 
-%ExtUITabStyle DEPEND %Control DEFAULT TIMES 1
-WHEN  ('') ('Default')
+%ExtUITabStyle DEPEND %Control DEFAULT TIMES 0
 
 %CheckedDisables DEPEND %Control MULTI LONG TIMES 0
 
 %CheckedDisableControl DEPEND %CheckedDisables DEFAULT TIMES 0
 
-%CheckedDisableControlAction DEPEND %CheckedDisables DEFAULT TIMES 1
-WHEN  ('')TIMES 0
+%CheckedDisableControlAction DEPEND %CheckedDisables DEFAULT TIMES 0
 
 %UnCheckedDisables DEPEND %Control MULTI LONG TIMES 0
 
 %UnCheckedDisableControl DEPEND %UnCheckedDisables DEFAULT TIMES 0
 
-%UnCheckedDisableControlAction DEPEND %UnCheckedDisables DEFAULT TIMES 1
-WHEN  ('')TIMES 0
+%UnCheckedDisableControlAction DEPEND %UnCheckedDisables DEFAULT TIMES 0
 
 %ProcedureOneInstance LONG  (0)
-%FieldGradientColorType DEPEND %Control DEFAULT TIMES 1
-WHEN  ('') ('Off')
+%FieldGradientColorType DEPEND %Control DEFAULT TIMES 0
 
-%FieldGradientColorTypeVariable DEPEND %Control DEFAULT TIMES 1
-WHEN  ('') ('')
+%FieldGradientColorTypeVariable DEPEND %Control DEFAULT TIMES 0
 
-%FieldGradientColorTypeIsVariable DEPEND %Control LONG TIMES 1
-WHEN  ('') (0)
+%FieldGradientColorTypeIsVariable DEPEND %Control LONG TIMES 0
 
-%FieldGradientColorFrom DEPEND %Control LONG TIMES 1
-WHEN  ('') (-1)
+%FieldGradientColorFrom DEPEND %Control LONG TIMES 0
 
 %FieldGradientColorFromVariable DEPEND %Control DEFAULT TIMES 0
 
-%FieldGradientColorFromIsVariable DEPEND %Control LONG TIMES 1
-WHEN  ('') (0)
+%FieldGradientColorFromIsVariable DEPEND %Control LONG TIMES 0
 
-%FieldGradientColorTo DEPEND %Control LONG TIMES 1
-WHEN  ('') (-1)
+%FieldGradientColorTo DEPEND %Control LONG TIMES 0
 
 %FieldGradientColorToVariable DEPEND %Control DEFAULT TIMES 0
 
-%FieldGradientColorToIsVariable DEPEND %Control LONG TIMES 1
-WHEN  ('') (0)
+%FieldGradientColorToIsVariable DEPEND %Control LONG TIMES 0
 
 [EMBED]
 EMBED %BeforeSecondaryDisplay
@@ -667,8 +649,7 @@ WHEN  ('Products') ('')
 %DefaultSecondaryForegroundNormal DEPEND %ActiveTemplate DEPEND %ActiveTemplateInstance DEPEND %ActiveTemplatePrimaryInstance DEPEND %Secondary LONG TIMES 1
 WHEN  ('RelationTree(ABC)')TIMES 1
 WHEN  ('1')TIMES 1
-WHEN  ('1')TIMES 4
-WHEN  ('') (-1)
+WHEN  ('1')TIMES 3
 WHEN  ('Detail') (32768)
 WHEN  ('Orders') (8388608)
 WHEN  ('Products') (-1)
@@ -676,8 +657,7 @@ WHEN  ('Products') (-1)
 %DefaultSecondaryBackgroundNormal DEPEND %ActiveTemplate DEPEND %ActiveTemplateInstance DEPEND %ActiveTemplatePrimaryInstance DEPEND %Secondary LONG TIMES 1
 WHEN  ('RelationTree(ABC)')TIMES 1
 WHEN  ('1')TIMES 1
-WHEN  ('1')TIMES 4
-WHEN  ('') (-1)
+WHEN  ('1')TIMES 3
 WHEN  ('Detail') (-1)
 WHEN  ('Orders') (-1)
 WHEN  ('Products') (-1)
@@ -685,8 +665,7 @@ WHEN  ('Products') (-1)
 %DefaultSecondaryForegroundSelected DEPEND %ActiveTemplate DEPEND %ActiveTemplateInstance DEPEND %ActiveTemplatePrimaryInstance DEPEND %Secondary LONG TIMES 1
 WHEN  ('RelationTree(ABC)')TIMES 1
 WHEN  ('1')TIMES 1
-WHEN  ('1')TIMES 4
-WHEN  ('') (-1)
+WHEN  ('1')TIMES 3
 WHEN  ('Detail') (-1)
 WHEN  ('Orders') (-1)
 WHEN  ('Products') (-1)
@@ -694,8 +673,7 @@ WHEN  ('Products') (-1)
 %DefaultSecondaryBackgroundSelected DEPEND %ActiveTemplate DEPEND %ActiveTemplateInstance DEPEND %ActiveTemplatePrimaryInstance DEPEND %Secondary LONG TIMES 1
 WHEN  ('RelationTree(ABC)')TIMES 1
 WHEN  ('1')TIMES 1
-WHEN  ('1')TIMES 4
-WHEN  ('') (-1)
+WHEN  ('1')TIMES 3
 WHEN  ('Detail') (-1)
 WHEN  ('Orders') (-1)
 WHEN  ('Products') (-1)
@@ -718,32 +696,28 @@ WHEN  (1) ('DTL:BackOrdered = TRUE')
 %ConditionalSecondaryForegroundNormal DEPEND %SecondaryConditionalColors LONG TIMES 1
 WHEN  ('RelationTree(ABC)')TIMES 1
 WHEN  ('1')TIMES 1
-WHEN  ('1')TIMES 2
-WHEN  ('')TIMES 0
+WHEN  ('1')TIMES 1
 WHEN  ('Detail')TIMES 1
 WHEN  (1) (255)
 
 %ConditionalSecondaryBackgroundNormal DEPEND %SecondaryConditionalColors LONG TIMES 1
 WHEN  ('RelationTree(ABC)')TIMES 1
 WHEN  ('1')TIMES 1
-WHEN  ('1')TIMES 2
-WHEN  ('')TIMES 0
+WHEN  ('1')TIMES 1
 WHEN  ('Detail')TIMES 1
 WHEN  (1) (-1)
 
 %ConditionalSecondaryForegroundSelected DEPEND %SecondaryConditionalColors LONG TIMES 1
 WHEN  ('RelationTree(ABC)')TIMES 1
 WHEN  ('1')TIMES 1
-WHEN  ('1')TIMES 2
-WHEN  ('')TIMES 0
+WHEN  ('1')TIMES 1
 WHEN  ('Detail')TIMES 1
 WHEN  (1) (-1)
 
 %ConditionalSecondaryBackgroundSelected DEPEND %SecondaryConditionalColors LONG TIMES 1
 WHEN  ('RelationTree(ABC)')TIMES 1
 WHEN  ('1')TIMES 1
-WHEN  ('1')TIMES 2
-WHEN  ('')TIMES 0
+WHEN  ('1')TIMES 1
 WHEN  ('Detail')TIMES 1
 WHEN  (1) (-1)
 
@@ -960,28 +934,28 @@ WHEN  ('Default')TIMES 0
 WHEN  ('Default') ('NO')
 
 [WINDOW]
-window  WINDOW('Browse Customers Orders In Tree View'),AT(,,312,193),FONT('MS Sans Serif', |
+window  WINDOW('Browse Customers Orders In Tree View'),AT(,,382,237),FONT('MS Sans Serif', |
           8,COLOR:Black,FONT:bold),RESIZE,CENTER,ICON('NOTE14.ICO'),GRAY,IMM,MDI,HLP('~BrowseCus' & |
           'tomersOrdersInTreeView'),PALETTE(256),SYSTEM
-          LIST,AT(3,17,305,156),USE(?RelTree),FONT('Times New Roman',10,,FONT:bold),VSCROLL, |
+          LIST,AT(3,17,377,199),USE(?RelTree),FONT('Times New Roman',10,,FONT:bold),VSCROLL, |
             COLOR(,COLOR:White,COLOR:Blue),FORMAT('800L*ITS(70)@s200@'),FROM(Queue:RelTree), |
             MSG('Ctrl+-> Expand branch,  Ctrl+<<- Contract branch'),#ORIG(?RelTree),#SEQ(1), |
             #ORDINAL(1)
-          BUTTON('Insert'),AT(4,177,48,15),USE(?Insert),FONT(,,COLOR:Green,FONT:bold),LEFT, |
+          BUTTON('Insert'),AT(2,220,48,15),USE(?Insert),FONT(,,COLOR:Green,FONT:bold),LEFT, |
             ICON('Insert.ico'),FLAT,SKIP,TIP('Insert a record'),#ORIG(?Insert),#SEQ(6),#ORDINAL(2)
-          BUTTON('Change'),AT(55,177,48,15),USE(?Change),FONT(,8,COLOR:Green,FONT:bold),LEFT, |
+          BUTTON('Change'),AT(53,220,48,15),USE(?Change),FONT(,8,COLOR:Green,FONT:bold),LEFT, |
             ICON('Edit.ico'),FLAT,SKIP,TIP('Edit a record'),#ORIG(?Change),#SEQ(6),#ORDINAL(3)
-          BUTTON('Delete'),AT(106,177,48,15),USE(?Delete),FONT(,,COLOR:Green,FONT:bold),LEFT, |
+          BUTTON('Delete'),AT(105,220,48,15),USE(?Delete),FONT(,,COLOR:Green,FONT:bold),LEFT, |
             ICON('Delete.ico'),FLAT,SKIP,TIP('Delete a record'),#ORIG(?Delete),#SEQ(6),#ORDINAL(4)
           STRING('Backordered Item'),AT(104,2,89,12),USE(?String1),FONT('MS Sans Serif',10, |
             COLOR:Red,FONT:bold),CENTER,#ORIG(?String1),#ORDINAL(5)
-          BUTTON('&Expand All'),AT(161,177,55,15),USE(?Expand),FONT(,,COLOR:Navy,FONT:bold), |
+          BUTTON('&Expand All'),AT(159,220,55,15),USE(?Expand),FONT(,,COLOR:Navy,FONT:bold), |
             FLAT,SKIP,TIP('Expand All Branches'),#ORIG(?Expand),#SEQ(2),#ORDINAL(6)
-          BUTTON('Co&ntract All'),AT(218,177,55,15),USE(?Contract),FONT(,,COLOR:Navy,FONT:bold), |
+          BUTTON('Co&ntract All'),AT(217,220,55,15),USE(?Contract),FONT(,,COLOR:Navy,FONT:bold), |
             FLAT,SKIP,TIP('Contract All Branches'),#ORIG(?Contract),#SEQ(2),#ORDINAL(7)
           BUTTON,AT(274,143,11,12),USE(?Help),ICON(ICON:Help),HIDE,STD(STD:Help),TIP('Get help'), |
             #ORIG(?Button7),#ORDINAL(8)
-          BUTTON,AT(290,177,19,15),USE(?Close),ICON('EXITS.ICO'),FLAT,SKIP,TIP('Exits Browse'), |
+          BUTTON,AT(289,220,19,15),USE(?Close),ICON('EXITS.ICO'),FLAT,SKIP,TIP('Exits Browse'), |
             #ORIG(?Close),#SEQ(3),#ORDINAL(9)
         END
 
